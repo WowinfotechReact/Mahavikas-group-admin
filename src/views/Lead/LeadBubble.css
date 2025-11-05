@@ -1,0 +1,55 @@
+.transfer-bubble {
+      position: fixed;
+      z-index: 2000;
+      animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+      0% {
+            transform: scale(0.5);
+            opacity: 0;
+      }
+
+      100% {
+            transform: scale(1);
+            opacity: 1;
+      }
+}
+
+/* Battery style reused */
+.battery-btn {
+      position: relative;
+      border: none;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+}
+
+/* Transfer-specific color */
+.transfer-btn {
+      background: linear-gradient(90deg, #2980b9, #2471a3);
+      /* blue */
+      color: white;
+}
+
+.transfer-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #1f618d, #1a5276);
+}
+
+/* Battery Cap */
+.battery-btn::after {
+      content: "";
+      position: absolute;
+      right: -6px;
+      top: 25%;
+      width: 6px;
+      height: 50%;
+      background: #555;
+      border-radius: 2px;
+}

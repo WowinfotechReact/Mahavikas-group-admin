@@ -1,0 +1,1 @@
+export const ERROR_MESSAGES = "This field is required.";

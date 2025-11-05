@@ -1,0 +1,87 @@
+.assign-bubble {
+  position: fixed;
+  z-index: 2000;
+  animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Battery style */
+.battery-btn {
+  position: relative;
+  background: linear-gradient(90deg, #ffaa33, #7f8c4d);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  /* pill shape */
+  padding: 6px 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.battery-btn:hover {
+  transform: scale(1.05);
+}
+
+/* The "cap" of battery */
+.battery-btn::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  top: 25%;
+  width: 6px;
+  height: 50%;
+  background: #555;
+  border-radius: 2px;
+}
+
+
+
+.pdf-float {
+  font-size: 20px;
+  color: #e74c3c;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.pdf-float:hover {
+  transform: translateY(-4px) scale(1.2);
+  color: #c0392b;
+}
+
+/* small pulse effect */
+.pdf-float::after {
+  content: "View PDF";
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 2px 6px;
+  font-size: 10px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.pdf-float:hover::after {
+  opacity: 1;
+}

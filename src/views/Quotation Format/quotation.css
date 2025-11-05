@@ -1,0 +1,75 @@
+.quotation-container {
+  font-family: 'Poppins', Poppins;
+  font-size: 14px;
+  background: #fff;
+  color: #000;
+}
+
+/* Prevent breaking layout (header/body/footer) */
+.quotation-page {
+  page-break-inside: avoid;
+  break-inside: avoid;
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Force break after each page if needed */
+.page-break {
+  page-break-after: always;
+  break-after: page;
+}
+
+.company-logo {
+  height: 50px;
+}
+
+.quotation-header h3 {
+  font-weight: 800;
+}
+
+.address-text {
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+/* Alliance Partners logo style – bigger, transparent */
+.partner-logo {
+  height: 65px;          /* Increased height */
+  width: 130px;          /* Increased width */
+  object-fit: contain;
+  background-color: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 10px;
+  border-radius: 14px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);  /* subtle shadow */
+}
+
+/* Divider styling */
+.alliance-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.alliance-divider .line {
+  flex: 1;
+  height: 1px;
+  background-color: #000;
+  margin: 0 10px;
+}
+
+.alliance-divider .title {
+  white-space: nowrap;
+}
+
+.quotation-footer p {
+  margin: 0;
+  font-size: 12px;
+}

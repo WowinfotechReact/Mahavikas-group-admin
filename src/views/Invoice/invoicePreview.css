@@ -1,0 +1,59 @@
+.invoice-container {
+      max-width: 900px;
+      margin: auto;
+      border: 1px solid #ccc;
+}
+
+/* Print styles */
+@media print {
+      body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            margin: 0;
+            padding: 0;
+      }
+
+      .invoice-container {
+            border: none;
+            box-shadow: none;
+            page-break-inside: avoid;
+      }
+
+      table {
+            page-break-inside: auto;
+      }
+
+      tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+      }
+
+      thead {
+            display: table-header-group;
+            /* repeat header on each page */
+      }
+
+      tfoot {
+            display: table-footer-group;
+            /* repeat footer on each page */
+      }
+
+      .no-print {
+            display: none !important;
+      }
+}
+
+/* Optional: watermark for print */
+@media print {
+      body::before {
+            content: "AlphaTech System";
+            position: fixed;
+            top: 40%;
+            left: 20%;
+            font-size: 80px;
+            color: rgba(0, 0, 0, 0.05);
+            transform: rotate(-30deg);
+            z-index: -1;
+            white-space: nowrap;
+      }
+}
