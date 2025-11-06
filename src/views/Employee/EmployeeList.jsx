@@ -23,6 +23,7 @@ import { hasPermission } from 'Middleware/permissionUtils';
 import { FaUserShield, FaUsersCog, FaStore, FaCalculator, FaTools, FaUserTie } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
 import EmployeeInstituteModal from './EmployeeInstituteModal';
+import ViewEmployeeModal from './ViewEmployeeModal';
 
 
 
@@ -56,6 +57,7 @@ const EmployeeList = () => {
   const handleClose = () => setShow(false);
   const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
   const [showEmployeeInstituteModal, setShowEmployeeInstituteModal] = useState(false)
+  const [showEmployeeViewModal, setShowEmployeeViewModal] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState();
   const [modelRequestData, setModelRequestData] = useState({
     adminID: null,
@@ -136,6 +138,14 @@ const EmployeeList = () => {
     });
     setShowEmployeeModal(true);
   };
+  const editEmp = () => {
+    setModelRequestData({
+      ...modelRequestData,
+      employeeKeyID: null,
+      Action: 'Update'
+    });
+    setShowEmployeeModal(true);
+  };
   const VehicleEditBtnClicked = (value) => {
     setModelRequestData({
       ...modelRequestData,
@@ -184,7 +194,9 @@ const EmployeeList = () => {
     setShowSuccessModal(false);
 
   };
-
+  const viewEmpDetails = () => {
+    setShowEmployeeViewModal(true)
+  }
   const confirmStatusChange = async (row, user) => {
     setLoader(true);
 
@@ -361,10 +373,10 @@ const EmployeeList = () => {
   };
 
   const emdDataMap = [
-    { name: 'Sandeep Maurya', Designation: 'Sr Professor' },
-    { name: 'Aniket', Designation: 'Jr Professor' },
-    { name: 'Vishal W', Designation: 'Math Professor' },
-    { name: 'Shubham S', Designation: 'PT Professor ' },
+    { name: 'Sandeep Maurya', Designation: 'Sr Professor', address: 'Noida', phNo: '+91 9876543215' },
+    { name: 'Aniket', Designation: 'Jr Professor', address: 'white hill ,pune', phNo: '+91 9954353415' },
+    { name: 'Vishal W', Designation: 'Math Professor', address: 'green Valley , sector-2', phNo: '+91 75890343556' },
+    { name: 'Shubham S', Designation: 'PT Professor ', address: 'CBS', phNo: '+91 8520258963' },
   ]
 
   const AssignedInstituteBtn = () => {
@@ -400,6 +412,12 @@ const EmployeeList = () => {
               }}
             />
             <div className="d-flex align-items-center ms-2 gap-2 mt-2 mt-sm-0">
+              <Tooltip title="Export">
+                <button onClick={exportToExcel} className="btn btn-warning btn-sm d-none d-sm-inline" style={{ marginRight: '2px' }}>
+                  <i className="fa-solid fa-file-export" style={{ fontSize: '11px' }}></i>
+                  {" "}  <span className="d-none d-sm-inline">Export</span>
+                </button>
+              </Tooltip>
               {hasPermission(permissions, 'Employee', 'Can Insert') && (
                 <Tooltip title="Add Employee">
                   <button onClick={() => VehicleAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline ">
@@ -408,12 +426,7 @@ const EmployeeList = () => {
                   </button>
                 </Tooltip>
               )}
-              <Tooltip title="Export">
-                <button onClick={exportToExcel} className="btn btn-warning btn-sm d-none d-sm-inline" style={{ marginRight: '2px' }}>
-                  <i className="fa-solid fa-file-export" style={{ fontSize: '11px' }}></i>
-                  {" "}  <span className="d-none d-sm-inline">Export</span>
-                </button>
-              </Tooltip>
+
             </div>
           </div>
 
@@ -431,7 +444,8 @@ const EmployeeList = () => {
 
 
                   <th className="text-center">Designation</th>
-                  <th className="text-center">Assign Institute</th>
+                  <th className="text-center">Address</th>
+                  <th className="text-center">Phone No.</th>
                   <th className="text-center">Action</th>
                 </tr>
               </thead>
@@ -462,35 +476,81 @@ const EmployeeList = () => {
                     <td className='text-center'>
                       {value.Designation}
                     </td>
-
-
-
-
-                    <td className='text-center' style={{ color: 'blue' }}>
-                      <Link onClick={AssignedInstituteBtn}>Assigned Institute</Link>
+                    <td className='text-center'>
+                      {value.address}
+                    </td>
+                    <td className='text-center'>
+                      {value.phNo}
                     </td>
 
+
+
+
+
                     <td className="text-center">
-                      {hasPermission(permissions, 'Employee', 'Can Update') && (
-                        <Tooltip title="Update Employee">
-                          <button
-                            style={{
-                              padding: '4px 8px', // Adjust padding for smaller size
-                              fontSize: '12px', // Optional: smaller font size
-                              height: '28px', // Set height
-                              width: '28px', // Set width,
-                              background: '#ffaa33', color: 'white'
-                            }}
-                            onClick={() => AssignedInstituteBtn()}
-                            type="button"
 
-                            className="btn-sm btn"
-                          >
-                            <i className="fa-solid fa-pen-to-square"></i>
-                          </button>
-                        </Tooltip>
-                      )}
+                      <div className="">
 
+                        {hasPermission(permissions, 'Employee', 'Can Update') && (
+                          <Tooltip title=" Assigned Institute">
+                            <button
+                              style={{
+                                padding: '4px 8px', // Adjust padding for smaller size
+                                fontSize: '12px', // Optional: smaller font size
+                                // height: '28px', // Set height
+                                // width: '28px', // Set width,
+                                background: '#ffaa33', color: 'white'
+                              }}
+                              onClick={() => AssignedInstituteBtn()}
+                              type="button"
+
+                              className="btn-sm btn me-2"
+                            >
+                              Assigned Institute
+
+                            </button>
+                          </Tooltip>
+                        )}
+
+                        {hasPermission(permissions, 'Employee', 'Can Update') && (
+                          <Tooltip title="Update Employee">
+                            <button
+                              style={{
+                                padding: '4px 8px', // Adjust padding for smaller size
+                                fontSize: '12px', // Optional: smaller font size
+                                height: '28px', // Set height
+                                width: '28px', // Set width,
+                                background: '#ffaa33', color: 'white'
+                              }}
+                              onClick={() => editEmp()}
+                              type="button"
+
+                              className="btn-sm btn me-2"
+                            >
+                              <i className="fa-solid fa-pen-to-square"></i>
+                            </button>
+                          </Tooltip>
+                        )}
+                        {hasPermission(permissions, 'Employee', 'Can Update') && (
+                          <Tooltip title="View Employee">
+                            <button
+                              style={{
+                                padding: '4px 8px', // Adjust padding for smaller size
+                                fontSize: '12px', // Optional: smaller font size
+                                height: '28px', // Set height
+                                width: '48px', // Set width,
+                                background: '#ffaa33', color: 'white'
+                              }}
+                              onClick={() => viewEmpDetails()}
+                              type="button"
+
+                              className="btn-sm btn me-2"
+                            >
+                              View                            </button>
+                          </Tooltip>
+                        )}
+
+                      </div>
 
 
 
@@ -559,6 +619,15 @@ const EmployeeList = () => {
         <EmployeeInstituteModal
           show={showEmployeeInstituteModal}
           onHide={() => setShowEmployeeInstituteModal(false)}
+          modelRequestData={modelRequestData}
+          setModelRequestData={setModelRequestData}
+          setIsAddUpdateActionDone={setIsAddUpdateActionDone}
+        />
+      )}
+      {showEmployeeViewModal && (
+        <ViewEmployeeModal
+          show={showEmployeeViewModal}
+          onHide={() => setShowEmployeeViewModal(false)}
           modelRequestData={modelRequestData}
           setModelRequestData={setModelRequestData}
           setIsAddUpdateActionDone={setIsAddUpdateActionDone}

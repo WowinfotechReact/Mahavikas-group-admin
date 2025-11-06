@@ -446,7 +446,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
         <Modal.Header closeButton>
           <Modal.Title>
             <h3 className="text-center">
-              {modelRequestData?.Action !== null ? 'Edit Employee' : modelRequestData?.Action === null ? 'Add Employee' : ''}
+              {modelRequestData?.Action !== null ? 'Update Employee' : modelRequestData?.Action === null ? 'Add Employee' : ''}
             </h3>
           </Modal.Title>
         </Modal.Header>
@@ -652,7 +652,6 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                 <div>
                   <label className="form-label">
                     Employee Code
-                    <span style={{ color: 'red' }}>*</span>
                   </label>
                   <div>
                     <input
@@ -723,38 +722,12 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
               </div>
             </div>
             <div className="row">
-              <div className="col-12 col-md-6 mb-2">
-                <div>
-                  <label htmlFor="vehicleNumber" className="form-label">
-                    Select Blood Group
-                    <span style={{ color: 'red' }}>*</span>
-                  </label>
-                  <Select
-                    placeholder="Select Blood Group"
-                    options={bloodTypeOption}
-                    value={bloodTypeOption.find((option) => option.value === employeeObj.bloodGroupID) || null}
-                    onChange={handleBloodTypeChange}
-                    menuPosition="fixed"
-                    menuPortalTarget={document.body} // default portal
-                    styles={{
-                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    }}
-                  />
 
-                  {error &&
-                    (employeeObj.bloodGroupID === null || employeeObj.bloodGroupID === undefined || employeeObj.bloodGroupID === '') ? (
-                    <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                  ) : (
-                    ''
-                  )}
-                </div>
-              </div>
 
               <div className="col-12 col-md-6 mb-2">
                 <div>
                   <label htmlFor="adharNumber" className="form-label">
                     Aadhaar Number
-                    <span style={{ color: 'red' }}>*</span>
                   </label>
                   <input
                     maxLength={14}
@@ -788,13 +761,11 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                         : ''}
                   </span>
                 </div>
+
               </div>
-            </div>
-            <div className="row">
               <div className="col-12 col-md-6 mb-2">
                 <label htmlFor="panNumber" className="form-label">
                   PAN Number
-                  <span style={{ color: 'red' }}>*</span>
                 </label>
                 <input
                   maxLength={10}
@@ -818,6 +789,9 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   ''
                 )}
               </div>
+            </div>
+            <div className="row">
+
               <div className="col-12 col-md-6 mb-2">
                 <div>
                   <label htmlFor="mobileNumber" className="form-label">
@@ -855,8 +829,6 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   </span>
                 </div>
               </div>
-            </div>
-            <div className="row">
               <div className="col-12 col-md-6 mb-2">
                 <div>
                   <label htmlFor="alternativeNumber" className="form-label">
@@ -884,64 +856,14 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   />
                 </div>
               </div>
-              <div className="col-12 col-md-6 mb-2">
-                <div>
-                  <label htmlFor="vehicleNumber" className="form-label">
-                    Employee Type
-                    <span style={{ color: 'red' }}>*</span>
-                  </label>
-                  <Select
-                    menuPlacement="top"
-                    placeholder="Select Employee Type"
-                    options={employeeTypeOption}
-                    value={employeeTypeOption.find((option) => option.value === employeeObj.employeeTypeID) || null}
-                    onChange={(option) =>
-                      setEmployeeObj((prev) => ({
-                        ...prev,
-                        employeeTypeID: option ? option.value : null
-                      }))
-                    }
-                    menuPosition="fixed"
-                  />
-
-                  {error &&
-                    (employeeObj.employeeTypeID === null || employeeObj.employeeTypeID === undefined || employeeObj.employeeTypeID === '') ? (
-                    <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                  ) : (
-                    ''
-                  )}
-                </div>
-              </div>
             </div>
             <div className="row">
 
-              <div className="col-12 col-md-6 mb-2">
-                <div>
-                  <label htmlFor="vehicleNumber" className="form-label">
-                    Employee Role Type
-                    <span style={{ color: 'red' }}>*</span>
-                  </label>
-                  <Select
-                    options={roleTypes}
-                    value={roleTypes.find((option) => option.value === employeeObj.roleTypeID) || null}
 
-                    placeholder="Select Role Type"
-                    onChange={(option) =>
-                      setEmployeeObj((prev) => ({
-                        ...prev,
-                        roleTypeID: option ? option.value : null
-                      }))
-                    }
-                  />
+            </div>
+            <div className="row">
 
-                  {error &&
-                    (employeeObj.roleTypeID === null || employeeObj.roleTypeID === undefined || employeeObj.roleTypeID === '') ? (
-                    <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                  ) : (
-                    ''
-                  )}
-                </div>
-              </div>
+
 
 
 

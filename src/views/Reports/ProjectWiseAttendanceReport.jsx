@@ -1,7 +1,54 @@
 import React from "react";
 import { Table, Form, Button, Row, Col } from "react-bootstrap";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import dayjs from "dayjs";
 
 const ProjectWiseAttendanceReport = () => {
+
+
+      const exportAttendanceJournal = (month = 0, year = 2025) => {
+            // month: 0 for January, 1 for February, etc.
+
+            const startDate = dayjs(`${year}-${month + 1}-01`);
+            const endDate = startDate.endOf("month");
+
+            const days = [];
+            for (let d = startDate; d.isBefore(endDate) || d.isSame(endDate, "day"); d = d.add(1, "day")) {
+                  const dayName = d.format("dddd");
+                  let status = "";
+
+                  if (dayName === "Sunday") {
+                        status = "Week Off";
+                  } else {
+                        // Example random data (you can replace this with your real attendance logic)
+                        status = Math.random() > 0.2 ? "P" : "A";
+                  }
+
+                  days.push({
+                        Date: d.format("DD-MM-YYYY"),
+                        Day: dayName,
+                        Status: status,
+                  });
+            }
+
+            // Create worksheet
+            const worksheet = XLSX.utils.json_to_sheet(days);
+
+            // Set column widths
+            const wscols = [{ wch: 12 }, { wch: 12 }, { wch: 15 }];
+            worksheet["!cols"] = wscols;
+
+            // Create workbook and append sheet
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, `${startDate.format("MMMM")}`);
+
+            // Export Excel file
+            const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+            const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+            saveAs(blob, `Attendance_Journal_${startDate.format("MMMM_YYYY")}.xlsx`);
+      };
+
       return (
             <div className="container-fluid py-4">
                   {/* ---------- PAGE HEADER ---------- */}
@@ -21,7 +68,7 @@ const ProjectWiseAttendanceReport = () => {
                                                 <Form.Label className="fw-semibold small mb-1">Project</Form.Label>
                                                 <Form.Select size="sm">
                                                       <option>Select Project</option>
-                                                      <option>Project Alpha</option>
+                                                      <option>Shikshak Bharti 2025</option>
                                                       <option>Project Beta</option>
                                                       <option>Project Gamma</option>
                                                 </Form.Select>
@@ -49,28 +96,13 @@ const ProjectWiseAttendanceReport = () => {
                   </div>
 
                   {/* ---------- SUMMARY SECTION ---------- */}
-                  <div className="border rounded p-3 mb-4">
-                        <Row className="text-center small fw-semibold">
-                              <Col md={3} sm={6}>
-                                    <div>Total Employees: <span className="text-dark fw-bold">25</span></div>
-                              </Col>
-                              <Col md={3} sm={6}>
-                                    <div>Total Present: <span className="text-success fw-bold">22</span></div>
-                              </Col>
-                              <Col md={3} sm={6}>
-                                    <div>Total Absent: <span className="text-danger fw-bold">3</span></div>
-                              </Col>
-                              <Col md={3} sm={6}>
-                                    <div>Attendance %: <span className="text-warning fw-bold">88%</span></div>
-                              </Col>
-                        </Row>
-                  </div>
+
 
                   {/* ---------- ATTENDANCE TABLE ---------- */}
                   <div className="border rounded p-3">
                         <div className="d-flex justify-content-between align-items-center mb-2">
                               <h6 className="fw-semibold mb-0">
-                                    Project: <span className="text-dark">Project Alpha</span>
+                                    Project: <span className="text-dark">Shikshak Bharti 2025</span>
                               </h6>
                               <small className="text-muted">06 Nov 2025</small>
                         </div>
@@ -78,52 +110,42 @@ const ProjectWiseAttendanceReport = () => {
                         <div className="table-responsive">
                               <Table bordered hover size="sm" className="align-middle text-center mb-0">
                                     <thead className="table-light">
-                                          <tr>
-                                                <th>#</th>
-                                                <th>Employee Name</th>
-                                                <th>Employee ID</th>
-                                                <th>Role</th>
-                                                <th>Date</th>
-                                                <th>Status</th>
-                                                <th>Check In</th>
-                                                <th>Check Out</th>
-                                                <th>Total Hours</th>
+                                          <tr className="text-center">
+                                                <th className="text-center">#</th>
+                                                <th className="text-center">Employee Name</th>
+                                                <th className="text-center">Employee ID</th>
+                                                <th className="text-center">Role</th>
+
+                                                <th className="text-center">Present</th>
+                                                <th className="text-center">Absent</th>
+                                                <th className="text-center">Weekly Off</th>
+                                                <th className="text-center">Action</th>
                                           </tr>
                                     </thead>
                                     <tbody>
-                                          <tr>
-                                                <td>1</td>
-                                                <td>Rahul Sharma</td>
-                                                <td>EMP001</td>
-                                                <td>Engineer</td>
-                                                <td>06/11/2025</td>
-                                                <td><span className="badge bg-success">Present</span></td>
-                                                <td>09:00 AM</td>
-                                                <td>06:15 PM</td>
-                                                <td>9h 15m</td>
+                                          <tr className="text-center">
+                                                <td className="text-center">1</td>
+                                                <td className="text-center">Rahul Sharma</td>
+                                                <td className="text-center">EMP001</td>
+                                                <td className="text-center">Engineer</td>
+                                                <td className="text-center">21</td>
+                                                <td className="text-center">4</td>
+                                                <td className="text-center">5</td>
+                                                <td className="text-center" style={{ cursor: 'pointer', color: 'blue' }} onClick={() => exportAttendanceJournal(0, 2025)}>Download</td>
+
                                           </tr>
-                                          <tr>
-                                                <td>2</td>
-                                                <td>Anjali Mehta</td>
-                                                <td>EMP002</td>
-                                                <td>Supervisor</td>
-                                                <td>06/11/2025</td>
-                                                <td><span className="badge bg-danger">Absent</span></td>
-                                                <td>-</td>
-                                                <td>-</td>
-                                                <td>-</td>
+                                          <tr className="text-center">
+                                                <td className="text-center">2</td>
+                                                <td className="text-center">Rohini</td>
+                                                <td className="text-center">EMP002</td>
+                                                <td className="text-center">UI / UX</td>
+                                                <td className="text-center">21</td>
+                                                <td className="text-center">5</td>
+                                                <td className="text-center">4</td>
+                                                <td className="text-center" style={{ cursor: 'pointer', color: 'blue' }} onClick={() => exportAttendanceJournal(0, 2025)}>Download</td>
+
                                           </tr>
-                                          <tr>
-                                                <td>3</td>
-                                                <td>Rohit Verma</td>
-                                                <td>EMP003</td>
-                                                <td>Technician</td>
-                                                <td>06/11/2025</td>
-                                                <td><span className="badge bg-success">Present</span></td>
-                                                <td>09:15 AM</td>
-                                                <td>05:45 PM</td>
-                                                <td>8h 30m</td>
-                                          </tr>
+
                                     </tbody>
                               </Table>
                         </div>

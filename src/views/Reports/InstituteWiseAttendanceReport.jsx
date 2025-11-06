@@ -1,7 +1,51 @@
 import React from "react";
 import { Table, Form, Button, Row, Col } from "react-bootstrap";
-
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import dayjs from "dayjs";
 const InstituteWiseAttendanceReport = () => {
+
+      const exportAttendanceJournal = (month = 0, year = 2025) => {
+            // month: 0 for January, 1 for February, etc.
+
+            const startDate = dayjs(`${year}-${month + 1}-01`);
+            const endDate = startDate.endOf("month");
+
+            const days = [];
+            for (let d = startDate; d.isBefore(endDate) || d.isSame(endDate, "day"); d = d.add(1, "day")) {
+                  const dayName = d.format("dddd");
+                  let status = "";
+
+                  if (dayName === "Sunday") {
+                        status = "Week Off";
+                  } else {
+                        // Example random data (you can replace this with your real attendance logic)
+                        status = Math.random() > 0.2 ? "P" : "A";
+                  }
+
+                  days.push({
+                        Date: d.format("DD-MM-YYYY"),
+                        Day: dayName,
+                        Status: status,
+                  });
+            }
+
+            // Create worksheet
+            const worksheet = XLSX.utils.json_to_sheet(days);
+
+            // Set column widths
+            const wscols = [{ wch: 12 }, { wch: 12 }, { wch: 15 }];
+            worksheet["!cols"] = wscols;
+
+            // Create workbook and append sheet
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, `${startDate.format("MMMM")}`);
+
+            // Export Excel file
+            const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+            const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+            saveAs(blob, `Attendance_Journal_${startDate.format("MMMM_YYYY")}.xlsx`);
+      };
       return (
             <div className="container-fluid py-4">
                   {/* ---------- PAGE HEADER ---------- */}
@@ -49,22 +93,7 @@ const InstituteWiseAttendanceReport = () => {
                   </div>
 
                   {/* ---------- SUMMARY SECTION ---------- */}
-                  <div className="border rounded p-3 mb-4">
-                        <Row className="text-center small fw-semibold">
-                              <Col md={3} sm={6}>
-                                    <div>Total Employee: <span className="text-dark fw-bold">150</span></div>
-                              </Col>
-                              <Col md={3} sm={6}>
-                                    <div>Total Present: <span className="text-success fw-bold">132</span></div>
-                              </Col>
-                              <Col md={3} sm={6}>
-                                    <div>Total Absent: <span className="text-danger fw-bold">18</span></div>
-                              </Col>
-                              <Col md={3} sm={6}>
-                                    <div>Attendance %: <span className="text-warning fw-bold">88%</span></div>
-                              </Col>
-                        </Row>
-                  </div>
+
 
                   {/* ---------- ATTENDANCE TABLE ---------- */}
                   <div className="border rounded p-3">
@@ -78,52 +107,42 @@ const InstituteWiseAttendanceReport = () => {
                         <div className="table-responsive">
                               <Table bordered hover size="sm" className="align-middle text-center mb-0">
                                     <thead className="table-light">
-                                          <tr>
-                                                <th>#</th>
-                                                <th>Student Name</th>
-                                                <th>Roll No</th>
-                                                <th>Department</th>
-                                                <th>Date</th>
-                                                <th>Status</th>
-                                                <th>Check In</th>
-                                                <th>Check Out</th>
-                                                <th>Total Hours</th>
+                                          <tr className="text-center">
+                                                <th className="text-center">#</th>
+                                                <th className="text-center">Employee Name</th>
+                                                <th className="text-center">Employee ID</th>
+                                                <th className="text-center">Role</th>
+
+                                                <th className="text-center">Present</th>
+                                                <th className="text-center">Absent</th>
+                                                <th className="text-center">Weekly Off</th>
+                                                <th className="text-center">Action</th>
                                           </tr>
                                     </thead>
                                     <tbody>
-                                          <tr>
-                                                <td>1</td>
-                                                <td>Ravi Patel</td>
-                                                <td>STU101</td>
-                                                <td>Computer Science</td>
-                                                <td>06/11/2025</td>
-                                                <td><span className="badge bg-success">Present</span></td>
-                                                <td>09:05 AM</td>
-                                                <td>04:55 PM</td>
-                                                <td>7h 50m</td>
+                                          <tr className="text-center">
+                                                <td className="text-center">1</td>
+                                                <td className="text-center">Omkar Sharma</td>
+                                                <td className="text-center">EMP001</td>
+                                                <td className="text-center">PT Professor</td>
+                                                <td className="text-center">26</td>
+                                                <td className="text-center">0</td>
+                                                <td className="text-center">4</td>
+                                                <td className="text-center" style={{ cursor: 'pointer', color: 'blue' }} onClick={() => exportAttendanceJournal(0, 2025)}>Download</td>
+
                                           </tr>
-                                          <tr>
-                                                <td>2</td>
-                                                <td>Pooja Singh</td>
-                                                <td>STU102</td>
-                                                <td>Electrical</td>
-                                                <td>06/11/2025</td>
-                                                <td><span className="badge bg-danger">Absent</span></td>
-                                                <td>-</td>
-                                                <td>-</td>
-                                                <td>-</td>
+                                          <tr className="text-center">
+                                                <td className="text-center">2</td>
+                                                <td className="text-center">Shubham Shewale</td>
+                                                <td className="text-center">EMP002</td>
+                                                <td className="text-center">Dot Net</td>
+                                                <td className="text-center">19</td>
+                                                <td className="text-center">8</td>
+                                                <td className="text-center">4</td>
+                                                <td className="text-center" style={{ cursor: 'pointer', color: 'blue' }} onClick={() => exportAttendanceJournal(0, 2025)}>Download</td>
+
                                           </tr>
-                                          <tr>
-                                                <td>3</td>
-                                                <td>Arjun Mehta</td>
-                                                <td>STU103</td>
-                                                <td>Mechanical</td>
-                                                <td>06/11/2025</td>
-                                                <td><span className="badge bg-success">Present</span></td>
-                                                <td>09:10 AM</td>
-                                                <td>05:10 PM</td>
-                                                <td>8h 00m</td>
-                                          </tr>
+
                                     </tbody>
                               </Table>
                         </div>

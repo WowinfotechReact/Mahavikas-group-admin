@@ -261,7 +261,7 @@ const CustomerFirmList = () => {
             <input
               type="text"
               className="form-control"
-              placeholder="Search Customer Firm"
+              placeholder="Search Institute"
               style={{ maxWidth: '350px' }}
               value={searchKeyword}
               onChange={(e) => {
@@ -307,7 +307,6 @@ const CustomerFirmList = () => {
                   <th className="text-center">State</th>
                   <th className="text-center">District</th>
                   <th className="text-center">Taluka</th>
-                  <th className="text-center">Add User</th>
                   <th className="text-center">Action</th>
                 </tr>
               </thead>
@@ -349,9 +348,7 @@ const CustomerFirmList = () => {
                       </div>
                     </td>
 
-                    <td className="text-center">
-                      <Link onClick={instituteUserBtnClick}>Add User</Link>
-                    </td>
+
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                     <td className="text-center">
                       <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
@@ -369,6 +366,23 @@ const CustomerFirmList = () => {
                               className="btn-sm btn "
                             >
                               <i className="fa-solid fa-pen-to-square"></i>
+                            </button>
+                          </Tooltip>
+                        )}
+                        {hasPermission(permissions, 'Customer', 'Can Update') && (
+                          <Tooltip title="Update Institute">
+                            <button
+                              style={{
+                                padding: '4px 8px',
+                                fontSize: '12px',
+                                height: '28px',
+                                width: '68px', background: '#ffaa33', color: 'white'
+                              }}
+                              onClick={() => instituteUserBtnClick(row)}
+                              type="button"
+                              className="btn-sm btn "
+                            >
+                              Add User
                             </button>
                           </Tooltip>
                         )}

@@ -89,7 +89,15 @@ const EmployeeInstituteModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       const handleFileChange = (e) => {
             setSelectedFile(e.target.files[0]); // Save the file when input changes
       };
-
+      const instituteOptions = [
+            { value: "iit_bombay", label: "Kilbil School Satpur" },
+            { value: "iit_delhi", label: "Kilbil School Gangapur Road" },
+            { value: "nit_trichy", label: "Kilbil School Trimbkeshwar" },
+            { value: "mit_pune", label: "Kilbil School Nashik" },
+            { value: "symbiosis", label: "Symbiosis University" },
+            { value: "amity", label: "Amity University" },
+            { value: "sppu", label: "Savitribai Phule Pune University" },
+      ];
       return (
             <>
                   <Modal size="md" show={show} style={{ zIndex: 1300 }} onHide={onHide} backdrop="static" keyboard={false} centered>
@@ -108,8 +116,16 @@ const EmployeeInstituteModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                                                 <label htmlFor="csvInput" className=" form-label">
                                                       Select Institute For Assigned
                                                 </label>{' '}
-                                                <Select className="user-role-select phone-input-country-code" />
-
+                                                <Select
+                                                      className="user-role-select phone-input-country-code"
+                                                      options={instituteOptions}
+                                                      placeholder="Select Institute"
+                                                      isClearable
+                                                      menuPortalTarget={document.body} // 👈 renders dropdown outside modal
+                                                      styles={{
+                                                            menuPortal: (base) => ({ ...base, zIndex: 9999 }), // 👈 ensure it's on top
+                                                      }}
+                                                />
 
                                                 {/* <!-- Checkbox --> */}
 

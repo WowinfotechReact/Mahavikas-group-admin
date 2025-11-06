@@ -72,6 +72,14 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       }
     }
   };
+
+
+  const projectOptions = () => [
+    { value: 1, label: "Secondary & Higher Secondary Teacher Bharti 2025" },
+    { value: 2, label: "Primary Teacher Bharti 2025" },
+    { value: 3, label: "Shikshak Bharti 2025Secondary & Higher Secondary Teacher Bharti 2025" },
+
+  ]
   const AddVehicleBtnClick = async () => {
     let isValid = false;
     // debugger
@@ -377,6 +385,18 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
                   <span style={{ color: 'red' }}>*</span>
                 </label>
                 <Select placeholder='Select  Taluka' className="user-role-select phone-input-country-code" />
+                {error && (customerObj.address === null || customerObj.address === undefined || customerObj.address === '') ? (
+                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                ) : (
+                  ''
+                )}
+              </div>
+              <div className="col-12 col-md-6 mb-2">
+                <label htmlFor="customerAddress" className="form-label">
+                  Select Project
+                  <span style={{ color: 'red' }}>*</span>
+                </label>
+                <Select options={projectOptions()} placeholder='Select  Project' className="user-role-select phone-input-country-code" />
                 {error && (customerObj.address === null || customerObj.address === undefined || customerObj.address === '') ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
