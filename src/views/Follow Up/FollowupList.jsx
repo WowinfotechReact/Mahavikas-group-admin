@@ -144,7 +144,7 @@ const FollowUpList = () => {
             />
             {hasPermission(permissions, 'FollowUp', 'Can Insert') && (
               <Tooltip title="Add Follow Up">
-                <button onClick={openAddFollowUp} className="btn  text-white btn-sm" style={{ background: '#9aa357' }}>
+                <button onClick={openAddFollowUp} className="btn  text-white btn-sm" style={{ background: '#ff7d34' }}>
                   <i className="fa-solid fa-plus me-1" style={{ fontSize: '11px' }}></i>
                   <span>Add</span>
                 </button>

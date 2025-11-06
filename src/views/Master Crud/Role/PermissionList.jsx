@@ -97,7 +97,7 @@ const PermissionList = () => {
                         />
                         <Tooltip title="Set Permission">
                             <button
-                                style={{ background: '#9aa357' }}
+                                style={{ background: '#ff7d34' }}
                                 onClick={() => GrantPermission()}
                                 className="btn text-white btn-sm d-none d-sm-inline"
                             >

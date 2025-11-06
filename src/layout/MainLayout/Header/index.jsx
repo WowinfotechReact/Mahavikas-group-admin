@@ -9,7 +9,7 @@ import { GetCompanyLookupList } from 'services/Master Crud/MasterCompany';
 
 // project import
 import ProfileSection from './ProfileSection';
-import Logo from '../../../assets/images/alphatechLogo.jpg';
+import Logo from '../../../assets/images/logo.jpeg';
 // assets
 
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
@@ -154,11 +154,12 @@ const Header = ({ drawerToggle, drawerWidth }) => {
                   display: { xs: 'none', md: 'block' }
                 }}
               >
-                {user.roleTypeID === 1 && "Super Admin"}
+                {/* {user.roleTypeID === 1 && "Super Admin"}
                 {user.roleTypeID === 2 && "Admin"}
                 {user.roleTypeID === 3 && "CRM"}
                 {user.roleTypeID === 4 && "Store"}
-                {user.roleTypeID === 5 && "Accountant"}
+                {user.roleTypeID === 5 && "Accountant"} */}
+                Admin
               </Typography>
 
             </Box>

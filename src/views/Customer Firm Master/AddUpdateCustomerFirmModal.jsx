@@ -3,6 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 import Select from 'react-select';
 import DatePicker from 'react-date-picker';
 import 'react-calendar/dist/Calendar.css';
+
 import 'react-date-picker/dist/DatePicker.css';
 import SuccessPopupModal from 'component/SuccessPopupModal';
 import {
@@ -58,6 +59,19 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
   //   }
   // }, [modelRequestData?.Action]);
 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.type !== "application/pdf") {
+        setErrors("Only PDF files are allowed.");
+        setSelectedFile(null);
+      } else {
+        setErrors("");
+        setSelectedFile(file);
+      }
+    }
+  };
   const AddVehicleBtnClick = async () => {
     let isValid = false;
     // debugger
@@ -267,7 +281,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       <Modal size="lg" show={show} style={{ zIndex: 1300 }} onHide={onHide} backdrop="static" keyboard={false} centered>
         <Modal.Header closeButton>
           <Modal.Title>
-            <h3 className="text-center">{modelRequestData?.Action !== null ? 'Edit Customer/Firm Master' : 'Add Customer/Firm Master'}</h3>
+            <h3 className="text-center">{modelRequestData?.Action !== null ? 'Edit Institute' : 'Add Institute'}</h3>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ maxHeight: '55vh', overflow: 'overlay' }}>
@@ -275,14 +289,14 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
             <div className="row">
               <div className="col-12 col-md-6 mb-2">
                 <label htmlFor="customerName" className="form-label">
-                  Customer Name / Firm Name<span style={{ color: 'red' }}>*</span>
+                  Institute Name <span style={{ color: 'red' }}>*</span>
                 </label>
                 <input
                   maxLength={50}
                   type="text"
                   className="form-control"
                   id="customerName"
-                  placeholder="Enter Name / Firm Name"
+                  placeholder="Enter Institute Name"
                   value={customerObj.customerFirmName}
                   onChange={(e) => {
                     let inputVal = e.target.value;
@@ -309,14 +323,14 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
 
               <div className="col-12 col-md-6 mb-2">
                 <label htmlFor="gstNumber" className="form-label">
-                  GST Number<span style={{ color: 'red' }}>*</span>
+                  Description Of Institute <span style={{ color: 'red' }}>*</span>
                 </label>
-                <input
-                  maxLength={15}
+                <textarea
+
                   type="text"
                   className="form-control"
                   id="gstNumber"
-                  placeholder="Enter GST Number"
+                  placeholder="Enter Description Of Institute "
                   value={customerObj.gstNumber}
                   onChange={(e) => {
                     let gst = e.target.value.toUpperCase(); // Ensure uppercase
@@ -334,427 +348,66 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
 
             <div className="row">
               <div className="col-12 col-md-6 mb-2">
-                <label htmlFor="vendorCode" className="form-label">
-                  Vendor Code<span style={{ color: 'red' }}>*</span>
+                <label htmlFor="customerAddress" className="form-label">
+                  State
+                  <span style={{ color: 'red' }}>*</span>
                 </label>
-                <input
-                  maxLength={50}
-                  type="text"
-                  className="form-control"
-                  id="vendorCode"
-                  placeholder="Enter Vendor Code"
-                  value={customerObj.vendorCode}
-                  onChange={(e) => setcustomerObj({ ...customerObj, vendorCode: e.target.value })}
-                />
-                {error && (customerObj.vendorCode === null || customerObj.vendorCode === undefined || customerObj.vendorCode === '') ? (
+                <Select placeholder='Select State' className="user-role-select phone-input-country-code" />
+                {error && (customerObj.address === null || customerObj.address === undefined || customerObj.address === '') ? (
+                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                ) : (
+                  ''
+                )}
+              </div>
+              <div className="col-12 col-md-6 mb-2">
+                <label htmlFor="customerAddress" className="form-label">
+                  Select   District
+                  <span style={{ color: 'red' }}>*</span>
+                </label>
+                <Select placeholder='Select District' className="user-role-select phone-input-country-code" />
+                {error && (customerObj.address === null || customerObj.address === undefined || customerObj.address === '') ? (
+                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                ) : (
+                  ''
+                )}
+              </div>
+              <div className="col-12 col-md-6 mb-2">
+                <label htmlFor="customerAddress" className="form-label">
+                  Select   Taluka
+                  <span style={{ color: 'red' }}>*</span>
+                </label>
+                <Select placeholder='Select  Taluka' className="user-role-select phone-input-country-code" />
+                {error && (customerObj.address === null || customerObj.address === undefined || customerObj.address === '') ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
                   ''
                 )}
               </div>
 
-              <div className="col-12 col-md-6 mb-2">
-                <label htmlFor="AddressPerGST" className="form-label">
-                  Address per GST Number <span style={{ color: 'red' }}>*</span>
-                </label>
-                <textarea
-                  type="text"
-                  className="form-control"
-                  id="AddressPerGST"
-                  placeholder="Enter Address per GST Number"
-                  value={customerObj.addressperGST}
-                  onChange={(e) => {
-                    let gst = e.target.value.toUpperCase(); // Ensure uppercase
-                    gst = gst.replace(/^\s+/, ''); // Remove leading spaces
-                    setcustomerObj({ ...customerObj, addressperGST: gst });
-                  }}
-                />
-                {error &&
-                  (customerObj.addressperGST === null || customerObj.addressperGST === undefined || customerObj.addressperGST === '') ? (
-                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                ) : (
-                  ''
-                )}
-              </div>
+
             </div>
+
 
             <div className="row">
-              <div className="col-12 col-md-6 mb-2">
-                <label htmlFor="billingAddress" className="form-label">
-                  Billing Address
-                </label>
-                <textarea
-                  className="form-control"
-                  placeholder="Enter Billing Address"
-                  maxLength={250}
-                  value={customerObj.billingAddress}
-                  onChange={(e) => setcustomerObj({ ...customerObj, billingAddress: e.target.value })}
-                />
-                {/* {error &&
-                (customerObj.billingAddress === null || customerObj.billingAddress === undefined || customerObj.billingAddress === '') ? (
-                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                ) : (
-                  ''
-                )} */}
-              </div>
-              <div className="col-12 col-md-6 mb-2">
-                <label htmlFor="shippingAddress" className="form-label">
-                  Shipping Address
-                </label>
-                <textarea
-                  className="form-control"
-                  placeholder="Enter Shipping Address"
-                  maxLength={250}
-                  value={customerObj.shippingAddress}
-                  onChange={(e) => setcustomerObj({ ...customerObj, shippingAddress: e.target.value })}
-                />
-                {/* {error &&
-                (customerObj.shippingAddress === null ||
-                  customerObj.shippingAddress === undefined ||
-                  customerObj.shippingAddress === '') ? (
-                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                ) : (
-                  ''
-                )} */}
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-12 col-md-6 mb-2">
-                <label htmlFor="mobileNumber" className="form-label">
-                  Mobile Number<span style={{ color: 'red' }}>*</span>
+              <div className="mb-3">
+                <label htmlFor="pdfUpload" className="form-label fw-bold">
+                  Upload PDF
                 </label>
                 <input
-                  maxLength={10}
-                  type="text"
-                  className="form-control"
-                  id="mobileNumber"
-                  placeholder="Enter Mobile Number"
-                  value={customerObj.mobileNumber}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    let FormattedNumber = value.replace(/[^0-9]/g, ''); setcustomerObj({ ...customerObj, mobileNumber: FormattedNumber })
-                  }}
+                  type="file"
+                  className={`form-control ${error ? "is-invalid" : ""}`}
+                  id="pdfUpload"
+                  accept="application/pdf"
+                  onChange={handleFileChange}
                 />
-                {error &&
-                  (customerObj.mobileNumber === null || customerObj.mobileNumber === undefined || customerObj.mobileNumber === '') ? (
-                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                ) : (
-                  ''
+                {error && <div className="invalid-feedback">{error}</div>}
+
+                {selectedFile && (
+                  <div className="mt-2 text-success">
+                    ✅ Selected: <strong>{selectedFile.name}</strong>
+                  </div>
                 )}
               </div>
-              <div className="col-12 col-md-6 mb-2">
-                <label htmlFor="alternativeNumber" className="form-label">
-                  Alternative Number
-                </label>
-                <input
-                  maxLength={10}
-                  type="text"
-                  className="form-control"
-                  id="alternativeNumber"
-                  placeholder="Enter Alternative Number"
-                  value={customerObj.alternateMobileNumber}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    let FormattedNumber = value.replace(/[^0-9]/g, ''); setcustomerObj({ ...customerObj, alternateMobileNumber: FormattedNumber })
-                  }}
-                />
-
-
-              </div>
-
-              <div className="col-12 col-md-6 mb-2">
-                <label htmlFor="emailID" className="form-label">
-                  Email ID<span style={{ color: 'red' }}>*</span>
-                </label>
-                <input
-                  maxLength={50}
-                  type="email"
-                  className="form-control"
-                  id="emailID"
-                  placeholder="Enter Email ID"
-                  value={customerObj.emailID}
-                  onChange={(e) => setcustomerObj({ ...customerObj, emailID: e.target.value })}
-                />
-                {error && (customerObj.emailID === null || customerObj.emailID === undefined || customerObj.emailID === '') ? (
-                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                ) : (
-                  ''
-                )}
-              </div>
-            </div>
-            <div className="position-relative border-top border-bottom border-start mt-2 border-end border-2 p-3">
-              <span
-                className="position-absolute top-0 translate-middle-y px-3 fw-bold bg-light"
-                style={{ left: "10px", paddingTop: "5px", paddingBottom: "5px" }} // Adjusts top & bottom spacing
-              >
-                Bank Details
-              </span>
-              <div className="row">
-                <div className="col-12 col-md-6 mb-2">
-                  <label className="form-label">
-                    Account Details (Yes/No)<span style={{ color: 'red' }}>*</span>
-                  </label>
-                  <div>
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="accountDetails"
-                        id="accountYes"
-                        value="yes"
-                        checked={customerObj.accountDetails === true}
-                        onChange={() => setcustomerObj({ ...customerObj, accountDetails: true })}
-                      />
-                      <label className="form-check-label" htmlFor="accountYes">
-                        Yes
-                      </label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="accountDetails"
-                        id="accountNo"
-                        value="no"
-                        checked={customerObj.accountDetails === false}
-                        onChange={() => setcustomerObj({ ...customerObj, accountDetails: false })}
-                      />
-                      <label className="form-check-label" htmlFor="accountNo">
-                        No
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6 mb-2"></div>
-              </div>
-              {customerObj.accountDetails === true && (
-                <div className="row">
-                  <div className="col-12 col-md-6 mb-2">
-                    <label htmlFor="accountNumber" className="form-label">
-                      Account Number<span style={{ color: 'red' }}>*</span>
-                    </label>
-                    <input
-                      maxLength={14}
-                      type="text"
-                      className="form-control"
-                      id="accountNumber"
-                      placeholder="Enter Account Number"
-                      value={customerObj.accountNumber}
-                      onChange={(e) => setcustomerObj({ ...customerObj, accountNumber: e.target.value })}
-                    />
-                    {error &&
-                      (customerObj.accountNumber === null || customerObj.accountNumber === undefined || customerObj.accountNumber === '') ? (
-                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                    ) : (
-                      ''
-                    )}
-                  </div>
-                  <div className="col-12 col-md-6 mb-2">
-                    <label htmlFor="ifscCode" className="form-label">
-                      IFSC Code<span style={{ color: 'red' }}>*</span>
-                    </label>
-                    <input
-                      maxLength={11}
-                      type="text"
-                      className="form-control"
-                      id="ifscCode"
-                      placeholder="Enter IFSC Code"
-                      value={customerObj.ifscCode}
-                      onChange={(e) => setcustomerObj({ ...customerObj, ifscCode: e.target.value })}
-                    />
-                    {error && (customerObj.ifscCode === null || customerObj.ifscCode === undefined || customerObj.ifscCode === '') ? (
-                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                    ) : (
-                      ''
-                    )}
-                  </div>
-
-                  <div className="col-12 col-md-6 mb-2">
-                    <label htmlFor="branchName" className="form-label">
-                      Branch Name<span style={{ color: 'red' }}>*</span>
-                    </label>
-                    <input
-                      maxLength={50}
-                      type="text"
-                      className="form-control"
-                      id="branchName"
-                      placeholder="Enter Branch Name"
-                      value={customerObj.branchName}
-                      onChange={(e) => setcustomerObj({ ...customerObj, branchName: e.target.value })}
-                    />
-                    {error && (customerObj.branchName === null || customerObj.branchName === undefined || customerObj.branchName === '') ? (
-                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                    ) : (
-                      ''
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="position-relative border-top border-bottom border-start mt-2 border-end border-2 p-3">
-              <span
-                className="position-absolute top-0 translate-middle-y px-3 fw-bold bg-light"
-                style={{ left: "10px", paddingTop: "5px", paddingBottom: "5px" }} // Adjusts top & bottom spacing
-              >
-                Contact Person Details
-              </span>
-              <div className="row">
-
-                <div className="col-12 col-md-6 mb-2">
-                  <label className="form-label">
-                    Point of Contact (Yes/No)<span style={{ color: 'red' }}>*</span>
-                  </label>
-                  <div>
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="pointOfContact"
-                        id="pointYes"
-                        checked={customerObj.pointofContact === true}
-                        onChange={() => setcustomerObj({ ...customerObj, pointofContact: true })}
-                      />
-                      <label className="form-check-label" htmlFor="pointYes">
-                        Yes
-                      </label>
-                    </div>
-
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="pointOfContact"
-                        id="pointNo"
-                        checked={customerObj.pointofContact === false}
-                        onChange={() => setcustomerObj({ ...customerObj, pointofContact: false })}
-                      />
-                      <label className="form-check-label" htmlFor="pointNo">
-                        No
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6 mb-2"></div>
-              </div>
-
-              {customerObj.pointofContact === true && (
-                <div className="row">
-                  <div className="col-12 col-md-6 mb-2">
-                    <label htmlFor="contactPersonName" className="form-label">
-                      Full Name<span style={{ color: 'red' }}>*</span>
-                    </label>
-                    <input
-                      maxLength={50}
-                      type="text"
-                      className="form-control"
-                      id="contactPersonName"
-                      placeholder="Enter Full Name"
-                      value={customerObj.contactPersonName}
-                      onChange={(e) => setcustomerObj({ ...customerObj, contactPersonName: e.target.value })}
-                    />
-                    {error &&
-                      (customerObj.contactPersonName === null ||
-                        customerObj.contactPersonName === undefined ||
-                        customerObj.contactPersonName === '') ? (
-                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                    ) : (
-                      ''
-                    )}
-                  </div>
-                  <div className="col-12 col-md-6 mb-2">
-                    <label htmlFor="contactPersonDesignation" className="form-label">
-                      Contact Person Designation<span style={{ color: 'red' }}>*</span>
-                    </label>
-                    <input
-                      maxLength={50}
-                      type="text"
-                      className="form-control"
-                      id="contactPersonDesignation"
-                      placeholder="Enter Designation"
-                      value={customerObj.contactPersonDesignation}
-                      onChange={(e) => setcustomerObj({ ...customerObj, contactPersonDesignation: e.target.value })}
-                    />
-                    {error &&
-                      (customerObj.contactPersonDesignation === null ||
-                        customerObj.contactPersonDesignation === undefined ||
-                        customerObj.contactPersonDesignation === '') ? (
-                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                    ) : (
-                      ''
-                    )}
-                  </div>
-
-                  <div className="col-12 col-md-6 mb-2">
-                    <label htmlFor="contactPersonNumber" className="form-label">
-                      Contact Mobile Number<span style={{ color: 'red' }}>*</span>
-                    </label>
-                    <input
-                      maxLength={10}
-                      type="text"
-                      className="form-control"
-                      id="contactPersonNumber"
-                      placeholder="Enter Contact Mobile Number"
-                      value={customerObj.contactPersonNumber}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        let FormattedNumber = value.replace(/[^0-9]/g, ''); setcustomerObj({ ...customerObj, contactPersonNumber: FormattedNumber })
-                      }}
-                    />
-                    {error &&
-                      (customerObj.contactPersonNumber === null ||
-                        customerObj.contactPersonNumber === undefined ||
-                        customerObj.contactPersonNumber === '') ? (
-                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                    ) : (
-                      ''
-                    )}
-                  </div>
-
-                  <div className="col-12 col-md-6 mb-2">
-                    <label htmlFor="contactAlternativeNumber" className="form-label">
-                      Contact Alternative Number
-                    </label>
-                    <input
-                      maxLength={10}
-                      type="text"
-                      className="form-control"
-                      id="contactAlternativeNumber"
-                      placeholder="Enter Contact Alternative Number"
-                      value={customerObj.contactAlternateNumber}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        let FormattedNumber = value.replace(/[^0-9]/g, ''); setcustomerObj({ ...customerObj, contactAlternateNumber: FormattedNumber })
-                      }}
-                    />
-                  </div>
-
-                  <div className="col-12 col-md-6 mb-2">
-                    <label htmlFor="contactPersonEmail" className="form-label">
-                      Contact Email ID<span style={{ color: 'red' }}>*</span>
-                    </label>
-                    <input
-                      maxLength={50}
-                      type="email"
-                      className="form-control"
-                      id="contactPersonEmail"
-                      placeholder="Enter Contact Email ID"
-                      value={customerObj.contactPersonEmail}
-                      onChange={(e) => setcustomerObj({ ...customerObj, contactPersonEmail: e.target.value })}
-                    />
-                    {error &&
-                      (customerObj.contactPersonEmail === null ||
-                        customerObj.contactPersonEmail === undefined ||
-                        customerObj.contactPersonEmail === '') ? (
-                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                    ) : (
-                      ''
-                    )}
-                  </div>
-                </div>
-              )}
-
-              <span style={{ color: 'red' }}>{errorMessage}</span>
             </div>
           </div>
         </Modal.Body>

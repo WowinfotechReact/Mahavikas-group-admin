@@ -276,7 +276,7 @@ const OutStandingReport = () => {
                                                                         </td>
                                                                         <td className="text-center">
                                                                               <button
-                                                                                    style={{ background: '#9aa357' }}
+                                                                                    style={{ background: '#ff7d34' }}
                                                                                     className="text-white btn btn-sm"
 
                                                                                     size="sm"
@@ -352,7 +352,7 @@ const OutStandingReport = () => {
                                                       );
                                                 })}
                                           </tbody>
-                                          <tfoot style={{ color: '#9aa357' }} className=" fw-bold text-center">
+                                          <tfoot style={{ color: '#ff7d34' }} className=" fw-bold text-center">
                                                 <tr>
                                                       <td colSpan={2}>Total</td>
                                                       <td>

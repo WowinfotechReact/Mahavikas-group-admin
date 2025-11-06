@@ -343,7 +343,7 @@ const AllCustomerLeadReport = () => {
                                                                         </td>
                                                                         <td className="text-center">
                                                                               <button
-                                                                                    style={{ background: '#9aa357' }}
+                                                                                    style={{ background: '#ff7d34' }}
                                                                                     className="text-white btn btn-sm"
 
                                                                                     size="sm"
@@ -417,7 +417,7 @@ const AllCustomerLeadReport = () => {
                                                       );
                                                 })}
                                           </tbody>
-                                          <tfoot style={{ color: '#9aa357' }} className=" fw-bold text-center">
+                                          <tfoot style={{ color: '#ff7d34' }} className=" fw-bold text-center">
                                                 <tr className="text-center">
                                                       <td colSpan={2}>Total</td>
                                                       <td className="text-center">

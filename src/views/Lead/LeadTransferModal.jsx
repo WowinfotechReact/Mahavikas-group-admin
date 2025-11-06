@@ -160,7 +160,7 @@ const LeadTransferModal = ({ show, handleClose, modelRequestData, selectedLeadID
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <button style={{ background: '#9aa357' }} className='btn text-white' onClick={AddLeadBtnClick}>
+                    <button style={{ background: '#ff7d34' }} className='btn text-white' onClick={AddLeadBtnClick}>
                         Yes!
                     </button>
                 </Modal.Footer>

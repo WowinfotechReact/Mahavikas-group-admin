@@ -158,7 +158,7 @@ const ModelList = ({ selectedProduct, onClose }) => {
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           <div className="d-flex justify-content-between align-items-center mb-1">
             <h5 className="mb-2">
-              <span style={{ color: '#ffaa33', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => navigate('/product')}>
+              <span style={{ color: '#ffaa33', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => navigate('/project')}>
                 Product
               </span>
               {' > '}

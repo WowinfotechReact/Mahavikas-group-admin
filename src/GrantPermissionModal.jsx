@@ -247,7 +247,7 @@ const GrantPermissionModal = ({ show, onHide, setIsAddUpdateActionDone, modelReq
           <Button variant="secondary" onClick={onHide}>
             Close
           </Button>
-          {modelRequestData.Action === null && <button type="submit" onClick={handleSubmit} style={{ background: '#9aa357' }} className="btn text-white text-center">
+          {modelRequestData.Action === null && <button type="submit" onClick={handleSubmit} style={{ background: '#ff7d34' }} className="btn text-white text-center">
             Submit
           </button>}
 

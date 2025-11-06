@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import { hasPermission } from 'Middleware/permissionUtils';
 import { FaUserShield, FaUsersCog, FaStore, FaCalculator, FaTools, FaUserTie } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
+import EmployeeInstituteModal from './EmployeeInstituteModal';
 
 
 
@@ -54,7 +55,7 @@ const EmployeeList = () => {
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
   const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
-
+  const [showEmployeeInstituteModal, setShowEmployeeInstituteModal] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState();
   const [modelRequestData, setModelRequestData] = useState({
     adminID: null,
@@ -358,6 +359,18 @@ const EmployeeList = () => {
   const toggleExpand = (employeeKeyID) => {
     setExpandedLead((prev) => (prev === employeeKeyID ? null : employeeKeyID));
   };
+
+  const emdDataMap = [
+    { name: 'Sandeep Maurya', Designation: 'Sr Professor' },
+    { name: 'Aniket', Designation: 'Jr Professor' },
+    { name: 'Vishal W', Designation: 'Math Professor' },
+    { name: 'Shubham S', Designation: 'PT Professor ' },
+  ]
+
+  const AssignedInstituteBtn = () => {
+
+    setShowEmployeeInstituteModal(true)
+  }
   return (
     <>
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
@@ -407,28 +420,27 @@ const EmployeeList = () => {
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
             <table className="table table-bordered table-striped table-hover">
-              <thead style={{ position: 'sticky', top: -1, zIndex: 1, backgroundColor: '#4CAF50', color: '#fff' }}>
+              <thead style={{ position: 'sticky', top: -1, zIndex: 1, backgroundColor: '#ff7d34', color: '#fff' }}>
                 <tr className="text-nowrap">
                   <th className="text-center">Sr.No.</th>
-                  <th className="text-center">Employee Info</th>
-
-                  <th className="text-center">Role Type</th>
+                  <th className="text-center">Employee Name</th>
 
 
 
 
-                  <th className="text-center">Credentials</th>
-                  <th className="text-center">Reset IMEI / MAC Address</th>
-                  <th className="text-center">Status</th>
+
+
+                  <th className="text-center">Designation</th>
+                  <th className="text-center">Assign Institute</th>
                   <th className="text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {vehicleListData?.map((value, idx) => (
+                {emdDataMap?.map((value, idx) => (
                   <tr className="tableBodyTd text-nowrap" key={idx}>
                     <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
                     <td className="text-center" style={{ cursor: 'pointer', position: 'relative' }} onClick={() => toggleExpand(value.employeeKeyID)}>
-                      <span >{value.firstName} {value.lastName}</span>
+                      <span >{value.name} </span>
 
 
                     </td>
@@ -436,82 +448,26 @@ const EmployeeList = () => {
 
 
                     {/* <td className="text-center">{value.roleTypeName}</td> */}
-                    <td className="text-center">
-                      {roleIcons[value.roleTypeName] || <FaUserTie className="text-muted role-icon" />}
-                      {value.roleTypeName}
-                    </td>
 
 
 
 
 
 
-                    <td className="text-center">
-                      {/* Employee ID */}
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", marginBottom: "4px" }}>
-                        <strong>ID:</strong>
-                        <span style={{ fontWeight: 500 }}>{value.mobileNumber || "N/A"}</span>
-                        {value.mobileNumber && (
-                          <span
-                            onClick={() => {
-                              navigator.clipboard.writeText(value.mobileNumber);
-                              toast.success("ID copied!");
-                            }}
-                            title="Copy ID"
-                            style={{ cursor: "pointer", color: "#0d6efd" }}
-                          >
-                            <FaCopy />
-                          </span>
-                        )}
-                      </div>
 
-                      {/* Password */}
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
-                        <strong>Pass:</strong>
-                        <span>{visiblePasswords[idx] ? value.password : "****"}</span>
 
-                        {/* Toggle visibility */}
-                        <span
-                          onClick={() => togglePasswordVisibility(idx)}
-                          style={{ cursor: "pointer", color: "#0d6efd" }}
-                        >
-                          {visiblePasswords[idx] ? <FaEyeSlash /> : <FaEye />}
-                        </span>
-
-                        {/* Copy password */}
-                        {value.password && (
-                          <span
-                            onClick={() => {
-                              navigator.clipboard.writeText(value.password);
-                              toast.success("Password copied!");
-                            }}
-                            title="Copy Password"
-                            style={{ cursor: "pointer", color: "#0d6efd" }}
-                          >
-                            <FaCopy />
-                          </span>
-                        )}
-                      </div>
-                    </td>
 
 
 
                     <td className='text-center'>
-                      <Tooltip title="Reset IMEI / MAC Address">
-                        <Link onClick={() => ResetIMEIBtnClick(value)}>{value.macAddress}</Link>
-                      </Tooltip>
+                      {value.Designation}
                     </td>
 
 
 
 
-                    <td className="text-center">
-                      <Tooltip title={value.status === true ? 'Active' : 'Deactive'}>
-                        {value.status === true ? 'Active' : 'Active'}
-                        <Android12Switch style={{ padding: '8px' }}
-                          onClick={() => handleStatusChange(value)}
-                          checked={value.status === true} />
-                      </Tooltip>
+                    <td className='text-center' style={{ color: 'blue' }}>
+                      <Link onClick={AssignedInstituteBtn}>Assigned Institute</Link>
                     </td>
 
                     <td className="text-center">
@@ -525,7 +481,7 @@ const EmployeeList = () => {
                               width: '28px', // Set width,
                               background: '#ffaa33', color: 'white'
                             }}
-                            onClick={() => VehicleEditBtnClicked(value)}
+                            onClick={() => AssignedInstituteBtn()}
                             type="button"
 
                             className="btn-sm btn"
@@ -550,9 +506,7 @@ const EmployeeList = () => {
 
           {/* Pagination */}
           <div className="d-flex justify-content-end ">
-            {totalCount > pageSize && (
-              <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
-            )}
+
           </div>
         </div>
       </div>
@@ -598,6 +552,16 @@ const EmployeeList = () => {
           onHide={() => closeAllModal()}
           setShowSuccessModal={setShowSuccessModal}
           modelAction={modelAction}
+        />
+      )}
+
+      {showEmployeeInstituteModal && (
+        <EmployeeInstituteModal
+          show={showEmployeeInstituteModal}
+          onHide={() => setShowEmployeeInstituteModal(false)}
+          modelRequestData={modelRequestData}
+          setModelRequestData={setModelRequestData}
+          setIsAddUpdateActionDone={setIsAddUpdateActionDone}
         />
       )}
       <ImageModal show={imgModalShow} onHide={() => setImgModalShow(false)} imageUrl={selectedImage} title={imgModalTitle} />

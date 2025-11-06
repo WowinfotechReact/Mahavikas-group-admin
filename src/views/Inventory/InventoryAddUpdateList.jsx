@@ -572,7 +572,7 @@ const InventoryAddUpdateList = () => {
                                                                                     {!isExpanded && (
                                                                                           <Tooltip title="Update Stock">
                                                                                                 <button
-                                                                                                      style={{ background: "#9aa357" }}
+                                                                                                      style={{ background: "#ff7d34" }}
                                                                                                       onClick={() => updateBtnClick(stock)}
                                                                                                       className="btn text-white btn-sm me-2"
                                                                                                 >
@@ -590,7 +590,7 @@ const InventoryAddUpdateList = () => {
                                                                                           <div
                                                                                                 style={{
                                                                                                       background: "#f9f9f9",
-                                                                                                      border: "2px solid #9aa357",
+                                                                                                      border: "2px solid #ff7d34",
                                                                                                       borderRadius: "6px",
                                                                                                       margin: "10px",
                                                                                                       padding: "10px",
@@ -625,7 +625,7 @@ const InventoryAddUpdateList = () => {
                                                                                                                         {/* <td>
                                                                                                                               <Tooltip title="Update Stock">
                                                                                                                                     <button
-                                                                                                                                          style={{ background: "#9aa357" }}
+                                                                                                                                          style={{ background: "#ff7d34" }}
                                                                                                                                           onClick={() => updateBtnClick(stock)}
                                                                                                                                           className="btn text-white btn-sm"
                                                                                                                                     >

@@ -274,8 +274,8 @@ const Default = () => {
           )}
         </div>
       </Grid>
-
       <Grid item xs={12}>
+        <h5 className='mb-2'>Company 1  Data</h5>
         <Grid container spacing={gridSpacing}>
           <Grid style={{ cursor: 'pointer' }} item lg={3} sm={6} xs={12}>
             <div >
@@ -290,7 +290,7 @@ const Default = () => {
             </div>
           </Grid>
           <Grid style={{ cursor: 'pointer' }} item lg={3} sm={6} xs={12}>
-            <div onClick={() => navigate('/dispatched-order')}>
+            <div >
               <ReportCard
                 primary={4}
                 secondary="Total Project"
@@ -302,7 +302,7 @@ const Default = () => {
             </div>
           </Grid>
           <Grid style={{ cursor: 'pointer' }} item lg={3} sm={6} xs={12}>
-            <div onClick={() => navigate('/employee-list')}>
+            <div >
               <ReportCard
                 primary={3}
                 secondary="Total Institute"
@@ -314,7 +314,7 @@ const Default = () => {
             </div>
           </Grid>
           <Grid style={{ cursor: 'pointer' }} item lg={3} sm={6} xs={12}>
-            <div onClick={() => navigate('/quotation-list')}>
+            <div >
               <ReportCard
                 primary={40}
                 secondary="Total Employee"

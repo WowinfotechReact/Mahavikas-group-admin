@@ -181,7 +181,7 @@ export default {
           title: 'Project Master',
           type: 'item',
           icon: icons['AccountTreeIcon'],
-          url: '/product'
+          url: '/project'
         },
         {
           id: 'customer/firm ',
@@ -189,7 +189,7 @@ export default {
           title: 'Institute',
           type: 'item',
           icon: icons['PersonIcon'],
-          url: '/customer-firm-master'
+          url: '/institute-master'
         },
 
 
@@ -199,35 +199,81 @@ export default {
 
         {
           id: 'master',
+          title: 'Report',
+          type: 'collapse',
+          moduleName: 'Customer',
+
+          icon: icons['FolderOutlinedIcon'],
+          children: [
+            {
+              id: 'Master',
+              title: 'Project Wise Attendance',
+              moduleName: 'Customer',
+              type: 'item',
+              icon: icons['CabinIcon'],
+              url: '/project-wise-attendance-report'
+            },
+            {
+              id: 'Master',
+              title: 'Institute Wise Attendance',
+              moduleName: 'Customer',
+              type: 'item',
+              icon: icons['CabinIcon'],
+              url: '/institute-wise-attendance-report'
+            },
+
+            // {
+            //   id: 'bloodGroup',
+            //   title: 'Blood Group',
+            //   moduleName: 'Blood Group',
+            //   type: 'item',
+            //   url: '/blood-group',
+            //   icon: icons['BloodtypeIcon']
+            // },
+
+          ]
+        },
+        {
+          id: 'master',
           title: 'Master',
           type: 'collapse',
+          moduleName: 'Customer',
           url: '/employee-type',
           icon: icons['FolderOutlinedIcon'],
           children: [
             {
-              id: 'employeeType',
-              moduleName: 'Employee Type',
-              title: 'Employee Type',
+              id: 'Master',
+              title: 'State',
+              moduleName: 'Customer',
               type: 'item',
-              url: '/employee-type',
-              icon: icons['GroupsOutlinedIcon']
-            },
-            {
-              id: 'designation',
-              title: 'Designation',
-              moduleName: 'Designation',
-              type: 'item',
-              url: '/designation',
-              icon: icons['BusinessCenterOutlinedIcon']
+              icon: icons['CabinIcon'],
+              url: '/master-state'
             },
             {
               id: 'Master',
-              title: 'Role Type',
-              moduleName: 'Permission',
+              moduleName: 'Customer',
+              title: 'District',
               type: 'item',
-              icon: icons['KeyIcon'],
-              moduleName: 'Permission',
-              url: '/master-role-type'
+              icon: icons['HolidayVillageIcon'],
+              url: '/master-district'
+            },
+
+            {
+              id: 'Master',
+              moduleName: 'Customer',
+              title: 'Taluka',
+              type: 'item',
+              icon: icons['LocationCityIcon'],
+              url: '/master-taluka'
+            },
+
+            {
+              id: 'Master',
+              title: 'Village',
+              moduleName: 'Customer',
+              type: 'item',
+              icon: icons['StoreIcon'],
+              url: '/master-village'
             },
             // {
             //   id: 'bloodGroup',
@@ -237,38 +283,7 @@ export default {
             //   url: '/blood-group',
             //   icon: icons['BloodtypeIcon']
             // },
-            {
-              id: 'Manufacturer',
-              title: 'Manufacturer',
-              moduleName: 'Manufacturer',
-              type: 'item',
-              icon: icons['FactoryOutlinedIcon'],
-              url: '/manufacturer'
-            },
-            {
-              id: 'variant',
-              title: 'Rating',
-              moduleName: 'Rating',
-              type: 'item',
-              icon: icons['ShuffleOutlinedIcon'],
-              url: '/rating'
-            },
-            {
-              id: 'Quotation-Num-Format',
-              title: 'Quotation No. Format',
-              moduleName: 'Quotation Number Format',
-              type: 'item',
-              icon: icons['FormatListNumberedIcon'],
-              url: '/quotation-num-format'
-            },
-            {
-              id: 'Terms-And-Conditions',
-              title: 'Terms And Conditions',
-              moduleName: 'Terms And Conditions',
-              type: 'item',
-              icon: icons['GavelIcon'],
-              url: '/termsAndConditions'
-            }
+
           ]
         },
       ]

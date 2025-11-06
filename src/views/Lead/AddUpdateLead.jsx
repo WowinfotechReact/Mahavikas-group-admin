@@ -605,7 +605,7 @@ const AddUpdateLeadModal = ({ show, handleClose, modelRequestData, setIsAddUpdat
           <div className="d-flex justify-content-between align-items-center mb-3">
             <strong>Contact Information</strong>
             <div className="position-absolute end-0 me-2">
-              <button onClick={addContactCard} style={{ background: '#9aa357' }} className="btn text-white btn-sm">
+              <button onClick={addContactCard} style={{ background: '#ff7d34' }} className="btn text-white btn-sm">
                 <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
                 <span className="ms-1">Add</span>
               </button>
@@ -726,7 +726,7 @@ const AddUpdateLeadModal = ({ show, handleClose, modelRequestData, setIsAddUpdat
         >
           Close
         </Button>
-        <button style={{ background: '#9aa357' }} className='btn text-white' onClick={AddLeadBtnClick}>
+        <button style={{ background: '#ff7d34' }} className='btn text-white' onClick={AddLeadBtnClick}>
           Submit{' '}
         </button>
       </Modal.Footer>

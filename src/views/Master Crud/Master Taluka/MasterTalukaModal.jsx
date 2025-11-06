@@ -203,7 +203,7 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
         <Modal.Header closeButton>
           <Modal.Title>
             <h3 className="text-center">
-              {modelRequestData?.Action !== null ? 'Update Taluka' : modelRequestData?.Action === null ? 'Add ssssTaluka' : ''}
+              {modelRequestData?.Action !== null ? 'Update Taluka' : modelRequestData?.Action === null ? 'Add Taluka' : ''}
             </h3>
           </Modal.Title>
         </Modal.Header>
@@ -291,12 +291,13 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={onHide}>
-            Close
-          </Button>
-          <Button type="submit" className="btn btn-primary text-center" onClick={() => AddStateBtnClick()}>
+
+          <button
+            style={{ background: '#ffaa33' }} className="btn text-white  btn-sm d-none d-sm-inline"
+
+            onClick={() => AddStateBtnClick()}>
             Submit
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
       {showSuccessModal && (

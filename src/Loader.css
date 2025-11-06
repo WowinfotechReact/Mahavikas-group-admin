@@ -1,55 +1,20 @@
-.battery-loader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 40px auto;
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #FFF;
+  border-bottom-color: #FF3D00;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
 }
 
-.battery-cap {
-  width: 30px;
-  height: 10px;
-  background: #4CAF50;
-  border-radius: 2px;
-  margin-bottom: 4px;
-  /* spacing between cap and body */
-}
-
-.battery-body {
-  width: 80px;
-  height: 150px;
-  border: 4px solid #4CAF50;
-  border-radius: 6px;
-  position: relative;
-  overflow: hidden;
-  background: #fff;
-}
-
-.charge {
-  width: 100%;
-  height: 0%;
-  background: linear-gradient(to top, #76ff03, #4CAF50);
-  animation: chargeAnimation 2s infinite;
-  position: absolute;
-  bottom: 0;
-}
-
-@keyframes chargeAnimation {
+@keyframes rotation {
   0% {
-    height: 0%;
-  }
-
-  50% {
-    height: 80%;
+    transform: rotate(0deg);
   }
 
   100% {
-    height: 0%;
+    transform: rotate(360deg);
   }
-}
-
-.loading-text {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #4CAF50;
-  font-weight: 600;
 }

@@ -83,6 +83,13 @@ import TaxInvoiceReport from 'views/TaxInvoiceReport';
 import QuotationLogsList from 'views/Quotation Tabs/QuotationLogsList';
 import AMCQuotationPreviewPage from 'views/Quotation Format/AMCQuotationPreviewPage';
 import OEMQuotationPreview from 'views/Original Equipment Manufacturer/OEM Purchased Order/OEMQuotationPreview';
+import ProjectViewDetails from 'views/Product/ProjectViewDetails';
+import MasterVillageList from 'views/Master Crud/Master Village/MasterVillageList';
+import MasterTalukaList from 'views/Master Crud/Master Taluka/MasterTalukaList';
+import MasterDistrictList from 'views/Master Crud/Master District/MasterDistrictList';
+import MasterStateList from 'views/Master Crud/Master State/MasterStateList';
+import ProjectWiseAttendanceReport from 'views/Reports/ProjectWiseAttendanceReport';
+import InstituteWiseAttendanceReport from 'views/Reports/InstituteWiseAttendanceReport';
 // const MasterZoneList = Loadable(lazy(() => import('views/Master Crud/Master Zone/MasterZoneList')));
 // const MasterDistrictMap = Loadable(lazy(() => import('views/Master Crud/Master Zone/MasterDistrictMap')));
 const LeadList = Loadable(lazy(() => import('views/Lead/LeadList')));
@@ -200,7 +207,7 @@ const MainRoutes = {
       )
     },
     {
-      path: '/customer-firm-master',
+      path: '/institute-master',
       element: (
         <Suspense fallback={<Loader />}>
           <CustomerFirmList />
@@ -242,7 +249,7 @@ const MainRoutes = {
 
 
     {
-      path: '/product',
+      path: '/project',
       element: <ProductList />
     },
     {
@@ -258,6 +265,10 @@ const MainRoutes = {
       element: <VariantList />
     },
     {
+      path: '/project-details-view',
+      element: <ProjectViewDetails />
+    },
+    {
       path: '/field-service-report',
       element: <FieldServiceReport />
     },
@@ -265,6 +276,54 @@ const MainRoutes = {
     {
       path: '/quotation-num-format',
       element: <QuotationNumberFormatList />
+    },
+    {
+      path: '/master-village',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <MasterVillageList />
+        </Suspense>
+      )
+    },
+    {
+      path: '/master-state',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <MasterStateList />
+        </Suspense>
+      )
+    },
+    {
+      path: '/project-wise-attendance-report',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <ProjectWiseAttendanceReport />
+        </Suspense>
+      )
+    },
+    {
+      path: '/institute-wise-attendance-report',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <InstituteWiseAttendanceReport />
+        </Suspense>
+      )
+    },
+    {
+      path: '/master-district',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <MasterDistrictList />
+        </Suspense>
+      )
+    },
+    {
+      path: '/master-taluka',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <MasterTalukaList />
+        </Suspense>
+      )
     },
     {
       path: 'termsAndConditions',

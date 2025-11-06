@@ -717,7 +717,7 @@ const InvoiceProductDetailsModal = ({ show,
                                                                                           <button
                                                                                                 onClick={() => handleEditProduct(item, index)}
                                                                                                 className="btn btn-sm text-white me-2"
-                                                                                                style={{ background: "#9aa357" }}
+                                                                                                style={{ background: "#ff7d34" }}
                                                                                           >
                                                                                                 <i className="fa-solid fa-pencil"></i>
                                                                                           </button>
@@ -727,7 +727,7 @@ const InvoiceProductDetailsModal = ({ show,
                                                                                                 <button
                                                                                                       onClick={() => handleDeleteProduct(index)}
                                                                                                       className="btn btn-sm text-white"
-                                                                                                      style={{ background: "#9aa357" }}
+                                                                                                      style={{ background: "#ff7d34" }}
                                                                                                 >
                                                                                                       <i className="fa-solid fa-trash"></i>
                                                                                                 </button>

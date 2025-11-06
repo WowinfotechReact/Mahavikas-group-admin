@@ -397,7 +397,7 @@ const InvoiceList = () => {
                                                     <Tooltip title="View  Payment Collection Invoice">
                                                         <button
                                                             style={{
-                                                                background: '#9aa357', // blue shade for view button
+                                                                background: '#ff7d34', // blue shade for view button
                                                                 color: 'white'
                                                             }}
                                                             className="btn btn-sm d-none d-sm-inline"

@@ -32,7 +32,7 @@ function ResetIMEIModal({ show, onHide, modelRequestData, resetBtnClick }) {
         <Button variant="secondary" onClick={onHide}>
           <b>Close</b>
         </Button>
-        <button onClick={resetBtnClick} className='btn text-white' style={{ background: '#9aa357' }} >
+        <button onClick={resetBtnClick} className='btn text-white' style={{ background: '#ff7d34' }} >
           <b>Yes, Reset</b>
         </button>
       </Modal.Footer>

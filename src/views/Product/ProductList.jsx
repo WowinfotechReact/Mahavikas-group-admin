@@ -29,7 +29,7 @@ const ProductList = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
-  const [productListData, setProductListData] = useState([]);
+
   const [openProductModal, setOpenProductModal] = useState(false);
   const [sortingDirection, setSortingDirection] = useState(null);
   const [sortDirectionObj, setSortDirectionObj] = useState({ ProductNameSort: null });
@@ -157,6 +157,16 @@ const ProductList = () => {
     }
   };
 
+
+  const dataMap = [
+    { projectName: 'Shikshak Bharti 2025', startDate: "10 Jan 2024", endData: '25 feb 2025', status: 'ongoing' },
+    { projectName: 'Primary Teacher Bharti 2025', startDate: "10 Jan 2024", endData: '25 feb 2025', status: 'ongoing' },
+    { projectName: 'Secondary & Higher Secondary Teacher Bharti 2025', startDate: "10 Jan 2024", endData: '25 feb 2025', status: 'Near Completion' },
+    { projectName: 'Primary Teacher Bharti 2025', startDate: "10 Jan 2024", endData: '25 feb 2025', status: 'ongoing' },
+
+
+  ]
+
   const openModelList = (row) => {
     navigate('/model-list', {
       state: {
@@ -171,6 +181,11 @@ const ProductList = () => {
   const closeAllModal = () => {
     setShowSuccessModal(false);
   };
+
+  const projectDetailsBtn = () => {
+
+    navigate('/project-details-view')
+  }
 
   return (
     <>
@@ -209,24 +224,23 @@ const ProductList = () => {
                 <tr>
                   <th className="text-center">Sr No</th>
                   <th className="text-center">Project Name</th>
-                  <th className="text-center">HSN</th>
-                  <th className="text-center">Gst Percentage</th>
+                  <th className="text-center">Start Date </th>
+                  <th className="text-center">End Date</th>
                   <th className="text-center">Status</th>
                   <th className="text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {productListData?.map((row, idx) => (
+                {dataMap?.map((row, idx) => (
                   <tr key={idx}>
                     <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
-                    <td className="text-center">{row.productName}</td>
-                    <td className="text-center">{row.hsn}</td>
-                    <td className="text-center">{row.gstPercentage}</td>
+                    <td className="text-center">{row.projectName}</td>
+                    <td className="text-center">{'22-05-2025'}</td>
+                    <td className="text-center">{'27-06-2026'}</td>
 
                     <td className="text-center">
-                      <Tooltip title={row.status ? 'Active' : 'Deactive'}>
-                        {row.status ? 'Active' : 'Deactive'}
-                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === true} />
+                      <Tooltip title={row.status}>
+                        {row.status}
                       </Tooltip>
                     </td>
                     <td className="text-center">
@@ -244,12 +258,12 @@ const ProductList = () => {
                         {hasPermission(permissions, 'Model Stock', 'Can View') && (
                           <Tooltip title="Add Model">
                             <button
-                              style={{ padding: '4px 8px', fontSize: '12px', height: '28px', width: '28px', background: "#ffaa33" }}
-                              onClick={() => openModelList(row)}
+                              style={{ background: "#ffaa33" }}
+                              onClick={() => projectDetailsBtn()}
                               type="button"
                               className="btn-sm btn text-white"
                             >
-                              <i className="fa-solid fa-layer-group"></i>
+                              More Info
                             </button>
                           </Tooltip>
                         )}
@@ -263,9 +277,9 @@ const ProductList = () => {
           </div>
 
           <div className="d-flex justify-content-end">
-            {totalCount > pageSize && (
+            {/* {totalCount > pageSize && (
               <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
-            )}
+            )} */}
           </div>
         </div>
       </div>

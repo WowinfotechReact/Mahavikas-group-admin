@@ -547,7 +547,7 @@ const SalesOrderList = () => {
                                                 )}
                                                 <Tooltip title={"Sales Order Report"}>
 
-                                                    <button className='btn text-white btn-sm' style={{ background: '#9aa357' }} onClick={() => TaxInvoiceBtnClick(value)}>Sales Order Report</button>
+                                                    <button className='btn text-white btn-sm' style={{ background: '#ff7d34' }} onClick={() => TaxInvoiceBtnClick(value)}>Sales Order Report</button>
                                                 </Tooltip>
                                                 {hasPermission(permissions, 'Invoice', 'Can View') && (
                                                     <Tooltip title="Download PO">

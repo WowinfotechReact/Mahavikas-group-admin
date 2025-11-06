@@ -40,187 +40,57 @@ const MasterStateList = () => {
     stateName: null,
     Action: null
   });
-
- 
-  useEffect(() => {
-    // debugger
-    if (isAddUpdateActionDone) {
-      GetMasterStateListData(1, null, toDate, fromDate);
-      setSearchKeyword('')
-      setSortingDirection(null);
-    }
-    setIsAddUpdateActionDone(false);
-  }, [isAddUpdateActionDone]);
-
-  useEffect(() => {
-    GetMasterStateListData(1, null, toDate, fromDate);
-  }, [setIsAddUpdateActionDone]);
-
- 
-
-  const GetMasterStateListData = async (pageNumber, searchKeywordValue, toDate, fromDate, sortValue, StateSortType) => {
-    // debugger
-    setLoader(true);
-    try {
-      const data = await MasterStatGetStateList({
-        pageSize,
-        pageNo: pageNumber - 1, // Page numbers are typically 0-based in API calls
-        searchKeyword: searchKeywordValue === undefined ? searchKeyword : searchKeywordValue,
-        toDate: toDate ? dayjs(toDate).format('YYYY-MM-DD') : null,
-        fromDate: fromDate ? dayjs(fromDate).format('YYYY-MM-DD') : null,
-        sortingDirection: sortValue === undefined ? sortingDirection : sortValue,
-        sortingColumnName: sortType == '' ? StateSortType : sortType || null,
-        userKeyID: user.userKeyID
-      });
-
-      if (data) {
-        if (data?.data?.statusCode === 200) {
-          setLoader(false);
-          if (data?.data?.responseData?.data) {
-            const MasterStateListData = data.data.responseData.data;
-            const totalItems = data.data?.totalCount; // const totalItems = 44;
-            setTotalCount(totalItems);
-            const totalPages = Math.ceil(totalItems / pageSize);
-            setTotalPage(totalPages);
-            setTotalRecords(MasterStateListData.length);
-            setStateListData(MasterStateListData);
-          }
-        } else {
-          setErrorMessage(data?.data?.errorMessage);
-          setLoader(false);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-      setLoader(false);
-    }
-  };
-
-  const closeAllModal = () => {
-    setShowSuccessModal(false);
-  };
-  
-  const handleSearch = (e) => {
-    let searchKeywordValue = e.target.value;
-    const trimmedValue = searchKeywordValue.replace(/^\s+/g, '');
-    const capitalizedValue = trimmedValue.charAt(0).toUpperCase() + trimmedValue.slice(1).toLowerCase();
-    if (searchKeywordValue.length === 1 && searchKeywordValue.startsWith(' ')) {
-      searchKeywordValue = searchKeywordValue.trimStart();
-      return;
-    }
-    setSearchKeyword(capitalizedValue);
-    GetMasterStateListData(1, capitalizedValue, toDate, fromDate);
-  };
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    GetMasterStateListData(pageNumber, null, toDate, fromDate);
-  };
-
   const addMasterStateBtnClick = () => {
     setModelRequestData({
-      ...modelRequestData,
-      Action: null,
       stateID: null,
-      userKeyID: null
+      stateName: null,
+      Action: null
     });
     setOpenMasterStateModal(true);
-  };
-  const EditMasterStateBtnClick = (row) => {
-    setModelRequestData({
-      ...modelRequestData,
-      Action: 'Update',
-      stateID: row.stateID
-    });
-    setOpenMasterStateModal(true);
-  };
+  }
 
-  const handleStatusChange = (row) => {
-    setStateChangeStatus(row); // You can set only relevant data if needed
-    setShowStatusChangeModal(true);
-  };
-
-  const confirmStatusChange = async (row, user) => {
-    try {
-      const { stateID } = row; // Destructure to access only what's needed
-      const response = await ChangeStateStatus(stateID, user.userKeyID);
-
-      if (response && response.data.statusCode === 200) {
-        setShowStatusChangeModal(false);
-        setStateChangeStatus(null);
-        GetMasterStateListData(currentPage, null, toDate, fromDate);
-        setShowSuccessModal(true);
-        setModelAction('Installation status changed successfully.');
-      } else {
-        console.error(response?.data?.errorMessage);
-        setShowSuccessModal(true);
-        setModelAction('Failed to change employee status.');
-      }
-    } catch (error) {
-      console.error('Error changing employee status:', error);
-      setShowSuccessModal(true);
-      setModelAction('An error occurred while changing the employee status.');
-    }
-  };
-
-  const handleSort = (currentSortDirection, StateSortType) => {
-    const newSortValue = currentSortDirection === 'asc' ? 'desc' : 'asc';
-
-    if (StateSortType === 'stateName') {
-      setSortingDirection(newSortValue);
-      setSortDirectionObj({
-        ...sortDirectionObj,
-        ServiceNameSort: newSortValue
-      });
-      setCurrentPage(1);
-      GetMasterStateListData(1, searchKeyword, toDate, fromDate, newSortValue, StateSortType);
-    } else if (StateSortType === 'ProfessionType') {
-      setSortingDirection(newSortValue);
-      setSortDirectionObj({
-        ...sortDirectionObj,
-        ProfessionTypeSort: newSortValue
-      });
-      setCurrentPage(1);
-      GetMasterStateListData(1, searchKeyword, toDate, fromDate, newSortValue, StateSortType);
-    }
-  };
-
+  const empData = [
+    { stateName: 'MH' },
+    { stateName: 'Himchal Pradesh' },
+  ]
   return (
     <>
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           {/* Top controls */}
           <div className="d-flex justify-content-between align-items-center mb-1">
-      <h5 className="m-0">Installation</h5>
-      <button
-    onClick={() => addMasterStateBtnClick()}
-    className="btn btn-primary btn-sm d-inline d-sm-none"
-  >
-    <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
-    <span className="d-inline d-sm-none">  Add</span>
-  </button>
-    </div>
-    <div className="d-flex justify-content-between align-items-center mb-1">
-      <input
-        type="text"
-        className="form-control "
-        placeholder="Search Installation"
-        style={{ maxWidth: "350px" }}
-        value={searchKeyword}
-        onChange={(e) => {
-          handleSearch(e);
-        }}
-      />
-      <Tooltip title="Add Installation">
-      <button
-    onClick={() => addMasterStateBtnClick()}
-    className="btn btn-primary btn-sm d-none d-sm-inline"
-  >
-    <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
-    <span className="d-none d-sm-inline"> Add Installation</span>
-  </button>
-      </Tooltip>
-    </div>
+            <h5 className="m-0">State</h5>
+
+            <button
+              onClick={() => addMasterStateBtnClick()}
+              className="btn btn-primary btn-sm d-inline d-sm-none"
+            >
+              <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
+              <span className="d-inline d-sm-none">  Add</span>
+            </button>
+          </div>
+          <div className="d-flex justify-content-between align-items-center mb-1">
+            <input
+              type="text"
+              className="form-control "
+              placeholder="Search State"
+              style={{ maxWidth: "350px" }}
+              value={searchKeyword}
+              onChange={(e) => {
+                handleSearch(e);
+              }}
+            />
+            <Tooltip title="Add State">
+              <button
+                onClick={() => addMasterStateBtnClick()}
+                style={{ background: '#ffaa33' }} className="btn text-white  btn-sm d-none d-sm-inline"
+
+              >
+                <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
+                <span className="d-none d-sm-inline"> Add State</span>
+              </button>
+            </Tooltip>
+          </div>
 
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
@@ -229,7 +99,7 @@ const MasterStateList = () => {
                 <tr>
                   <th className="text-center">Sr No</th>
                   <th className="text-center">
-                    Installation Name
+                    State Name
                     {/* {sortDirectionObj.ServiceNameSort === "desc" ? (
     <i
       onClick={() => handleSort("desc", "stateName")}
@@ -250,8 +120,8 @@ const MasterStateList = () => {
                 </tr>
               </thead>
               <tbody>
-                {stateListData?.map((row, idx) => (
-                  <tr key={idx}>
+                {empData?.map((row, idx) => (
+                  <tr className='text-nowrap' key={idx}>
                     <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
                     <td className="text-center">{row.stateName}</td>
                     <td className="text-center">
@@ -262,8 +132,9 @@ const MasterStateList = () => {
                     </td>
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                     <td className="text-center">
-                      <Tooltip title="Update Installation">
+                      <Tooltip title="Update State">
                         <button
+                          disabled
                           style={{
                             padding: '4px 8px', // Adjust padding for smaller size
                             fontSize: '12px', // Optional: smaller font size
@@ -282,12 +153,9 @@ const MasterStateList = () => {
                 ))}
               </tbody>
             </table>
-            {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />}
           </div>
           <div className="d-flex justify-content-end ">
-            {totalCount > pageSize && (
-              <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
-            )}
+
           </div>
         </div>
       </div>

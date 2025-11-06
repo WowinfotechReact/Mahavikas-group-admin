@@ -346,7 +346,7 @@ const CallDetailsJourney = () => {
                         </div>
                   </div>
                   <div className="d-flex justify-content-end mt-4">
-                        <button onClick={handleDownload} className="btn text-white" style={{ background: '#9aa357' }}>
+                        <button onClick={handleDownload} className="btn text-white" style={{ background: '#ff7d34' }}>
                               Download & Print
                         </button>
                   </div>

@@ -682,7 +682,7 @@ const CallRegistrationAddUpdateModal = ({ show, onHide, isAddUpdateActionDone, s
                     <Button variant="secondary" onClick={onHide}>
                         Close
                     </Button>
-                    <button style={{ background: '#9aa357' }} className="btn text-white text-center" onClick={() => AddStateBtnClick()}>
+                    <button style={{ background: '#ff7d34' }} className="btn text-white text-center" onClick={() => AddStateBtnClick()}>
                         Submit
                     </button>
                 </Modal.Footer>

@@ -4,6 +4,9 @@ import SuccessPopupModal from 'component/SuccessPopupModal';
 import { AddUpdateProductApi, GetProductModel } from 'services/Product/ProductApi';
 import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
+import DatePicker from 'react-date-picker';
+import 'react-calendar/dist/Calendar.css';
+import 'react-date-picker/dist/DatePicker.css';
 
 const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
   const [modelAction, setModelAction] = useState('');
@@ -119,7 +122,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
         <Modal.Header closeButton>
           <Modal.Title>
             <h3 className="text-center">
-              {modelRequestData?.Action !== null ? 'Update Product' : modelRequestData?.Action === null ? 'Add Product' : ''}
+              {modelRequestData?.Action !== null ? 'Update Product' : modelRequestData?.Action === null ? 'Add Project' : ' Update Project'}
             </h3>
           </Modal.Title>
         </Modal.Header>
@@ -129,14 +132,14 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
               {/* Product Name */}
               <div className="mb-3">
                 <label htmlFor="ProductName" className="form-label">
-                  Product Name <span style={{ color: 'red' }}>*</span>
+                  Project Name <span style={{ color: 'red' }}>*</span>
                 </label>
                 <input
                   maxLength={80}
                   type="text"
                   className="form-control"
                   id="ProductName"
-                  placeholder="Enter Product Name"
+                  placeholder="Enter Project Name"
                   aria-describedby="Product"
                   value={productObj.productName}
                   onChange={(e) => {
@@ -167,14 +170,14 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
               {/* HSN */}
               <div className="mb-3">
                 <label htmlFor="HSN" className="form-label">
-                  HSN
+                  Project Description
                 </label>
-                <input
-                  maxLength={20}
+                <textarea
+                  maxLength={2000}
                   type="text"
                   className="form-control"
                   id="HSN"
-                  placeholder="Enter HSN Code"
+                  placeholder="Enter Project Description"
                   value={productObj.hsn}
                   onChange={(e) => {
                     const cleaned = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
@@ -186,20 +189,28 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
               {/* GST Percentage */}
               <div className="mb-3">
                 <label htmlFor="GstPercentage" className="form-label">
-                  GST %
+                  Start Date
                 </label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="GstPercentage"
-                  placeholder="Enter GST %"
-                  value={productObj.gstPercentage}
-                  onChange={(e) => {
-                    let value = e.target.value;
-                    if (value === '' || /^\d{0,3}(\.\d{0,2})?$/.test(value)) {
-                      setProductObj((prev) => ({ ...prev, gstPercentage: value }));
-                    }
-                  }}
+                <DatePicker
+
+
+                  label="From Date"
+                  format="dd/MM/yyyy"
+                  clearIcon={null}
+                  popperPlacement="bottom-start"
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="GstPercentage" className="form-label">
+                  End Date
+                </label>
+                <DatePicker
+
+
+                  label="From Date"
+                  format="dd/MM/yyyy"
+                  clearIcon={null}
+                  popperPlacement="bottom-start"
                 />
               </div>
             </div>

@@ -54,7 +54,7 @@ const TaxInvoiceReport = () => {
 
 
                   <div className="container my-3">
-                        <button className="btn text-white mb-1" style={{ background: '#9aa357' }} onClick={handlePreviewPDF}>
+                        <button className="btn text-white mb-1" style={{ background: '#ff7d34' }} onClick={handlePreviewPDF}>
                               Download Report
                         </button>
 

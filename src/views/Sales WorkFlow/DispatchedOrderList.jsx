@@ -618,7 +618,7 @@ const DispatchedOrderList = () => {
 
                                                                               <Tooltip title={"Delivery Challan"}>
 
-                                                                                    <button className='btn text-white btn-sm' style={{ background: '#9aa357' }} onClick={() => TaxInvoiceBtnClick(value)}>Delivery Challan</button>
+                                                                                    <button className='btn text-white btn-sm' style={{ background: '#ff7d34' }} onClick={() => TaxInvoiceBtnClick(value)}>Delivery Challan</button>
                                                                               </Tooltip>
                                                                               {hasPermission(permissions, 'Purchase Order', 'Can View') && (
                                                                                     <Tooltip title="Download PO">

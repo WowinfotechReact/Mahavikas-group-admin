@@ -493,13 +493,13 @@ const ReadyForDispatchList = () => {
                                                                               {hasPermission(permissions, "Ready for dispatch", "Can Insert") && (
                                                                                     <Tooltip title={"Ready For Dispatch "}>
 
-                                                                                          <button className='btn text-white btn-sm' style={{ background: '#9aa357' }} onClick={() => handleStatusChange(value)}>Dispatch</button>
+                                                                                          <button className='btn text-white btn-sm' style={{ background: '#ff7d34' }} onClick={() => handleStatusChange(value)}>Dispatch</button>
                                                                                     </Tooltip>
                                                                               )}
                                                                               {/* {hasPermission(permissions, "Ready for dispatch", "Can View") && ( */}
                                                                               <Tooltip title={"Sales Order Report"}>
 
-                                                                                    <button className='btn text-white btn-sm' style={{ background: '#9aa357' }} onClick={() => TaxInvoiceBtnClick(value)}>Sales Order Report</button>
+                                                                                    <button className='btn text-white btn-sm' style={{ background: '#ff7d34' }} onClick={() => TaxInvoiceBtnClick(value)}>Sales Order Report</button>
                                                                               </Tooltip>
                                                                               {/* )} */}
 

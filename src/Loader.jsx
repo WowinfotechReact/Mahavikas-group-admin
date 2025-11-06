@@ -37,13 +37,7 @@ const Loader = () => {
       }}
       open={true}
     >
-      <div className="battery-loader">
-        <div className="battery-cap" />
-        <div className="battery-body">
-          <div className="charge" />
-        </div>
-        <span className="loading-text">{professionalMessages[msgIndex]}</span>
-      </div>
+      <span class="loader"></span>
     </Backdrop>
   );
 };

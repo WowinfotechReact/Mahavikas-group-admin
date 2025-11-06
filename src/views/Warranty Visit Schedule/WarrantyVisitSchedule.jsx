@@ -320,7 +320,7 @@ const WarrantyVisitSchedule = () => {
                                                                                                       width: "10px",
                                                                                                       height: "10px",
                                                                                                       borderRadius: "50%",
-                                                                                                      backgroundColor: "#9aa357",
+                                                                                                      backgroundColor: "#ff7d34",
                                                                                                       zIndex: 1,
                                                                                                 }}
                                                                                           />
@@ -333,7 +333,7 @@ const WarrantyVisitSchedule = () => {
                                                                                                             left: "50%",
                                                                                                             width: "100%",
                                                                                                             height: "2px",
-                                                                                                            backgroundColor: "#9aa357",
+                                                                                                            backgroundColor: "#ff7d34",
                                                                                                             zIndex: 0,
                                                                                                       }}
                                                                                                 />

@@ -135,7 +135,7 @@ const SerialNoProductQtyWiseModal = ({ show, onHide, setIsAddUpdateActionDone, o
                         </div>
 
                         <div className="col-md-2 d-flex align-items-end">
-                            <button className='btn text-white' style={{ background: '#9aa357' }} onClick={handleAddSerial} disabled={remainingQty <= 0}>
+                            <button className='btn text-white' style={{ background: '#ff7d34' }} onClick={handleAddSerial} disabled={remainingQty <= 0}>
                                 Add
                             </button>
                         </div>

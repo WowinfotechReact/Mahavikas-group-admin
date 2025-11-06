@@ -928,7 +928,7 @@ const DispatchedLogisticsModal = ({ open, onClose, modelRequestData }) => {
                                                                               rel="noopener noreferrer"
                                                                               className="btn btn-sm text-white me-2"
                                                                               title="View  PDF"
-                                                                              style={{ background: '#9aa357' }}
+                                                                              style={{ background: '#ff7d34' }}
                                                                         >
                                                                               <i className="fa-solid fa-eye"></i>
                                                                         </a>

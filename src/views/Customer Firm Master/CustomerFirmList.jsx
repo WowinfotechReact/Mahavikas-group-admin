@@ -15,10 +15,14 @@ import AddUpdateCustomerFirmModal from './AddUpdateCustomerFirmModal';
 import { ChangeCustomerStatus, GetCustomerList } from 'services/CustomerStaff/CustomerStaffApi';
 import CustomerFirmViewModal from './CustomerFirmViewModal';
 import { hasPermission } from 'Middleware/permissionUtils';
+import { Link } from 'react-router-dom';
+import InstituteUserAddUpdateModal from 'views/Employee/InstituteUserAddUpdateModal';
 
 const CustomerFirmList = () => {
   const [stateChangeStatus, setStateChangeStatus] = useState('');
   const [openCustomerViewModal, setOpenCustomerViewModal] = useState(false);
+  const [showInstituteUserModal, setShowInstituteUserModal
+  ] = useState(false);
   const [showVehicleViewModal, setShowVehicleViewModal] = useState(false);
   const [imgModalTitle, setImgModalTitle] = useState('');
   const [imgModalShow, setImgModalShow] = useState(false);
@@ -141,6 +145,10 @@ const CustomerFirmList = () => {
     GetCustomerListData(1, capitalizedValue, toDate, fromDate);
   };
 
+  const instituteUserBtnClick = () => {
+    setShowInstituteUserModal(true)
+  }
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     GetCustomerListData(pageNumber, null, toDate, fromDate);
@@ -224,6 +232,12 @@ const CustomerFirmList = () => {
     });
     setShowVehicleViewModal(true);
   };
+
+  const newDataMap = [
+    { name: 'Kilbil School Satpur', project: 'Primary Teacher Bharti 2025', state: 'MH', Dis: 'Nashik', Taluka: 'Nashik' },
+    { name: 'Kilbil School Gangapur Road', project: 'Secondary & Higher Secondary Teacher Bharti 2025', state: 'MH', Dis: 'Pune', Taluka: 'Shivaji Nagar' },
+    { name: 'Kilbil School Trimbkeshwar', project: 'Primary Teacher Bharti 2025', state: 'MH', Dis: 'Hingoli', Taluka: 'airoli' },
+  ]
   return (
     <>
       {/* <Sidebar drawerOpen={true} drawerToggle={() => {}} modalOpen={show} /> */}
@@ -232,8 +246,8 @@ const CustomerFirmList = () => {
           {/* Top controls */}
 
           <div className="d-flex justify-content-between align-items-center mb-1">
-            <div className="flex-grow-1 text-center">
-              <h5 className="mb-0">Customer/Firm Master</h5>
+            <div className="flex-grow-1">
+              <h5 className="mb-0">Institute Master</h5>
             </div>
             <div className="position-absolute end-0 me-2">
               <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn btn-sm d-inline d-sm-none">
@@ -287,62 +301,62 @@ const CustomerFirmList = () => {
               <thead style={{ position: 'sticky', top: -1, zIndex: 1 }}>
                 <tr className="text-nowrap">
                   <th className="text-center">Sr No.</th>
-                  <th className="text-center">Customer Name/Firm Info</th>
+                  <th className="text-center"> Institute Name</th>
 
-                  <th className="text-center">GST Number</th>
-                  <th className="text-center">Vendor Code</th>
-                  <th className="text-center">Status</th>
+                  <th className="text-center">Project Name</th>
+                  <th className="text-center">State</th>
+                  <th className="text-center">District</th>
+                  <th className="text-center">Taluka</th>
+                  <th className="text-center">Add User</th>
                   <th className="text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {vehicleListData?.map((row, idx) => (
+                {newDataMap?.map((row, idx) => (
                   <tr className='text-nowrap' key={idx}>
                     <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
                     <td style={{ minWidth: "250px", textAlign: "center", lineHeight: "1.2" }}>
                       {/* Customer Name */}
                       <div style={{ fontWeight: 600, fontSize: "14px", marginBottom: "2px", color: "#222" }}>
-                        {row.customerFirmName}
+                        {row.name}
                       </div>
 
                       {/* Phone and Email on the same line */}
-                      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "12px", color: "#555", gap: "10px" }}>
-                        <span style={{ display: "flex", alignItems: "center", gap: "3px", color: "#0d6efd" }}>
-                          📞 {row.mobileNumber}
-                        </span>
-                        <span style={{ display: "flex", alignItems: "center", gap: "3px", color: "#0d6efd" }}>
-                          ✉️ {row.emailID}
-                        </span>
-                      </div>
+
                     </td>
 
 
 
                     <td className="text-center" style={{ minWidth: "150px" }}>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", color: "#555" }}>
-                        <span style={{ marginRight: "5px", color: "#0d6efd" }}>🧾</span> {/* GST icon */}
-                        <span>{row.gstNumber}</span>
+                      <div >
+                        <>{row.project}</>
+                      </div>
+                    </td>
+                    <td className="text-center" style={{ minWidth: "150px" }}>
+                      <div >
+                        <>{row.state}</>
                       </div>
                     </td>
 
                     <td className="text-center" style={{ minWidth: "150px" }}>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", color: "#555" }}>
-                        <span style={{ marginRight: "5px", color: "#0d6efd" }}>🏷️</span> {/* Vendor Code icon */}
-                        <span>{row.vendorCode}</span>
+                      <div >
+                        <>{row.Dis}</>
+                      </div>
+                    </td>
+                    <td className="text-center" style={{ minWidth: "150px" }}>
+                      <div >
+                        <>{row.Taluka}</>
                       </div>
                     </td>
 
                     <td className="text-center">
-                      <Tooltip title={row.status === true ? 'Active' : 'Deactive'}>
-                        {row.status === true ? 'Active' : 'Deactive'}
-                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === true} />
-                      </Tooltip>
+                      <Link onClick={instituteUserBtnClick}>Add User</Link>
                     </td>
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                     <td className="text-center">
                       <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
                         {hasPermission(permissions, 'Customer', 'Can Update') && (
-                          <Tooltip title="Update Customer / Firm">
+                          <Tooltip title="Update Institute">
                             <button
                               style={{
                                 padding: '4px 8px',
@@ -359,22 +373,7 @@ const CustomerFirmList = () => {
                           </Tooltip>
                         )}
 
-                        <Tooltip title="View Customer / Firm">
-                          <button
-                            style={{
-                              padding: '4px 8px',
-                              fontSize: '12px',
-                              height: '28px',
-                              width: '28px',
-                              background: '#ffaa33', color: 'white'
-                            }}
-                            onClick={() => customerViewModalBtnClick(row)}
-                            type="button"
-                            className="btn-sm btn"
-                          >
-                            <i className="fa-solid fa-eye"></i>
-                          </button>
-                        </Tooltip>
+
                       </div>
                     </td>
                   </tr>
@@ -386,9 +385,9 @@ const CustomerFirmList = () => {
 
           {/* Pagination */}
           <div className="d-flex justify-content-end ">
-            {totalCount > pageSize && (
+            {/* {totalCount > pageSize && (
               <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
-            )}
+            )} */}
           </div>
         </div>
       </div>
@@ -424,6 +423,13 @@ const CustomerFirmList = () => {
         <CustomerFirmViewModal
           show={openCustomerViewModal}
           onHide={() => setOpenCustomerViewModal(false)}
+          modelRequestData={modelRequestData}
+        />
+      )}
+      {showInstituteUserModal && (
+        <InstituteUserAddUpdateModal
+          show={showInstituteUserModal}
+          onHide={() => setShowInstituteUserModal(false)}
           modelRequestData={modelRequestData}
         />
       )}

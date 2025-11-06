@@ -83,12 +83,12 @@
 }
 
 .tab-content-scroll::-webkit-scrollbar-thumb {
-  background: #9AA357; /* Blue scrollbar */
+  background: #ff7d34; /* Blue scrollbar */
   border-radius: 4px;
 }
 
 .tab-content-scroll::-webkit-scrollbar-thumb:hover {
-  background: #9AA357; /* Darker blue on hover */
+  background: #ff7d34; /* Darker blue on hover */
 }
 
 .css-19ve13 {
@@ -520,7 +520,7 @@ logout-confirmation-modal {
 
 /* Make the active tab blue */
 .nav-tabs .nav-link.active {
-  color: #9AA357 !important;
+  color: #ff7d34 !important;
   font-weight: bold;
 } 
 @keyframes blink {
@@ -565,7 +565,7 @@ logout-confirmation-modal {
 }
 
 .table th {
-  background-color: #9AA357;
+  background-color: #ff7d34;
   color: #fff;
 }
 
@@ -598,7 +598,7 @@ logout-confirmation-modal {
 }
 
 .custom-btn {
-  background-color: #9AA357 !important;
+  background-color: #ff7d34 !important;
   color: #E6332A !important;
   border: none;
 }
@@ -633,15 +633,15 @@ logout-confirmation-modal {
 }
 
 .custom-pagination .page-link {
-  color: #9aa357;
-  border-color: #9aa357;
+  color: #ff7d34;
+  border-color: #ff7d34;
 }
 
 .custom-pagination .page-link:hover,
 .custom-pagination .page-item.active .page-link {
-  background-color: #9aa357;
+  background-color: #ff7d34;
   color: #fff;
-  border-color: #9aa357;
+  border-color: #ff7d34;
 }
 
 

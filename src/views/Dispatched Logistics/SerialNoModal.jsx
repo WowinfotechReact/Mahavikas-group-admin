@@ -100,7 +100,7 @@ function SerialNoModal({ open, onClose, product, productSerials, setProductSeria
 
 
                               <DialogActions>
-                                    <button onClick={handleDone} className="text-white btn " style={{ background: '#9aa357' }} >
+                                    <button onClick={handleDone} className="text-white btn " style={{ background: '#ff7d34' }} >
                                           Done
                                     </button>
                               </DialogActions>

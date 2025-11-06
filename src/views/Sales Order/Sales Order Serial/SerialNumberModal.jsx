@@ -95,7 +95,7 @@ const SerialNumberModal = ({ show, onHide, product, qty, onSave }) => {
                                     value={qtyInput}
                                     onChange={(e) => setQtyInput(Number(e.target.value))}
                               />
-                              <button style={{ background: "#9aa357" }}
+                              <button style={{ background: "#ff7d34" }}
                                     className="text-white btn" onClick={handleAddBatch}>
                                     Add
                               </button>
@@ -141,7 +141,7 @@ const SerialNumberModal = ({ show, onHide, product, qty, onSave }) => {
                         <Button variant="secondary" onClick={onHide}>
                               Cancel
                         </Button>
-                        <button style={{ background: "#9aa357" }}
+                        <button style={{ background: "#ff7d34" }}
                               className="text-white btn" onClick={handleSave}>
                               OK
                         </button>

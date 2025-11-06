@@ -237,12 +237,13 @@ const AddUpdateMasterDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, 
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={onHide}>
-            Close
-          </Button>
-          <Button type="submit" className="btn btn-primary text-center" onClick={() => AddStateBtnClick()}>
+
+          <button
+            style={{ background: '#ffaa33' }} className="btn text-white  btn-sm d-none d-sm-inline"
+
+            onClick={() => AddStateBtnClick()}>
             Submit
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
       {showSuccessModal && (

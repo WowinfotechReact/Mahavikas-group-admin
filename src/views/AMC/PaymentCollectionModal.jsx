@@ -323,7 +323,7 @@ const PaymentCollectionModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                               <Button variant="secondary" onClick={onHide}>
                                     Close
                               </Button>
-                              <button type="submit" className="btn text-white text-center" style={{ background: '#9aa357' }} onClick={() => AddStateBtnClick()}>
+                              <button type="submit" className="btn text-white text-center" style={{ background: '#ff7d34' }} onClick={() => AddStateBtnClick()}>
                                     Submit
                               </button>
                         </Modal.Footer>

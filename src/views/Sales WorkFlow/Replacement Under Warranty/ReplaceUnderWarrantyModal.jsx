@@ -144,7 +144,7 @@ const ReplaceUnderWarrantyModal = ({ show, onHide, setIsAddUpdateActionDone, onS
                                                                                                             btnClickReplace(item, serial);
                                                                                                       }}
                                                                                                       style={{
-                                                                                                            color: "#9aa357",
+                                                                                                            color: "#ff7d34",
                                                                                                             fontSize: "0.85rem",
                                                                                                             fontWeight: 500,
                                                                                                             marginLeft: "12px",
