@@ -2,6 +2,7 @@
 import NavigationOutlinedIcon from '@mui/icons-material/NavigationOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
@@ -79,7 +80,6 @@ const icons = {
   FormatQuoteIcon: FormatQuoteIcon,
   PublishedWithChangesIcon: PublishedWithChangesIcon,
   PersonIcon: PersonIcon,
-  DesignServicesIcon: DesignServicesIcon,
   HandymanIcon: HandymanIcon,
   BedroomParentIcon: BedroomParentIcon,
   ManageAccountsIcon: ManageAccountsIcon,
@@ -102,6 +102,7 @@ const icons = {
   LocalShippingIcon: LocalShippingIcon,
   SupervisedUserCircleIcon: SupervisedUserCircleIcon,
   DevicesOtherIcon: DevicesOtherIcon,
+  DesignServicesIcon: DesignServicesIcon,
   GroupIcon: GroupIcon,
   ShoppingCartIcon: ShoppingCartIcon,
   SystemUpdateIcon: SystemUpdateIcon,
@@ -110,6 +111,7 @@ const icons = {
   TimeToLeaveIcon: TimeToLeaveIcon,
   ViewCarouselIcon: ViewCarouselIcon,
   PointOfSaleIcon: PointOfSaleIcon,
+  HomeRepairServiceIcon: HomeRepairServiceIcon,
   EngineeringIcon: EngineeringIcon,
   ExploreIcon: ExploreIcon,
   AddIcCallIcon: AddIcCallIcon,
@@ -222,14 +224,7 @@ export default {
               url: '/institute-wise-attendance-report'
             },
 
-            // {
-            //   id: 'bloodGroup',
-            //   title: 'Blood Group',
-            //   moduleName: 'Blood Group',
-            //   type: 'item',
-            //   url: '/blood-group',
-            //   icon: icons['BloodtypeIcon']
-            // },
+
 
           ]
         },
@@ -275,14 +270,30 @@ export default {
               icon: icons['StoreIcon'],
               url: '/master-village'
             },
-            // {
-            //   id: 'bloodGroup',
-            //   title: 'Blood Group',
-            //   moduleName: 'Blood Group',
-            //   type: 'item',
-            //   url: '/blood-group',
-            //   icon: icons['BloodtypeIcon']
-            // },
+            {
+              id: 'bloodGroup',
+              title: 'Designation',
+              moduleName: 'Blood Group',
+              type: 'item',
+              url: '/designation',
+              icon: icons['DesignServicesIcon']
+            },
+            {
+              id: 'bloodGroup',
+              title: 'Services',
+              moduleName: 'Blood Group',
+              type: 'item',
+              url: '/master-service',
+              icon: icons['HomeRepairServiceIcon']
+            },
+            {
+              id: 'bloodGroup',
+              title: 'Permission',
+              moduleName: 'Blood Group',
+              type: 'item',
+              url: '/master-role-type',
+              icon: icons['KeyIcon']
+            },
 
           ]
         },

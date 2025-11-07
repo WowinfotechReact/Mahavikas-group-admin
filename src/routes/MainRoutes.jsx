@@ -90,6 +90,7 @@ import MasterDistrictList from 'views/Master Crud/Master District/MasterDistrict
 import MasterStateList from 'views/Master Crud/Master State/MasterStateList';
 import ProjectWiseAttendanceReport from 'views/Reports/ProjectWiseAttendanceReport';
 import InstituteWiseAttendanceReport from 'views/Reports/InstituteWiseAttendanceReport';
+import MasterServiceList from 'views/Master Crud/Master Service/MasterServiceList';
 // const MasterZoneList = Loadable(lazy(() => import('views/Master Crud/Master Zone/MasterZoneList')));
 // const MasterDistrictMap = Loadable(lazy(() => import('views/Master Crud/Master Zone/MasterDistrictMap')));
 const LeadList = Loadable(lazy(() => import('views/Lead/LeadList')));
@@ -309,6 +310,8 @@ const MainRoutes = {
         </Suspense>
       )
     },
+
+
     {
       path: '/master-district',
       element: (
@@ -618,6 +621,14 @@ const MainRoutes = {
       element: (
         <Suspense fallback={<Loader />}>
           <AllCustomerLeadReport />
+        </Suspense>
+      )
+    },
+    {
+      path: '/master-service',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <MasterServiceList />
         </Suspense>
       )
     },

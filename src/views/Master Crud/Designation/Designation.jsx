@@ -184,6 +184,13 @@ const Designation = () => {
     }
   };
 
+  const designationData = [
+    { designation: 'MTS' },
+    { designation: 'Teaching' },
+    {
+      designation: 'Nursing'
+    },
+  ]
   return (
     <>
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
@@ -191,7 +198,7 @@ const Designation = () => {
           {/* Top controls */}
 
           <div className="d-flex justify-content-between align-items-center mb-1">
-            <div className="flex-grow-1 text-center">
+            <div className="flex-grow-1 ">
               <h5 className="mb-0">Designation</h5>
             </div>
             <div className="position-absolute end-0 me-2">
@@ -251,10 +258,10 @@ const Designation = () => {
                 </tr>
               </thead>
               <tbody>
-                {designationListData?.map((row, idx) => (
+                {designationData?.map((row, idx) => (
                   <tr key={idx}>
                     <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
-                    <td className="text-center">{row.designationName}</td>
+                    <td className="text-center">{row.designation}</td>
                     <td className="text-center">
                       <Tooltip title={row.status === true ? 'Active' : 'Deactive'}>
                         {row.status === true ? 'Active' : 'Deactive'}

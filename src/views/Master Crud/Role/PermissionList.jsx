@@ -74,7 +74,7 @@ const PermissionList = () => {
                 <div className="card-body p-2 bg-white shadow-md rounded-lg">
                     {/* Top controls */}
                     <div className="d-flex justify-content-between align-items-center mb-1">
-                        <h5 className="m-0">Role Type</h5>
+                        <h5 className="m-0">Permission</h5>
                         <button
                             onClick={() => GrantPermission()}
                             className="btn btn-primary btn-sm d-inline d-sm-none"
@@ -123,7 +123,7 @@ const PermissionList = () => {
                             <tbody className='text-center'>
                                 <tr >
                                     <td>1</td>
-                                    <td>Super Admin</td>
+                                    <td>MTS</td>
                                     {/* <td>John Doe</td> */}
                                     <td>Disable<Android12Switch
                                         disabled
@@ -137,7 +137,7 @@ const PermissionList = () => {
                                 </tr>
                                 <tr>
                                     <td>2</td>
-                                    <td> Admin</td>
+                                    <td> Nursing</td>
                                     {/* <td>Jane Smith</td> */}
                                     <td>Enable<Android12Switch
                                         disabled
@@ -151,7 +151,7 @@ const PermissionList = () => {
                                 </tr>
                                 <tr>
                                     <td>3</td>
-                                    <td>CRM</td>
+                                    <td>Teaching</td>
                                     {/* <td>Jane Smith</td> */}
                                     <td>Enable<Android12Switch
                                         disabled
@@ -161,34 +161,6 @@ const PermissionList = () => {
 
                                     /></td>
                                     {/* <td><button class="btn btn-primary btn-sm" disabled>                          <i class="fa-solid fa-pen-to-square"></i>
-                                    </button></td> */}
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>Store</td>
-                                    {/* <td>Jane Smith</td> */}
-                                    <td>Disable<Android12Switch
-                                        disabled
-                                        style={{ padding: '8px' }}
-                                    // onClick={() => handleStatusChange(employee)}
-                                    // checked={employee.status === true}
-
-                                    /></td>
-                                    {/* <td><button class="btn btn-primary btn-sm" disabled>                          <i class="fa-solid fa-pen-to-square"></i>
-                                    </button></td> */}
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>Accountant</td>
-                                    {/* <td>Jane Smith</td> */}
-                                    <td>Enable<Android12Switch
-                                        disabled
-                                        style={{ padding: '8px' }}
-                                        // onClick={() => handleStatusChange(employee)}
-                                        checked={true}
-
-                                    /></td>
-                                    {/* <td><button class="btn btn-primary btn-sm " disabled>                          <i class="fa-solid fa-pen-to-square"></i>
                                     </button></td> */}
                                 </tr>
 
