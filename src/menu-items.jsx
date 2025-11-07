@@ -225,6 +225,14 @@ export default {
               icon: icons['CabinIcon'],
               url: '/institute-wise-attendance-report'
             },
+            {
+              id: 'Master',
+              title: 'Site Engineer Report',
+              moduleName: 'Customer',
+              type: 'item',
+              icon: icons['CabinIcon'],
+              url: '/site-engineer-report'
+            },
 
 
 
