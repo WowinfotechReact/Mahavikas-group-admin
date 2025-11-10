@@ -1,0 +1,38 @@
+.gov-dashboard .brand-logo {
+  font-size: 28px;
+}
+.gov-dashboard .avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.gov-dashboard .avatar.bg-warning {
+  background: #f59e0b;
+}
+.gov-dashboard .avatar.bg-danger {
+  background: #dc3545;
+}
+.gov-dashboard .avatar.bg-info {
+  background: #0ea5e9;
+}
+.gov-dashboard .avatar.bg-success {
+  background: #198754;
+}
+.gov-dashboard .hover-card {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.gov-dashboard .hover-card:focus,
+.gov-dashboard .hover-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  outline: none;
+}
+/* .card-body {
+      min-height: 1vh !important;
+} */

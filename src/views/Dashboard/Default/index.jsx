@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import Select from 'react-select';
 import { Fade } from "react-bootstrap"; // optional fade animation
-
+import './dash.css'
 import dayjs from 'dayjs';
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
@@ -39,98 +39,34 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { GetAdminDashboardCount } from '../../../services/dashboard/DashboardApi';
 
-// custom style
-const FlatCardBlock = styled((props) => <Grid item sm={6} xs={12} {...props} />)(({ theme }) => ({
-  padding: '25px 25px',
-  borderLeft: '1px solid' + theme.palette.background.default,
-  [theme.breakpoints.down('sm')]: {
-    borderLeft: 'none',
-    borderBottom: '1px solid' + theme.palette.background.default
-  },
-  [theme.breakpoints.down('md')]: {
-    borderBottom: '1px solid' + theme.palette.background.default
-  }
-}));
-
+import { FaUsers, FaProjectDiagram, FaUniversity, FaUserTie, FaDownload, FaCalendarAlt, FaSearch } from 'react-icons/fa';
+import AddUpdateEmployeeModal from 'views/Employee/AddUpdateEmployeeModal';
+import ProductAddUpdateModal from 'views/Product/ProductAddUpdateModal'
 // ==============================|| DASHBOARD DEFAULT ||============================== //
 
 const Default = () => {
+  const [isAddUpdateActionDone, setIsAddUpdateActionDone] = useState(false)
   const theme = useTheme();
   const { setLoader, user, companyID } = useContext(ConfigContext);
-
+  const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [showDateFilters, setShowDateFilters] = useState(false);
   const [dashboardCount, setDashboardCount] = useState([]);
+  const [openProductModal, setOpenProductModal] = useState(false);
 
   useEffect(() => {
     DashboardCountData(null, null);
   }, []);
+  const [modelRequestData, setModelRequestData] = useState({
+    Action: null,
+  })
 
-  const handleCalenderFilterChange = async (selectedOption) => {
-    setSelectedOption(selectedOption);
-    setToDate(null);
-    setFromDate(null);
-    setShowDateFilters(false);
-
-    let startDate;
-    let endDate;
-
-    switch (selectedOption.value) {
-      case CalenderFilterEnum.All:
-        startDate = null;
-        endDate = null;
-        break;
-      case CalenderFilterEnum.This_Week:
-        startDate = dayjs().startOf('week');
-        endDate = dayjs().endOf('week');
-
-        break;
-      case CalenderFilterEnum.Last_Week:
-        startDate = dayjs().subtract(1, 'week').startOf('week');
-        endDate = dayjs().subtract(1, 'week').endOf('week');
-        break;
-      case CalenderFilterEnum.This_Month:
-        startDate = dayjs().startOf('month');
-        endDate = dayjs().endOf('month');
-        break;
-      case CalenderFilterEnum.Last_Month:
-        startDate = dayjs().subtract(1, 'month').startOf('month');
-        endDate = dayjs().subtract(1, 'month').endOf('month');
-        break;
-      case CalenderFilterEnum.This_Quarter:
-        startDate = dayjs().startOf('quarter');
-        endDate = dayjs().endOf('quarter');
-        break;
-      case CalenderFilterEnum.Last_Quarter:
-        startDate = dayjs().subtract(1, 'quarter').startOf('quarter');
-        endDate = dayjs().subtract(1, 'quarter').endOf('quarter');
-        break;
-      case CalenderFilterEnum.This_6_Months:
-        startDate = dayjs().subtract(5, 'months').startOf('month');
-        endDate = dayjs().endOf('month');
-        break;
-      case CalenderFilterEnum.Last_6_Months:
-        startDate = dayjs().subtract(11, 'months').startOf('month');
-        endDate = dayjs().subtract(6, 'months').endOf('month');
-        break;
-      case CalenderFilterEnum.This_Year:
-        startDate = dayjs().startOf('year');
-        endDate = dayjs().endOf('year');
-        break;
-      case CalenderFilterEnum.Last_Year:
-        startDate = dayjs().subtract(1, 'year').startOf('year');
-        endDate = dayjs().subtract(1, 'year').endOf('year');
-        break;
-      case CalenderFilterEnum.Custom_Date_Range:
-        setShowDateFilters(true);
-        return; // Exit the function to avoid calling the API with undefined dates
-      default:
-        return;
-    }
-    // Call the API with the calculated date range
-    await DashboardCountData(startDate, endDate);
+  const addProductBtnClick = () => {
+    setModelRequestData({ Action: null, });
+    // setLastActionType('Add');
+    setOpenProductModal(true);
   };
 
   const handleToDateChange = (newValue) => {
@@ -221,34 +157,39 @@ const Default = () => {
     }
   };
   const navigate = useNavigate()
-  return (
-    <Grid container spacing={gridSpacing}>
 
-      <Grid sm={12} item>
-        <div
-          style={{
-            display: 'flex',
-            gap: '112px',
-            alignItems: 'center',
-            flexWrap: 'wrap'
-          }}
-        >
-          {' '}
-          <div>
-            <Select
-              options={CalenderFilter}
-              value={selectedOption}
-              onChange={handleCalenderFilterChange}
-              styles={{
-                container: (provided) => ({
-                  ...provided,
-                  width: '320px',
-                  minWidth: '320px'
-                })
-              }}
-            />
+  const VehicleAddBtnClicked = () => {
+
+    setModelRequestData({
+      ...modelRequestData,
+      employeeKeyID: null,
+      Action: null
+    });
+    setShowEmployeeModal(true);
+  };
+  const stats = [
+    { id: 1, title: 'Total Users', value: 23, icon: <FaUsers size={28} />, colorClass: 'bg-warning' },
+    { id: 2, title: 'Total Projects', value: 4, icon: <FaProjectDiagram size={28} />, colorClass: 'bg-danger', route: '/project' },
+    { id: 3, title: 'Total Institutes', value: 3, icon: <FaUniversity size={28} />, colorClass: 'bg-info', route: '/institute-master' },
+    { id: 4, title: 'Total Employees', value: 40, icon: <FaUserTie size={28} />, colorClass: 'bg-success', route: '/employee-list' }
+  ];
+  return (
+    <div className="gov-dashboard container-fluid py-4">
+      <header className="d-flex align-items-center justify-content-between mb-4">
+        <div className="d-flex align-items-center gap-3">
+          <div className="brand d-flex align-items-center gap-3">
+            <div className="brand-logo">🏛️</div>
+            <div>
+              <h4 className="mb-0">Gov Dashboard</h4>
+              <small className="text-muted">Company 1 — Administrative Panel</small>
+            </div>
           </div>
-          {showDateFilters && (
+        </div>
+
+
+        <div className="d-flex align-items-center gap-2">
+          <div className="input-group me-2">
+
             <div
               style={{
                 display: 'flex',
@@ -276,99 +217,139 @@ const Default = () => {
                 onChange={handleToDateChange}
                 clearIcon={null}
               />
-              <button className="btn btn-primary customBtn" onClick={handleClearDates}>
+              <button onClick={() => handleClearDates()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline ">
+
                 Clear
               </button>
             </div>
-          )}
+
+          </div>
+
+
+
+
+
         </div>
-      </Grid>
-
-      <Grid item xs={12}>
-        <div className="text-center mt-4">
-          <Fade in={show}>
-            <h6
-              className="fw-bold text-uppercase  "
-              style={{
-                fontSize: "1.8rem",
-                letterSpacing: "1.5px",
-                color: "#0d6efd",
-                textShadow: "0 0 8px rgba(13, 110, 253, 0.3)",
-                display: "inline-block",
-                position: "relative",
-                transition: "transform 0.3s ease, text-shadow 0.3s ease",
-                cursor: "default",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = "scale(1.05)";
-                e.target.style.textShadow = "0 0 12px rgba(13, 110, 253, 0.6)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = "scale(1)";
-                e.target.style.textShadow = "0 0 8px rgba(13, 110, 253, 0.3)";
-              }}
-            >
-              🏢 Company 1
-            </h6>
-          </Fade>
+      </header>
+      <section className="mb-4">
+        <div className="row g-3">
+          {stats.map(item => (
+            <div key={item.id} className="col-xl-3 col-md-6" onClick={() => navigate(item.route)}>
+              <div className="card shadow-sm h-100 hover-card" role="button" tabIndex={0}>
+                <div className="card-body d-flex justify-content-between align-items-center">
+                  <div>
+                    <h5 className="card-title mb-1">{item.title}</h5>
+                    <p className="display-6 fw-bold mb-0">{item.value}</p>
+                    <small className="text-muted">Compared to last month</small>
+                  </div>
+                  <div className={`avatar ${item.colorClass}`}>{item.icon}</div>
+                </div>
+                <div className={`card-footer small text-white ${item.colorClass}`}>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span>{item.title}</span>
+                    <span>+3%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <Grid container spacing={gridSpacing}>
-          <Grid style={{ cursor: 'pointer' }} item lg={3} sm={6} xs={12}>
-            <div >
-              <ReportCard
-                primary={23}
-                secondary="Total User"
-                color={theme.palette.warning.main}
-                footerData="Total User"
-                iconPrimary={SupervisedUserCircleIcon}
-              // iconFooter={}
-              />
+      </section>
+      <section>
+        <div className="row">
+          <div className="col-lg-8 mb-3">
+            <div className="card h-100 shadow-sm">
+              <div className="card-header d-flex justify-content-between align-items-center">
+                <h6 className="mb-0">Recent Activity</h6>
+                <small className="text-muted">Updated: {new Date().toLocaleString()}</small>
+              </div>
+              <div className="card-body">
+                {/* Replace with a table or virtualized list for large data sets */}
+                <div className="table-responsive">
+                  <table className="table table-hover table-striped mb-0">
+                    <thead className="table-light">
+                      <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[1, 2, 3, 4, 5].map(i => (
+                        <tr key={i}>
+                          <td>{i}</td>
+                          <td>Sample User {i}</td>
+                          <td>Project</td>
+                          <td>{new Date().toLocaleDateString()}</td>
+                          <td><span className="badge bg-success">Active</span></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          </Grid>
-          <Grid style={{ cursor: 'pointer' }} item lg={3} sm={6} xs={12}>
-            <div >
-              <ReportCard
-                primary={4}
-                secondary="Total Project"
-                color={theme.palette.error.main}
-                footerData="Total Project"
-                iconPrimary={AccountTreeIcon}
-                iconFooter={TrendingDownIcon}
-              />
+          </div>
+
+
+          <div className="col-lg-4 mb-3">
+            <div className="card h-100 shadow-sm">
+              <div className="card-header">
+                <h6 className="mb-0">Quick Actions</h6>
+              </div>
+              <div className="card-body d-flex flex-column gap-2">
+                <button onClick={() => addProductBtnClick()} className="btn btn-outline-primary w-100">Create New Project</button>
+                <button onClick={() => VehicleAddBtnClicked()} className="btn btn-outline-secondary w-100">Add Employee</button>
+                <button className="btn btn-outline-success w-100">Generate Report</button>
+                <div className="mt-3">
+                  <h6 className="mb-1">Daily Progress</h6>
+                  <div className="progress" style={{ height: '10px' }}>
+                    <div className="progress-bar" role="progressbar" style={{ width: '72%' }} aria-valuenow={72} aria-valuemin={0} aria-valuemax={100}></div>
+                  </div>
+                  <small className="text-muted">72% completion across tracked tasks</small>
+                </div>
+              </div>
             </div>
-          </Grid>
-          <Grid style={{ cursor: 'pointer' }} item lg={3} sm={6} xs={12}>
-            <div >
-              <ReportCard
-                primary={3}
-                secondary="Total Institute"
-                color={theme.palette.info.main}
-                footerData="Total Institute"
-                iconPrimary={LocationCityIcon}
-                iconFooter={TrendingDownIcon}
-              />
-            </div>
-          </Grid>
-          <Grid style={{ cursor: 'pointer' }} item lg={3} sm={6} xs={12}>
-            <div >
-              <ReportCard
-                primary={40}
-                secondary="Total Employee"
-                color={theme.palette.success.main}
-                footerData="Total Employee"
-                iconPrimary={PersonIcon}
-                iconFooter={TrendingDownIcon}
-              />
-            </div>
-          </Grid>
 
 
 
+          </div>
+        </div>
+      </section>
+      <footer className="mt-4 text-center small text-muted">
+        © {new Date().getFullYear()} Government Project — Maha Vikas Group
+      </footer>
+      {showEmployeeModal && (
+        <AddUpdateEmployeeModal
+          show={showEmployeeModal}
+          onHide={() => {
+            setShowEmployeeModal(false);
+            // handleClose();
+          }}
+          modelRequestData={modelRequestData}
+          setModelRequestData={setModelRequestData}
+          isAddUpdateActionDone={isAddUpdateActionDone}
+          setIsAddUpdateActionDone={setIsAddUpdateActionDone}
 
-        </Grid>
-      </Grid>
 
-    </Grid>
+
+        />
+
+
+      )}
+
+      {openProductModal && (
+        <ProductAddUpdateModal
+          show={openProductModal}
+          onHide={() => setOpenProductModal(false)}
+          modelRequestData={modelRequestData}
+          setModelRequestData={setModelRequestData}
+          setIsAddUpdateActionDone={setIsAddUpdateActionDone}
+        />
+      )}
+    </div>
   );
 };
 
