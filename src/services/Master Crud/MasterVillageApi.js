@@ -26,7 +26,7 @@ export const GetVillageModel = async (id) => {
 };
 
 export const GetVillageLookupList = async (id) => {
-  const url = `${MasterVillageBaseUrl}/GetVillageLookupList?TalukaID=${id}`;
+  const url = `${MasterVillageBaseUrl}/GetVillageLookupList?TalukaKeyID=${id}`;
 
   const res = await getListWithAuthenticated(url);
   return res;

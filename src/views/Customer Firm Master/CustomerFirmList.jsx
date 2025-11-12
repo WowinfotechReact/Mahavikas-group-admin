@@ -17,6 +17,7 @@ import CustomerFirmViewModal from './CustomerFirmViewModal';
 import { hasPermission } from 'Middleware/permissionUtils';
 import { Link } from 'react-router-dom';
 import InstituteUserAddUpdateModal from 'views/Employee/InstituteUserAddUpdateModal';
+import { GetInstituteList } from 'services/Institute/InstituteApi';
 
 const CustomerFirmList = () => {
   const [stateChangeStatus, setStateChangeStatus] = useState('');
@@ -59,21 +60,21 @@ const CustomerFirmList = () => {
   useEffect(() => {
     // debugger
     if (isAddUpdateActionDone) {
-      GetCustomerListData(1, null, toDate, fromDate);
+      GetInstituteListData(1, null, toDate, fromDate);
       setSearchKeyword('');
     }
     setIsAddUpdateActionDone(false);
   }, [isAddUpdateActionDone]);
 
   useEffect(() => {
-    GetCustomerListData(1, null, toDate, fromDate);
+    GetInstituteListData(1, null, toDate, fromDate);
   }, [setIsAddUpdateActionDone]);
 
-  const GetCustomerListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
+  const GetInstituteListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
     // debugger
     setLoader(true);
     try {
-      const data = await GetCustomerList({
+      const data = await GetInstituteList({
         pageSize,
         userKeyID: user.userKeyID,
         pageNo: pageNumber - 1, // Page numbers are typically 0-based in API calls
@@ -109,7 +110,7 @@ const CustomerFirmList = () => {
   const customerViewModalBtnClick = (row) => {
     setModelRequestData({
       ...modelRequestData,
-      customerKeyID: row.customerKeyID,
+      instituteKeyID: row.instituteKeyID,
       Action: 'View'
     });
     setOpenCustomerViewModal(true);
@@ -118,7 +119,7 @@ const CustomerFirmList = () => {
   const CustomerAddBtnClicked = () => {
     setModelRequestData({
       ...modelRequestData,
-      customerKeyID: null,
+      instituteKeyID: null,
       Action: null
     });
     setShowVehicleModal(true);
@@ -126,7 +127,7 @@ const CustomerFirmList = () => {
   const EditCustomerBtnClick = (row) => {
     setModelRequestData({
       ...modelRequestData,
-      customerKeyID: row.customerKeyID,
+      instituteKeyID: row.instituteKeyID,
       Action: 'Update'
     });
     setShowVehicleModal(true);
@@ -142,16 +143,17 @@ const CustomerFirmList = () => {
     }
     setSearchKeyword(capitalizedValue);
     setCurrentPage(1);
-    GetCustomerListData(1, capitalizedValue, toDate, fromDate);
+    GetInstituteListData(1, capitalizedValue, toDate, fromDate);
   };
 
   const instituteUserBtnClick = () => {
     setShowInstituteUserModal(true)
+    navigate('/institute-employee')
   }
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    GetCustomerListData(pageNumber, null, toDate, fromDate);
+    GetInstituteListData(pageNumber, null, toDate, fromDate);
   };
 
   const closeAll = () => {
@@ -162,7 +164,7 @@ const CustomerFirmList = () => {
     setCurrentPage(1);
     setToDate(null);
     setFromDate(null);
-    GetCustomerListData(1, null, null, null);
+    GetInstituteListData(1, null, null, null);
   };
 
   const handleStatusChange = (row) => {
@@ -179,8 +181,8 @@ const CustomerFirmList = () => {
 
     // debugger
     try {
-      const { customerKeyID } = row; // Destructure to access only what's needed
-      const response = await ChangeCustomerStatus(customerKeyID, user.userKeyID);
+      const { instituteKeyID } = row; // Destructure to access only what's needed
+      const response = await ChangeCustomerStatus(instituteKeyID, user.userKeyID);
 
       if (response && response.data.statusCode === 200) {
         setLoader(false);
@@ -188,7 +190,7 @@ const CustomerFirmList = () => {
         // Successfully changed the status
         setShowStatusChangeModal(false);
         setStateChangeStatus(null);
-        GetCustomerListData(currentPage, null, toDate, fromDate);
+        GetInstituteListData(currentPage, null, toDate, fromDate);
         // GetMasterDistrictListData(currentPage, null, toDate, fromDate);
         setShowSuccessModal(true);
         setModelAction('Employee status changed successfully.');
@@ -306,17 +308,18 @@ const CustomerFirmList = () => {
                   <th className="text-center">State</th>
                   <th className="text-center">District</th>
                   <th className="text-center">Taluka</th>
+                  <th className="text-center">Village</th>
                   <th className="text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {newDataMap?.map((row, idx) => (
+                {vehicleListData?.map((row, idx) => (
                   <tr className='text-nowrap' key={idx}>
                     <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
                     <td style={{ minWidth: "250px", textAlign: "center", lineHeight: "1.2" }}>
                       {/* Customer Name */}
                       <div style={{ fontWeight: 600, fontSize: "14px", marginBottom: "2px", color: "#222" }}>
-                        {row.name}
+                        {row.instituteName}
                       </div>
 
                       {/* Phone and Email on the same line */}
@@ -327,23 +330,28 @@ const CustomerFirmList = () => {
 
                     <td className="text-center" style={{ minWidth: "150px" }}>
                       <div >
-                        <>{row.project}</>
+                        <>{row.projectName}</>
                       </div>
                     </td>
                     <td className="text-center" style={{ minWidth: "150px" }}>
                       <div >
-                        <>{row.state}</>
+                        <>{row.stateName}</>
                       </div>
                     </td>
 
                     <td className="text-center" style={{ minWidth: "150px" }}>
                       <div >
-                        <>{row.Dis}</>
+                        <>{row.districtName}</>
                       </div>
                     </td>
                     <td className="text-center" style={{ minWidth: "150px" }}>
                       <div >
-                        <>{row.Taluka}</>
+                        <>{row.talukaName}</>
+                      </div>
+                    </td>
+                    <td className="text-center" style={{ minWidth: "150px" }}>
+                      <div >
+                        <>{row.villageName}</>
                       </div>
                     </td>
 
@@ -351,7 +359,7 @@ const CustomerFirmList = () => {
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                     <td className="text-center">
                       <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
-                        <Tooltip title="Update Institute">
+                        <Tooltip title="Update Institute     ">
                           <button
                             style={{
                               padding: '4px 8px',
@@ -367,19 +375,19 @@ const CustomerFirmList = () => {
                           </button>
                         </Tooltip>
 
-                        <Tooltip title="Update Institute">
+                        <Tooltip title={`Add Employee To ${row.instituteName} Institute`}>
                           <button
                             style={{
                               padding: '4px 8px',
                               fontSize: '12px',
                               height: '28px',
-                              width: '68px', background: '#ffaa33', color: 'white'
+                              width: '100px', background: '#ffaa33', color: 'white'
                             }}
                             onClick={() => instituteUserBtnClick(row)}
                             type="button"
                             className="btn-sm btn "
                           >
-                            Add User
+                            Add Employee
                           </button>
                         </Tooltip>
 
@@ -401,7 +409,7 @@ const CustomerFirmList = () => {
             )} */}
           </div>
         </div>
-      </div>
+      </div >
 
       {showVehicleModal && (
         <AddUpdateCustomerFirmModal
@@ -416,34 +424,41 @@ const CustomerFirmList = () => {
           isAddUpdateActionDone={isAddUpdateActionDone}
           setIsAddUpdateActionDone={setIsAddUpdateActionDone}
         />
-      )}
+      )
+      }
       <StatusChangeModal
         open={showStatusChangeModal}
         onClose={() => setShowStatusChangeModal(false)}
         onConfirm={() => confirmStatusChange(stateChangeStatus, user)} // Pass the required arguments
       />
-      {showSuccessModal && (
-        <SuccessPopupModal
-          show={showSuccessModal}
-          onHide={() => closeAllModal()}
-          setShowSuccessModal={setShowSuccessModal}
-          modelAction={modelAction}
-        />
-      )}
-      {openCustomerViewModal && (
-        <CustomerFirmViewModal
-          show={openCustomerViewModal}
-          onHide={() => setOpenCustomerViewModal(false)}
-          modelRequestData={modelRequestData}
-        />
-      )}
-      {showInstituteUserModal && (
-        <InstituteUserAddUpdateModal
-          show={showInstituteUserModal}
-          onHide={() => setShowInstituteUserModal(false)}
-          modelRequestData={modelRequestData}
-        />
-      )}
+      {
+        showSuccessModal && (
+          <SuccessPopupModal
+            show={showSuccessModal}
+            onHide={() => closeAllModal()}
+            setShowSuccessModal={setShowSuccessModal}
+            modelAction={modelAction}
+          />
+        )
+      }
+      {
+        openCustomerViewModal && (
+          <CustomerFirmViewModal
+            show={openCustomerViewModal}
+            onHide={() => setOpenCustomerViewModal(false)}
+            modelRequestData={modelRequestData}
+          />
+        )
+      }
+      {
+        showInstituteUserModal && (
+          <InstituteUserAddUpdateModal
+            show={showInstituteUserModal}
+            onHide={() => setShowInstituteUserModal(false)}
+            modelRequestData={modelRequestData}
+          />
+        )
+      }
       <ImageModal show={imgModalShow} onHide={() => setImgModalShow(false)} imageUrl={selectedImage} title={imgModalTitle} />
     </>
   );
