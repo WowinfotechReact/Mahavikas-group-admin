@@ -2,10 +2,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import PaginationComponent from 'component/Pagination';
 import { ConfigContext } from 'context/ConfigContext';
-
+import { BsPerson, BsEnvelope, BsTelephone } from "react-icons/bs";
 import NoResultFoundModel from 'component/NoResultFoundModal';
 import ImageModal from 'component/ImageModal';
 import StatusChangeModal from 'component/StatusChangeModal ';
@@ -15,10 +15,10 @@ import { ChangeCustomerStatus, GetCustomerList } from 'services/CustomerStaff/Cu
 import InstituteUserAddUpdateModal from 'views/Employee/InstituteUserAddUpdateModal';
 import InstituteEmployeeAddUpdateModal from './InstituteEmployeeAddUpdateModal';
 import { GetInstituteList } from 'services/Institute/InstituteApi';
+import { GetAppUserList } from 'services/Employee Staff/EmployeeApi';
 
 const InstituteEmployeeList = () => {
       const [stateChangeStatus, setStateChangeStatus] = useState('');
-      const [openCustomerViewModal, setOpenCustomerViewModal] = useState(false);
       const [showInstituteUserModal, setShowInstituteUserModal
       ] = useState(false);
       const [showVehicleViewModal, setShowVehicleViewModal] = useState(false);
@@ -66,19 +66,19 @@ const InstituteEmployeeList = () => {
       useEffect(() => {
             GetInstituteListData(1, null, toDate, fromDate);
       }, [setIsAddUpdateActionDone]);
-
+      const location = useLocation()
       const GetInstituteListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
             // debugger
             setLoader(true);
             try {
-                  const data = await GetInstituteList({
+                  const data = await GetAppUserList({
                         pageSize,
                         userKeyID: user.userKeyID,
                         pageNo: pageNumber - 1, // Page numbers are typically 0-based in API calls
                         searchKeyword: searchKeywordValue === undefined ? searchKeyword : searchKeywordValue,
                         toDate: toDate ? dayjs(toDate).format('YYYY-MM-DD') : null,
                         fromDate: fromDate ? dayjs(fromDate).format('YYYY-MM-DD') : null,
-                        companyKeyID: companyID
+                        instituteKeyID: location.state.instituteKeyID
                   });
 
                   if (data) {
@@ -104,19 +104,12 @@ const InstituteEmployeeList = () => {
             }
       };
 
-      const customerViewModalBtnClick = (row) => {
-            setModelRequestData({
-                  ...modelRequestData,
-                  customerKeyID: row.customerKeyID,
-                  Action: 'View'
-            });
-            setOpenCustomerViewModal(true);
-      };
+
 
       const CustomerAddBtnClicked = () => {
             setModelRequestData({
                   ...modelRequestData,
-                  customerKeyID: null,
+                  instituteKeyID: location?.state?.instituteKeyID,
                   Action: null
             });
             setShowVehicleModal(true);
@@ -125,6 +118,7 @@ const InstituteEmployeeList = () => {
             setModelRequestData({
                   ...modelRequestData,
                   customerKeyID: row.customerKeyID,
+                  instituteKeyID: location?.state?.instituteKeyID,
                   Action: 'Update'
             });
             setShowVehicleModal(true);
@@ -143,31 +137,7 @@ const InstituteEmployeeList = () => {
             GetInstituteListData(1, capitalizedValue, toDate, fromDate);
       };
 
-      const instituteUserBtnClick = () => {
-            setShowInstituteUserModal(true)
-            navigate('/institute-employee')
-      }
 
-      const handlePageChange = (pageNumber) => {
-            setCurrentPage(pageNumber);
-            GetInstituteListData(pageNumber, null, toDate, fromDate);
-      };
-
-      const closeAll = () => {
-            setShowSuccessModal(false);
-      };
-
-      const handleClearDates = () => {
-            setCurrentPage(1);
-            setToDate(null);
-            setFromDate(null);
-            GetInstituteListData(1, null, null, null);
-      };
-
-      const handleStatusChange = (row) => {
-            setStateChangeStatus(row); // You can set only relevant data if needed
-            setShowStatusChangeModal(true);
-      };
       const closeAllModal = () => {
             // onHide();
             setShowSuccessModal(false);
@@ -205,38 +175,8 @@ const InstituteEmployeeList = () => {
             }
       };
 
-      // Utility function to format the vehicle number
-      const formatVehicleNumber = (vehicleNumber) => {
-            if (!vehicleNumber) return ''; // Handle empty or undefined values
 
-            // Remove invalid characters and ensure uppercase
-            const sanitizedInput = vehicleNumber.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
-            // Split into parts and format
-            const parts = [
-                  sanitizedInput.slice(0, 2), // State code (2 letters)
-                  sanitizedInput.slice(2, 4), // RTO code (2 digits)
-                  sanitizedInput.slice(4, 6), // Series code (2 letters)
-                  sanitizedInput.slice(6, 10) // Employee number (4 digits)
-            ];
-
-            // Join parts with spaces
-            return parts.filter((part) => part).join(' ');
-      };
-
-      const VehicleViewBtnClicked = async (row) => {
-            setModelRequestData({
-                  ...modelRequestData,
-                  vehicleKeyID: row.vehicleKeyID
-            });
-            setShowVehicleViewModal(true);
-      };
-
-      const newDataMap = [
-            { name: 'Kilbil School Satpur', project: 'Primary Teacher Bharti 2025', state: 'MH', Dis: 'Nashik', Taluka: 'Nashik' },
-            { name: 'Kilbil School Gangapur Road', project: 'Secondary & Higher Secondary Teacher Bharti 2025', state: 'MH', Dis: 'Pune', Taluka: 'Shivaji Nagar' },
-            { name: 'Kilbil School Trimbkeshwar', project: 'Primary Teacher Bharti 2025', state: 'MH', Dis: 'Hingoli', Taluka: 'airoli' },
-      ]
       return (
             <>
                   {/* <Sidebar drawerOpen={true} drawerToggle={() => {}} modalOpen={show} /> */}
@@ -246,7 +186,7 @@ const InstituteEmployeeList = () => {
 
                               <div className="d-flex justify-content-between align-items-center mb-1">
                                     <div className="flex-grow-1">
-                                          <h5 className="mb-0">Institute Master</h5>
+                                          <h5 className="mb-0">Employee Institute : {location.state.instituteName} </h5>
                                     </div>
                                     <div className="position-absolute end-0 me-2">
                                           <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn btn-sm d-inline d-sm-none">
@@ -299,52 +239,55 @@ const InstituteEmployeeList = () => {
                                           <thead style={{ position: 'sticky', top: -1, zIndex: 1 }}>
                                                 <tr className="text-nowrap">
                                                       <th className="text-center">Sr No.</th>
-                                                      <th className="text-center"> Institute Name</th>
+                                                      <th className="text-center"> Employee Name</th>
 
-                                                      <th className="text-center">Project Name</th>
-                                                      <th className="text-center">State</th>
-                                                      <th className="text-center">District</th>
-                                                      <th className="text-center">Taluka</th>
+                                                      <th className="text-center">Address</th>
+                                                      <th className="text-center">Role</th>
+                                                      <th className="text-center">Company</th>
                                                       <th className="text-center">Action</th>
                                                 </tr>
                                           </thead>
                                           <tbody>
-                                                {newDataMap?.map((row, idx) => (
+                                                {vehicleListData?.map((row, idx) => (
                                                       <tr className='text-nowrap' key={idx}>
                                                             <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
-                                                            <td style={{ minWidth: "250px", textAlign: "center", lineHeight: "1.2" }}>
-                                                                  {/* Customer Name */}
-                                                                  <div style={{ fontWeight: 600, fontSize: "14px", marginBottom: "2px", color: "#222" }}>
-                                                                        {row.name}
+                                                            <td className="text-center">
+                                                                  <div className="d-flex flex-column align-items-center">
+                                                                        <div className="d-flex align-items-center gap-2 mb-1">
+                                                                              <BsPerson className="text-primary" />
+                                                                              <span>{row.fullName || "N/A"}</span>
+                                                                        </div>
+
+                                                                        <div className="d-flex align-items-center gap-2">
+                                                                              <BsTelephone className="text-success" />
+                                                                              <span>{row.mobileNo || "N/A"}</span>
+                                                                        </div>
+                                                                        <div className="d-flex align-items-center gap-2 mb-1">
+                                                                              <BsEnvelope className="text-danger" />
+                                                                              <span>{row.emailID || "N/A"}</span>
+                                                                        </div>
                                                                   </div>
-
-                                                                  {/* Phone and Email on the same line */}
-
                                                             </td>
 
 
 
                                                             <td className="text-center" style={{ minWidth: "150px" }}>
                                                                   <div >
-                                                                        <>{row.project}</>
+                                                                        <>{row.address}</>
                                                                   </div>
                                                             </td>
                                                             <td className="text-center" style={{ minWidth: "150px" }}>
                                                                   <div >
-                                                                        <>{row.state}</>
+                                                                        <>{row.roleName}</>
                                                                   </div>
                                                             </td>
 
                                                             <td className="text-center" style={{ minWidth: "150px" }}>
                                                                   <div >
-                                                                        <>{row.Dis}</>
+                                                                        <>{row.companyName}</>
                                                                   </div>
                                                             </td>
-                                                            <td className="text-center" style={{ minWidth: "150px" }}>
-                                                                  <div >
-                                                                        <>{row.Taluka}</>
-                                                                  </div>
-                                                            </td>
+
 
 
                                                             {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
@@ -366,21 +309,7 @@ const InstituteEmployeeList = () => {
                                                                               </button>
                                                                         </Tooltip>
 
-                                                                        <Tooltip title="Update Institute">
-                                                                              <button
-                                                                                    style={{
-                                                                                          padding: '4px 8px',
-                                                                                          fontSize: '12px',
-                                                                                          height: '28px',
-                                                                                          width: '68px', background: '#ffaa33', color: 'white'
-                                                                                    }}
-                                                                                    onClick={() => instituteUserBtnClick(row)}
-                                                                                    type="button"
-                                                                                    className="btn-sm btn "
-                                                                              >
-                                                                                    Add User
-                                                                              </button>
-                                                                        </Tooltip>
+
 
 
 

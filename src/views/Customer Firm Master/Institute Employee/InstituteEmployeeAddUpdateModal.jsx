@@ -1,163 +1,195 @@
 
 
 
-
-
 import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import Select from 'react-select';
 import DatePicker from 'react-date-picker';
 import 'react-calendar/dist/Calendar.css';
-
 import 'react-date-picker/dist/DatePicker.css';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
+
 import SuccessPopupModal from 'component/SuccessPopupModal';
-import {
-      AddUpdateCustomer,
-      GetCustomerLookupList,
-      GetCustomerModel,
-} from 'services/CustomerStaff/CustomerStaffApi';
+import { GetCustomerLookupList, } from 'services/CustomerStaff/CustomerStaffApi';
 import { ConfigContext } from 'context/ConfigContext';
 import { AddUpdateVehicleApi, GetVehicleModel } from 'services/Vehicle/VehicleApi';
+import { GetVehicleTypeLookupList } from 'services/Master Crud/MasterVehicleTypeApi';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { GetStateLookupList } from 'services/Master Crud/MasterStateApi';
+// import AddUpdateCustomerModal from 'views/Customer/AddUpdateCustomerModal';
+import { AddUpdateAppUser, GetEmployeeModel } from 'services/Employee Staff/EmployeeApi';
+import { AddUpdateAdminUser, GetAdminUserModel, GetCompanyLookupList, GetRoleLookupList } from 'services/Company/CompanyApi';
 
-const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
+const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData, }) => {
       const [customerOption, setCustomerOption] = useState([]);
-      const [showCustomerModal, setShowCustomerModal] = useState(false);
+
       const { user, setLoader, companyID } = useContext(ConfigContext);
       const [modelAction, setModelAction] = useState('');
       const [error, setErrors] = useState(null);
       const [showSuccessModal, setShowSuccessModal] = useState(false);
       const [errorMessage, setErrorMessage] = useState();
-      const [customerObj, setcustomerObj] = useState({
-            customerKeyID: null,
-            accountDetails: true,
+      const [showPassword, setShowPassword] = useState(false);
 
-            customerFirmName: null,
-            gstNumber: null,
-            vendorCode: null,
-            billingAddress: null,
-            addressperGST: null,
-            shippingAddress: null,
-            mobileNumber: null,
-            alternateMobileNumber: null,
+      const [employeeObj, setEmployeeObj] = useState({
+            password: null,
+            lastName: null,
+            roleKeyID: null,
+            firstName: null,
+            designationID: null,
+            companyKeyID: null,
+            empCode: null,
+            employeeKeyID: null,
+            dateOfJoining: null,
+            dateOfBirth: null,
+            mobileNo: null,
+            alternativeNumber: null,
             emailID: null,
-            accountNumber: null,
-            ifscCode: null,
-            branchName: null,
-            pointofContact: true,
-            contactPersonName: null,
-            contactPersonDesignation: null,
-            contactPersonNumber: null,
-            contactAlternateNumber: null,
-            contactPersonEmail: null,
-            userKeyID: null
+            bloodGroupID: null,
+            aadhaarNumber: null,
+            panNumber: null,
+            employeeTypeID: null,
+            password: null,
+            address: null
       });
 
-      // useEffect(() => {
-      //   if (modelRequestData?.Action === 'Update') {
-      //     if (modelRequestData?.customerKeyID !== null) {
-      //       GetCustomerModelData(modelRequestData?.customerKeyID);
-      //     }
-      //   }
-      // }, [modelRequestData?.Action]);
 
-      const [selectedFile, setSelectedFile] = useState(null);
-      const handleFileChange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                  if (file.type !== "application/pdf") {
-                        setErrors("Only PDF files are allowed.");
-                        setSelectedFile(null);
-                  } else {
-                        setErrors("");
-                        setSelectedFile(file);
+      const [selectedRole, setSelectedRole] = useState(null);
+      const [designationOption, setDesignationOption] = useState([]);
+      const [companyOption, setCompanyOption] = useState([]);
+      const [roleOption, setRoleOption] = useState([]);
+      const [employeeTypeOption, setEmployeeTypeOption] = useState([]);
+
+
+
+
+
+      useEffect(() => {
+            if (modelRequestData?.Action === 'Update') {
+                  if (modelRequestData?.userKeyIDForUpdate !== null) {
+                        GetAdminUserModelData(modelRequestData?.userKeyIDForUpdate);
                   }
+            }
+      }, [modelRequestData?.Action]);
+
+
+      useEffect(() => {
+            GetCompanyLookupListData();
+      }, [show]);
+
+      const GetCompanyLookupListData = async () => {
+            try {
+                  const response = await GetCompanyLookupList();
+                  if (response?.data?.statusCode === 200) {
+                        const designationList = response?.data?.responseData?.data || [];
+                        const formattedDesignationList = designationList.map((comp) => ({
+                              value: comp.companyKeyID,
+                              label: comp.companyName
+                        }));
+                        setCompanyOption(formattedDesignationList);
+                  } else {
+                        console.error('Failed to fetch designation list:', response?.data?.statusMessage || 'Unknown error');
+                  }
+            } catch (error) {
+                  console.error('Error fetching designation list:', error);
+            }
+      };
+
+      useEffect(() => {
+            GetRoleLookupListData()
+      }, [])
+      const GetRoleLookupListData = async () => {
+            try {
+                  const response = await GetRoleLookupList();
+                  if (response?.data?.statusCode === 200) {
+                        const designationList = response?.data?.responseData?.data || [];
+                        const formattedDesignationList = designationList.map((comp) => ({
+                              value: comp.roleKeyID,
+                              label: comp.roleName
+                        }));
+                        setRoleOption(formattedDesignationList);
+                  } else {
+                        console.error('Failed to fetch designation list:', response?.data?.statusMessage || 'Unknown error');
+                  }
+            } catch (error) {
+                  console.error('Error fetching designation list:', error);
             }
       };
 
 
-      const projectOptions = () => [
-            { value: 1, label: "Secondary & Higher Secondary Teacher Bharti 2025" },
-            { value: 2, label: "Primary Teacher Bharti 2025" },
-            { value: 3, label: "Shikshak Bharti 2025Secondary & Higher Secondary Teacher Bharti 2025" },
 
-      ]
-      const AddVehicleBtnClick = async () => {
-            let isValid = false;
-            // debugger
-            // Start with false, set to true if any error occurs
-            let hasError = false;
 
-            // Conditionally check account-related fields if accountDetails is true
-            if (customerObj.accountDetails === true) {
-                  if (
-                        customerObj.accountNumber === null ||
-                        customerObj.accountNumber === undefined ||
-                        customerObj.accountNumber === '' ||
-                        customerObj.ifscCode === null ||
-                        customerObj.ifscCode === undefined ||
-                        customerObj.ifscCode === '' ||
-                        customerObj.branchName === null ||
-                        customerObj.branchName === undefined ||
-                        customerObj.branchName === ''
-                  ) {
-                        hasError = true;
-                  }
+
+
+      const GetAdminUserModelData = async (id) => {
+
+            if (id === undefined) {
+                  return;
             }
 
-            // Validation logic
+            try {
+                  const data = await GetAdminUserModel(id);
+                  if (data?.data?.statusCode === 200) {
+                        setLoader(false);
+                        const ModelData = data.data.responseData.data; // Assuming data is an array
+                        console.log(ModelData.dateOfBirth, 'dsadsadasdas');
+                        setEmployeeObj({
+                              ...employeeObj,
+                              userKeyIDForUpdate: modelRequestData.userKeyIDForUpdate,
+                              firstName: ModelData.firstName,
+                              lastName: ModelData.lastName,
+                              roleKeyID: ModelData.roleKeyID,
+                              companyKeyID: ModelData.companyKeyID,
+                              emailID: ModelData.emailID,
+                              mobileNo: ModelData.mobileNo,
+                              password: ModelData.password,
+                              address: ModelData.address,
+                        });
+                        // rc book
+                  } else {
+                        // Handle non-200 status codes if necessary
+                        console.error('Error fetching data: ', data?.data?.statusCode);
+                  }
+            } catch (error) {
+                  console.error('Error in GetVehicleTypeModalData: ', error);
+            }
+      };
+
+
+      const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+      const Submit = async () => {
+            debugger
+            let isValid = false;
+
             if (
-                  (customerObj.accountDetails === true && (
-                        customerObj.accountNumber === null ||
-                        customerObj.accountNumber === undefined ||
-                        customerObj.accountNumber === '' ||
-                        customerObj.ifscCode === null ||
-                        customerObj.ifscCode === undefined ||
-                        customerObj.ifscCode === '' ||
-                        customerObj.branchName === null ||
-                        customerObj.branchName === undefined ||
-                        customerObj.branchName === ''
-                  )) ||
-                  (customerObj.pointofContact === true && (
-                        customerObj.contactPersonEmail === null ||
-                        customerObj.contactPersonEmail === undefined ||
-                        customerObj.contactPersonEmail === '' ||
-                        customerObj.contactPersonNumber === null ||
-                        customerObj.contactPersonNumber === undefined ||
-                        customerObj.contactPersonNumber === '' ||
-                        customerObj.contactPersonName === null ||
-                        customerObj.contactPersonName === undefined ||
-                        customerObj.contactPersonName === '' ||
-                        customerObj.contactPersonDesignation === null ||
-                        customerObj.contactPersonDesignation === undefined ||
-                        customerObj.contactPersonDesignation === ''
-                  )) ||
-                  customerObj.customerFirmName === null ||
-                  customerObj.customerFirmName === undefined ||
-                  customerObj.customerFirmName === '' ||
-                  customerObj.gstNumber === null ||
-                  customerObj.gstNumber === undefined ||
-                  customerObj.gstNumber === '' ||
-                  customerObj.addressperGST === null ||
-                  customerObj.addressperGST === undefined ||
-                  customerObj.addressperGST === '' ||
+                  employeeObj.firstName === null ||
+                  employeeObj.firstName === undefined ||
+                  employeeObj.firstName === '' ||
+                  employeeObj.lastName === null ||
+                  employeeObj.lastName === undefined ||
+                  employeeObj.lastName === '' ||
+                  employeeObj.roleKeyID === null ||
+                  employeeObj.roleKeyID === undefined ||
+                  employeeObj.roleKeyID === '' ||
 
-                  customerObj.mobileNumber === null ||
-                  customerObj.mobileNumber === undefined ||
-                  customerObj.mobileNumber === '' ||
-                  customerObj.mobileNumber?.length < 10 ||
-                  customerObj.emailID === null ||
-                  customerObj.emailID === undefined ||
-                  customerObj.emailID === '' ||
+                  employeeObj.mobileNo === null ||
+                  employeeObj.mobileNo === undefined ||
+                  employeeObj.mobileNo === '' ||
+                  employeeObj.mobileNo?.length < 10 ||
+                  employeeObj.emailID === undefined ||
+                  employeeObj.emailID === '' ||
+                  employeeObj.emailID === null ||
 
-
-
-                  customerObj.pointofContact === null ||
-                  customerObj.pointofContact === undefined ||
-                  customerObj.pointofContact === ''
+                  employeeObj.password === null ||
+                  employeeObj.password === undefined ||
+                  employeeObj.password === '' ||
+                  employeeObj.password.length < 8 ||
+                  employeeObj.address === null ||
+                  employeeObj.address === undefined ||
+                  employeeObj.address === ''
             ) {
                   setErrors(true);
                   isValid = true;
@@ -166,121 +198,46 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   isValid = false;
             }
 
-            // Create JSON object with all fields
-            const jsonData = {
+            const apiParam = {
                   userKeyID: user.userKeyID,
-                  customerKeyID: modelRequestData.customerKeyID,
-                  customerFirmName: customerObj.customerFirmName,
-                  gstNumber: customerObj.gstNumber,
-                  vendorCode: customerObj.vendorCode,
-                  billingAddress: customerObj.billingAddress,
-                  addressperGST: customerObj.addressperGST,
-                  shippingAddress: customerObj.shippingAddress,
-                  mobileNumber: customerObj.mobileNumber,
-                  alternateMobileNumber: customerObj.alternateMobileNumber,
-                  emailID: customerObj.emailID,
-                  accountDetails: customerObj.accountDetails,
-                  accountNumber: customerObj.accountNumber,
-                  ifscCode: customerObj.ifscCode,
-                  branchName: customerObj.branchName,
-                  pointofContact: customerObj.pointofContact,
-                  contactPersonName: customerObj.contactPersonName,
-                  contactPersonDesignation: customerObj.contactPersonDesignation,
-                  contactPersonNumber: customerObj.contactPersonNumber,
-                  contactAlternateNumber: customerObj.contactAlternateNumber,
-                  contactPersonEmail: customerObj.contactPersonEmail
+                  userKeyIDForUpdate: modelRequestData?.userKeyIDForUpdate,
+                  firstName: employeeObj.firstName,
+                  lastName: employeeObj.lastName,
+                  mobileNo: employeeObj.mobileNo,
+                  emailID: employeeObj.emailID,
+                  password: employeeObj.password,
+                  address: employeeObj.address,
+                  roleKeyID: employeeObj.roleKeyID,
+                  companyKeyID: employeeObj.companyKeyID,
+                  instituteKeyID: modelRequestData.instituteKeyID,
             };
-
-            // Log the JSON data to the console
-            console.log('Submitted Data:', JSON.stringify(jsonData, null, 2));
-
-            // Proceed with API call if valid
             if (!isValid) {
-                  addUpdateCustomer(jsonData);
+                  AddUpdateAppUserData(apiParam);
             }
       };
 
-      const addUpdateCustomer = async (apiParam) => {
-            setLoader(true);
+      const AddUpdateAppUserData = async (apiParam) => {
             try {
-                  let url = '/AddUpdateCustomer'; // Default URL for Adding Data
+                  let url = '/AddUpdateAppUser'; // Default URL for Adding Data
 
-                  const response = await AddUpdateCustomer(url, apiParam);
+                  const response = await AddUpdateAppUser(url, apiParam);
                   if (response) {
                         if (response?.data?.statusCode === 200) {
-                              setLoader(false);
+
                               setShowSuccessModal(true);
                               setModelAction(
                                     modelRequestData.Action === null || modelRequestData.Action === undefined
-                                          ? 'Customer / Firm Added Successfully!'
-                                          : 'Customer / Firm Updated Successfully!'
+                                          ? 'Employee Added Successfully!'
+                                          : ' Employee Updated Successfully!'
                               ); //Do not change this naming convention
 
                               setIsAddUpdateActionDone(true);
                         } else {
-                              setLoader(false);
                               setErrorMessage(response?.response?.data?.errorMessage);
                         }
                   }
             } catch (error) {
-                  setLoader(false);
                   console.error(error);
-            }
-      };
-
-      // ✅ 1) Replace your existing useEffect with this:
-      useEffect(() => {
-            if (show && modelRequestData?.Action === 'Update' && modelRequestData?.customerKeyID) {
-                  GetCustomerModelData(modelRequestData?.customerKeyID);
-            }
-      }, [show, modelRequestData?.Action, modelRequestData?.customerKeyID]);
-
-      // ✅ 2) Replace your existing GetCustomerModelData with this:
-      const GetCustomerModelData = async (id) => {
-            if (!id) {
-                  setLoader(false);
-                  return;
-            }
-            setLoader(true);
-
-            try {
-                  const data = await GetCustomerModel(id);
-                  if (data?.data?.statusCode === 200) {
-                        const ModelData = data.data.responseData.data;
-
-                        // ✅ Directly set entire object — no merge with old state!
-                        setcustomerObj({
-                              customerKeyID: ModelData.customerKeyID ?? null,
-                              accountDetails: ModelData.accountDetails ?? false,
-                              customerFirmName: ModelData.customerFirmName ?? '',
-                              gstNumber: ModelData.gstNumber ?? '',
-                              vendorCode: ModelData.vendorCode ?? '',
-                              billingAddress: ModelData.billingAddress ?? '',
-                              addressperGST: ModelData.addressperGST ?? '',
-                              shippingAddress: ModelData.shippingAddress ?? '',
-                              mobileNumber: ModelData.mobileNumber ?? '',
-                              alternateMobileNumber: ModelData.alternateMobileNumber ?? '',
-                              emailID: ModelData.emailID ?? '',
-                              accountNumber: ModelData.accountNumber ?? '',
-                              ifscCode: ModelData.ifscCode ?? '',
-                              branchName: ModelData.branchName ?? '',
-                              pointofContact: ModelData.pointofContact ?? false,
-                              contactPersonName: ModelData.contactPersonName ?? '',
-                              contactPersonDesignation: ModelData.contactPersonDesignation ?? '',
-                              contactPersonNumber: ModelData.contactPersonNumber ?? '',
-                              contactAlternateNumber: ModelData.contactAlternateNumber ?? '',
-                              contactPersonEmail: ModelData.contactPersonEmail ?? '',
-                              userKeyID: ModelData.userKeyID ?? null
-                        });
-
-                        setLoader(false);
-                  } else {
-                        setLoader(false);
-                        console.error('Error fetching data: ', data?.data?.statusCode);
-                  }
-            } catch (error) {
-                  setLoader(false);
-                  console.error('Error in state: ', error);
             }
       };
 
@@ -291,158 +248,383 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
 
 
 
+
+
+
+
+      function convertDateStringToDate(date) {
+            if (typeof date !== 'string' || !date.includes('/')) {
+                  return null;
+            }
+            const [day, month, year] = date.split('/');
+            // month is 0-based in JS Date
+            return new Date(Number(year), Number(month) - 1, Number(day));
+      }
+
+
+
+
+
+
       return (
             <>
                   <Modal size="lg" show={show} style={{ zIndex: 1300 }} onHide={onHide} backdrop="static" keyboard={false} centered>
                         <Modal.Header closeButton>
                               <Modal.Title>
-                                    <h3 className="text-center">{modelRequestData?.Action !== null ? 'Edit Institute' : 'Add Institute'}</h3>
+                                    <h3 className="text-center">
+                                          {modelRequestData?.Action !== null ? 'Update Employee Of Institute' : modelRequestData?.Action === null ? 'Add Employee For Institute' : ''}
+                                    </h3>
                               </Modal.Title>
                         </Modal.Header>
                         <Modal.Body style={{ maxHeight: '55vh', overflow: 'overlay' }}>
                               <div className="container">
                                     <div className="row">
                                           <div className="col-12 col-md-6 mb-2">
-                                                <label htmlFor="customerName" className="form-label">
-                                                      Institute Name <span style={{ color: 'red' }}>*</span>
-                                                </label>
-                                                <input
-                                                      maxLength={50}
-                                                      type="text"
-                                                      className="form-control"
-                                                      id="customerName"
-                                                      placeholder="Enter Institute Name"
-                                                      value={customerObj.customerFirmName}
-                                                      onChange={(e) => {
-                                                            let inputVal = e.target.value;
+                                                <div>
+                                                      <label htmlFor="customerName" className="form-label">
+                                                            First Name
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <input
+                                                            maxLength={50}
+                                                            type="text"
+                                                            className="form-control"
+                                                            id="customerName"
+                                                            placeholder="Enter First Name"
+                                                            aria-describedby="Employee"
+                                                            value={employeeObj.firstName}
+                                                            onChange={(e) => {
+                                                                  setErrorMessage(false);
+                                                                  let inputValue = e.target.value;
 
-                                                            // Remove leading spaces
-                                                            inputVal = inputVal.replace(/^\s+/, '');
+                                                                  // Remove leading spaces
+                                                                  inputValue = inputValue.replace(/^\s+/, '');
 
-                                                            // Allow only letters, spaces, and dot
-                                                            inputVal = inputVal.replace(/[^a-zA-Z.\s]/g, '');
+                                                                  // Allow only letters and spaces
+                                                                  inputValue = inputValue.replace(/[^a-zA-Z\s]/g, '');
 
-                                                            // Capitalize the first letter
-                                                            if (inputVal.length > 0) {
-                                                                  inputVal = inputVal.charAt(0).toUpperCase() + inputVal.slice(1);
-                                                            }
+                                                                  // Auto-capitalize the first letter
+                                                                  if (inputValue.length > 0) {
+                                                                        inputValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+                                                                  }
 
-                                                            setcustomerObj({ ...customerObj, customerFirmName: inputVal });
-                                                      }}
-
-                                                />
-                                                {error && (!customerObj.customerFirmName || customerObj.customerFirmName.trim() === '') && (
-                                                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                )}
+                                                                  setEmployeeObj((prev) => ({
+                                                                        ...prev,
+                                                                        firstName: inputValue
+                                                                  }));
+                                                            }}
+                                                      />
+                                                      {error && (employeeObj.firstName === null || employeeObj.firstName === undefined || employeeObj.firstName === '') ? (
+                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                      ) : (
+                                                            ''
+                                                      )}
+                                                </div>
                                           </div>
 
                                           <div className="col-12 col-md-6 mb-2">
-                                                <label htmlFor="gstNumber" className="form-label">
-                                                      Description Of Institute <span style={{ color: 'red' }}>*</span>
-                                                </label>
-                                                <textarea
+                                                <div>
+                                                      <label htmlFor="customerLName" className="form-label">
+                                                            Last Name
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <input
+                                                            maxLength={50}
+                                                            type="text"
+                                                            className="form-control"
+                                                            id="customerLName"
+                                                            placeholder="Enter Last Name"
+                                                            aria-describedby="Employee"
+                                                            value={employeeObj.lastName}
+                                                            onChange={(e) => {
+                                                                  setErrorMessage(false);
+                                                                  let inputValue = e.target.value;
 
-                                                      type="text"
-                                                      className="form-control"
-                                                      id="gstNumber"
-                                                      placeholder="Enter Description Of Institute "
-                                                      value={customerObj.gstNumber}
-                                                      onChange={(e) => {
-                                                            let gst = e.target.value.toUpperCase(); // Ensure uppercase
-                                                            gst = gst.replace(/^\s+/, ''); // Remove leading spaces
-                                                            setcustomerObj({ ...customerObj, gstNumber: gst });
-                                                      }}
-                                                />
-                                                {error && (customerObj.gstNumber === null || customerObj.gstNumber === undefined || customerObj.gstNumber === '') ? (
-                                                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                ) : (
-                                                      ''
-                                                )}
+                                                                  // Remove leading spaces
+                                                                  inputValue = inputValue.replace(/^\s+/, '');
+
+                                                                  // Allow only letters and spaces
+                                                                  inputValue = inputValue.replace(/[^a-zA-Z\s]/g, '');
+
+                                                                  // Auto-capitalize the first letter
+                                                                  if (inputValue.length > 0) {
+                                                                        inputValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+                                                                  }
+
+                                                                  setEmployeeObj((prev) => ({
+                                                                        ...prev,
+                                                                        lastName: inputValue
+                                                                  }));
+                                                            }}
+                                                      />
+                                                      {error && (employeeObj.lastName === null || employeeObj.lastName === undefined || employeeObj.lastName === '') ? (
+                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                      ) : (
+                                                            ''
+                                                      )}
+                                                </div>
                                           </div>
                                     </div>
-
                                     <div className="row">
                                           <div className="col-12 col-md-6 mb-2">
-                                                <label htmlFor="customerAddress" className="form-label">
-                                                      State
-                                                      <span style={{ color: 'red' }}>*</span>
-                                                </label>
-                                                <Select placeholder='Select State' className="user-role-select phone-input-country-code" />
-                                                {error && (customerObj.address === null || customerObj.address === undefined || customerObj.address === '') ? (
-                                                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                ) : (
-                                                      ''
-                                                )}
+                                                <div>
+                                                      <label htmlFor="vehicleNumber" className="form-label">
+                                                            Select Role
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <Select
+                                                            placeholder="Select Role"
+                                                            options={roleOption}
+                                                            value={roleOption.find((option) => option.value === employeeObj.roleKeyID) || null}
+                                                            onChange={(option) => setEmployeeObj((prev) => ({ ...prev, roleKeyID: option ? option.value : '' }))}
+                                                            menuPosition="fixed"
+                                                      />
+                                                      {error &&
+                                                            (employeeObj.roleKeyID === null || employeeObj.roleKeyID === undefined || employeeObj.roleKeyID === '') ? (
+                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                      ) : (
+                                                            ''
+                                                      )}
+                                                </div>
                                           </div>
+
                                           <div className="col-12 col-md-6 mb-2">
-                                                <label htmlFor="customerAddress" className="form-label">
-                                                      Select   District
-                                                      <span style={{ color: 'red' }}>*</span>
-                                                </label>
-                                                <Select placeholder='Select District' className="user-role-select phone-input-country-code" />
-                                                {error && (customerObj.address === null || customerObj.address === undefined || customerObj.address === '') ? (
-                                                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                ) : (
-                                                      ''
-                                                )}
-                                          </div>
-                                          <div className="col-12 col-md-6 mb-2">
-                                                <label htmlFor="customerAddress" className="form-label">
-                                                      Select   Taluka
-                                                      <span style={{ color: 'red' }}>*</span>
-                                                </label>
-                                                <Select placeholder='Select  Taluka' className="user-role-select phone-input-country-code" />
-                                                {error && (customerObj.address === null || customerObj.address === undefined || customerObj.address === '') ? (
-                                                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                ) : (
-                                                      ''
-                                                )}
-                                          </div>
-                                          <div className="col-12 col-md-6 mb-2">
-                                                <label htmlFor="customerAddress" className="form-label">
-                                                      Select Project
-                                                      <span style={{ color: 'red' }}>*</span>
-                                                </label>
-                                                <Select options={projectOptions()} placeholder='Select  Project' className="user-role-select phone-input-country-code" />
-                                                {error && (customerObj.address === null || customerObj.address === undefined || customerObj.address === '') ? (
-                                                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                ) : (
-                                                      ''
-                                                )}
-                                          </div>
+                                                <div>
+                                                      <label className="form-label">
+                                                            Select Company
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <div>
+                                                            <Select
+                                                                  value={companyOption.find((option) => option.value === employeeObj.companyKeyID) || null}
+                                                                  onChange={(option) => setEmployeeObj((prev) => ({ ...prev, companyKeyID: option ? option.value : '' }))}
 
-
-                                    </div>
-
-
-                                    <div className="row">
-                                          <div className="mb-3">
-                                                <label htmlFor="pdfUpload" className="form-label fw-bold">
-                                                      Upload PDF
-                                                </label>
-                                                <input
-                                                      type="file"
-                                                      className={`form-control ${error ? "is-invalid" : ""}`}
-                                                      id="pdfUpload"
-                                                      accept="application/pdf"
-                                                      onChange={handleFileChange}
-                                                />
-                                                {error && <div className="invalid-feedback">{error}</div>}
-
-                                                {selectedFile && (
-                                                      <div className="mt-2 text-success">
-                                                            ✅ Selected: <strong>{selectedFile.name}</strong>
+                                                                  options={companyOption} placeholder='Select Company' />
+                                                            {error &&
+                                                                  (employeeObj.companyKeyID === null || employeeObj.companyKeyID === undefined || employeeObj.companyKeyID === '') ? (
+                                                                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                            ) : (
+                                                                  ''
+                                                            )}
                                                       </div>
-                                                )}
+                                                </div>
+                                          </div>
+
+
+                                    </div>
+
+                                    <div className="row">
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <div>
+                                                      <label className="form-label">
+                                                            Employee Code
+                                                      </label>
+                                                      <div>
+                                                            <input
+                                                                  maxLength={50}
+                                                                  type="text"
+                                                                  className="form-control"
+                                                                  id="customerLName"
+                                                                  placeholder="Enter Employee Code"
+                                                                  aria-describedby="Employee"
+                                                                  value={employeeObj.empCode}
+                                                                  onChange={(e) => {
+                                                                        setErrorMessage(false);
+                                                                        let InputValue = e.target.value;
+                                                                        // Allow letters, numbers, spaces, and special characters like @, &, ., -, _
+                                                                        const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s@&.\-_]/g, '');
+                                                                        setEmployeeObj((prev) => ({
+                                                                              ...prev,
+                                                                              empCode: updatedValue
+                                                                        }));
+                                                                  }}
+                                                            />
+                                                            {error && (employeeObj.empCode === null || employeeObj.empCode === undefined || employeeObj.empCode === '') ? (
+                                                                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                            ) : (
+                                                                  ''
+                                                            )}
+                                                      </div>
+                                                </div>
+                                          </div>
+
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <div>
+                                                      <label htmlFor="vehicleNumber" className="form-label">
+                                                            Email
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <input
+                                                            maxLength={50}
+                                                            type="text"
+                                                            className="form-control"
+                                                            id="customerAddress"
+                                                            placeholder="Enter Email"
+                                                            aria-describedby="Employee"
+                                                            value={employeeObj.emailID}
+                                                            onChange={(e) => {
+                                                                  const inputValue = e.target.value;
+                                                                  const trimmedValue = inputValue.replace(/\s+/g, '').replace(/\.{2,}/g, '.'); // Remove consecutive dots
+                                                                  setEmployeeObj((prev) => ({
+                                                                        ...prev,
+                                                                        emailID: trimmedValue // Use `trimmedValue`
+                                                                  }));
+                                                            }}
+                                                      />
+
+                                                      {error && (
+                                                            <>
+                                                                  {(!employeeObj.emailID || employeeObj.emailID.trim() === '') && (
+                                                                        <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                                  )}
+                                                                  {!(!employeeObj.emailID || employeeObj.emailID.trim() === '') && !emailRegex.test(employeeObj.emailID) && (
+                                                                        <label className="validation" style={{ color: 'red' }}>
+                                                                              Enter a valid email.
+                                                                        </label>
+                                                                  )}
+                                                            </>
+                                                      )}
+                                                </div>
                                           </div>
                                     </div>
+
+                                    <div className="row">
+
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <div>
+                                                      <label htmlFor="mobileNo" className="form-label">
+                                                            Mobile Number
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <input
+                                                            maxLength={10}
+                                                            type="text"
+                                                            className="form-control"
+                                                            id="mobileNo"
+                                                            placeholder="Enter Contact Number"
+                                                            value={employeeObj.mobileNo}
+                                                            onChange={(e) => {
+                                                                  setErrorMessage('');
+                                                                  const value = e.target.value;
+                                                                  let FormattedNumber = value.replace(/[^0-9]/g, ''); // Allows only numbers
+
+                                                                  // Apply regex to ensure the first digit is between 6 and 9
+                                                                  FormattedNumber = FormattedNumber.replace(/^[0-5]/, '');
+                                                                  setEmployeeObj((prev) => ({
+                                                                        ...prev,
+                                                                        mobileNo: FormattedNumber
+                                                                  }));
+                                                            }}
+                                                      />
+                                                      <span style={{ color: 'red' }}>
+                                                            {error &&
+                                                                  (employeeObj.mobileNo === null || employeeObj.mobileNo === undefined || employeeObj.mobileNo === '')
+                                                                  ? ERROR_MESSAGES
+                                                                  : (employeeObj.mobileNo !== null || employeeObj.mobileNo !== undefined) &&
+                                                                        employeeObj?.mobileNo?.length < 10
+                                                                        ? 'Invalid phone Number'
+                                                                        : ''}
+                                                      </span>
+                                                </div>
+                                          </div>
+
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <div>
+                                                      <label htmlFor="vehicleNumber" className="form-label">
+                                                            Address
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <textarea
+                                                            className="form-control"
+                                                            placeholder="Enter Address"
+                                                            maxLength={250}
+                                                            value={employeeObj.address}
+                                                            onChange={(e) => {
+                                                                  setErrorMessage(false);
+                                                                  let InputValue = e.target.value;
+                                                                  // Updated regex to allow common special characters for addresses
+                                                                  const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s,.-/#&()]/g, '');
+                                                                  setEmployeeObj((prev) => ({
+                                                                        ...prev,
+                                                                        address: updatedValue
+                                                                  }));
+                                                            }}
+                                                      />
+                                                      {error && (employeeObj.address === null || employeeObj.address === undefined || employeeObj.address === '') ? (
+                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                      ) : (
+                                                            ''
+                                                      )}
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div className="row">
+
+
+
+
+
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <div>
+                                                      <label htmlFor="Password" className="form-label">
+                                                            Password
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <div className="input-group">
+                                                            <input
+                                                                  maxLength={15}
+                                                                  type={showPassword ? 'text' : 'Password'} // Toggle input type
+                                                                  className="form-control"
+                                                                  placeholder="Enter Password"
+                                                                  value={employeeObj.password}
+                                                                  onChange={(e) => {
+                                                                        let InputValue = e.target.value;
+                                                                        // Allow alphanumeric characters and special characters like @, #, $, %, &, *, !
+                                                                        const updatedValue = InputValue.replace(/[^a-zA-Z0-9@#$%&*!]/g, '');
+                                                                        setEmployeeObj((prev) => ({
+                                                                              ...prev,
+                                                                              password: updatedValue
+                                                                        }));
+                                                                  }}
+                                                            />
+                                                            <button
+                                                                  type="button"
+                                                                  className="btn btn-outline-secondary"
+
+                                                                  onClick={() => setShowPassword((prev) => !prev)} // Toggle Password visibility
+                                                            >
+                                                                  {showPassword ? <i class="fa-regular fa-eye-slash"></i> : <i class="fa fa-eye" aria-hidden="true"></i>}
+                                                            </button>
+                                                      </div>
+                                                      {error &&
+                                                            (
+                                                                  employeeObj.password === null ||
+                                                                  employeeObj.password === undefined ||
+                                                                  employeeObj.password === '' ||
+                                                                  employeeObj.password.length < 8
+                                                            ) ? (
+                                                            <span style={{ color: 'red' }}>
+                                                                  {employeeObj.password && employeeObj.password.length < 8
+                                                                        ? 'Password must be at least 8 characters long'
+                                                                        : ERROR_MESSAGES}
+                                                            </span>
+                                                      ) : (
+                                                            ''
+                                                      )}
+
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <span style={{ color: 'red' }}>{errorMessage}</span>
                               </div>
                         </Modal.Body>
                         <Modal.Footer>
                               <Button variant="secondary" onClick={onHide}>
                                     Close
                               </Button>
-                              <button type="submit" style={{ backgroundColor: '#ffaa33', color: 'white' }} className="btn text-center" onClick={() => AddVehicleBtnClick()}>
+                              <button className="btn text-center" style={{ background: '#ffaa33', color: 'white' }} onClick={() => Submit()}>
                                     Submit
                               </button>
                         </Modal.Footer>

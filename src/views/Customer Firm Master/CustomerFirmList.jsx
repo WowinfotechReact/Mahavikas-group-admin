@@ -146,9 +146,8 @@ const CustomerFirmList = () => {
     GetInstituteListData(1, capitalizedValue, toDate, fromDate);
   };
 
-  const instituteUserBtnClick = () => {
-    setShowInstituteUserModal(true)
-    navigate('/institute-employee')
+  const instituteUserBtnClick = (row) => {
+    navigate('/institute-employee', { state: { instituteKeyID: row.instituteKeyID, instituteName: row.instituteName } })
   }
 
   const handlePageChange = (pageNumber) => {

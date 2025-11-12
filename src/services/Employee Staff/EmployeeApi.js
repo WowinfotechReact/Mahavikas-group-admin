@@ -25,6 +25,14 @@ export const EmployeeProfileUpdation = async (url = '', params) => {
   const res = await postApiWithAuthenticated(`${EmployeeBaseUrl}${url}`, params);
   return res;
 };
+export const AddUpdateAppUser = async (url = '', params) => {
+  if (params.employeeKeyID === null || params.employeeKeyID === undefined) {
+    delete params.employeeKeyID;
+  }
+
+  const res = await postApiWithAuthenticated(`${EmployeeBaseUrl}${url}`, params);
+  return res;
+};
 export const GetEmployeeLookupList = async (params) => {
   
   const res = await postApiWithAuthenticated(`${EmployeeBaseUrl}${'/GetEmployeeLookupList'}`, params);
