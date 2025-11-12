@@ -272,7 +272,7 @@ const ProductList = () => {
                 ))}
               </tbody>
             </table>
-            {totalCount === 0 && <NoResultFoundModel totalRecords={totalCount} />}
+            {/* {totalCount === 0 && <NoResultFoundModel totalRecords={totalCount} />} */}
           </div>
 
           <div className="d-flex justify-content-end">

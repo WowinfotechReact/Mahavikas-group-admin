@@ -22,6 +22,7 @@ import ProjectWiseAttendanceReport from 'views/Reports/ProjectWiseAttendanceRepo
 import InstituteWiseAttendanceReport from 'views/Reports/InstituteWiseAttendanceReport';
 import MasterServiceList from 'views/Master Crud/Master Service/MasterServiceList';
 import SiteEngineerReport from 'views/Reports/SiteEngineerReport';
+import ZoneManager from 'views/Master Crud/Zone Master/ZoneAssignedList';
 const Profile = Loadable(lazy(() => import('Profile')));
 const EmployeeList = Loadable(lazy(() => import('views/Employee/EmployeeList')));
 const CustomerFirmList = Loadable(lazy(() => import('views/Customer Firm Master/CustomerFirmList')));
@@ -170,6 +171,14 @@ const MainRoutes = {
       element: (
         <Suspense fallback={<Loader />}>
           <PermissionList />
+        </Suspense>
+      )
+    },
+    {
+      path: '/zone-manager',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <ZoneManager />
         </Suspense>
       )
     },

@@ -40,6 +40,7 @@ const routeTitles = {
   '/designation': 'Designation - Maha Vikas Group',
   '/master-service': 'Services - Maha Vikas Group',
   '/site-engineer-report': 'Site Engineer Report - Maha Vikas Group',
+  '/zone-manager': 'Zone Manager - Maha Vikas Group',
   '/employee-list': 'Employee Master - Maha Vikas Group',
   '/project-wise-attendance-report': 'Project Wise Attendance Report - Maha Vikas Group',
   '/employee-type': 'Employee Type - Alpha Tech System | Battery & Inverter Sales, Service & Maintenance',

@@ -236,6 +236,7 @@ export default {
 
 
 
+
           ]
         },
         {
@@ -246,6 +247,14 @@ export default {
           url: '/employee-type',
           icon: icons['FolderOutlinedIcon'],
           children: [
+            {
+              id: 'Master',
+              title: 'Master Zone ',
+              moduleName: 'Customer',
+              type: 'item',
+              icon: icons['CabinIcon'],
+              url: '/zone-manager'
+            },
             {
               id: 'Master',
               title: 'State',

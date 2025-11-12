@@ -36,7 +36,7 @@ const Login = () => {
   const [ErrorMessage, setErrorMessage] = useState();
   const [showPassword, setShowPassword] = useState(false);
   const [LoginObj, setLoginObj] = useState({
-    mobileNumber: null,
+    mobileNo: null,
     password: '',
     loginFrom: null,
     macAddress: null
@@ -66,10 +66,10 @@ const Login = () => {
   // 2] This function validate email id & password is in valid format
   const LoginBtnClicked = () => {
     setErrorMessage('');
-    if (!LoginObj.mobileNumber || !LoginObj.password) {
+    if (!LoginObj.mobileNo || !LoginObj.password) {
       setRequireErrorMessage("This fields are required");
       return false;
-    } else if (LoginObj.mobileNumber.length !== 10) {
+    } else if (LoginObj.mobileNo.length !== 10) {
       setRequireErrorMessage("Mobile number must be 10 digits");
       return false;
     } else {
@@ -79,13 +79,13 @@ const Login = () => {
 
 
     const ApiRequest_ParamsObj = {
-      mobileNumber: LoginObj.mobileNumber,
+      mobileNo: LoginObj.mobileNo,
       password: LoginObj.password,
-      loginFrom: 'Admin Panel',
-      macAddress: null
+      roleID: 1,
+      companyID: 1
 
 
-      // mobileNumber: "8798789798",
+      // mobileNo: "8798789798",
       // password: "Wowadmin@1",
       // loginFrom: "CRM Panel",
       // macAddress: "123456789"
@@ -175,7 +175,7 @@ const Login = () => {
             </span>
             <div className="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
               <input className="input100" type="text" name="email"
-                value={LoginObj.mobileNumber}
+                value={LoginObj.mobileNo}
                 inputProps={{ maxLength: 10 }}
                 autoComplete="off"
                 placeholder="Enter 10-digit mobile number"
@@ -185,7 +185,7 @@ const Login = () => {
                   const updatedValue = inputValue.replace(/[^0-9]/g, ''); // only numbers allowed
                   setLoginObj({
                     ...LoginObj,
-                    mobileNumber: updatedValue
+                    mobileNo: updatedValue
                   });
                 }} />
 
@@ -195,7 +195,7 @@ const Login = () => {
               </span>
             </div>
 
-            {requireErrorMessage && (!LoginObj.mobileNumber || LoginObj.mobileNumber.trim() === "") && (
+            {requireErrorMessage && (!LoginObj.mobileNo || LoginObj.mobileNo.trim() === "") && (
               <label className="validation mt-1" style={{ color: "red" }}>
                 {ERROR_MESSAGES}
               </label>

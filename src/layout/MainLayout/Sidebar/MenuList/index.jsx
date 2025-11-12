@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
 // material-ui
 import { Typography } from '@mui/material';
@@ -6,42 +6,17 @@ import { Typography } from '@mui/material';
 // project import
 import NavGroup from './NavGroup';
 import menuItem from 'menu-items';
-import { ConfigContext } from 'context/ConfigContext';
-import { hasPermission } from 'Middleware/permissionUtils';
-// ==============================|| MENULIST ||============================== //
-const filterMenuItemsByPermission = (items, permissions) => {
-  return items
-    .map((item) => {
-      if (item.type === 'item') {
-        // Match with item.moduleName instead of item.id
-        return hasPermission(permissions, item.moduleName) ? item : null;
-      }
 
-      if (item.type === 'collapse' || item.type === 'group') {
-        const visibleChildren = filterMenuItemsByPermission(item.children || [], permissions);
-        return visibleChildren.length ? { ...item, children: visibleChildren } : null;
-      }
-
-      return null;
-    })
-    .filter(Boolean);
-};
-
-
+// ==============================|| MENULIST (NO PERMISSIONS) ||============================== //
 const MenuList = ({ drawerToggle }) => {
-  const { permissions } = useContext(ConfigContext);
-
-
-  const filteredMenu = filterMenuItemsByPermission(menuItem.items, permissions);
-  console.log(filteredMenu, 'sssssssssssssssss');
-
-  const navItems = filteredMenu.map((item) => {
-    console.log(item, 'wwwwwwwwwwwwwwww');
-
+  // Render all items from menuItem.items without permission checks
+  const navItems = (menuItem.items || []).map((item) => {
     if (item.type === 'group') {
       return <NavGroup key={item.id} item={item} drawerToggle={drawerToggle} />;
     }
 
+    // If you have collapse/item at root and want to handle them,
+    // add more rendering logic here. For now keep a visible fallback.
     return (
       <Typography key={item.id} variant="h6" color="error" align="center">
         Menu Items Error
@@ -49,8 +24,7 @@ const MenuList = ({ drawerToggle }) => {
     );
   });
 
-
-  return navItems;
+  return <>{navItems}</>;
 };
 
 export default MenuList;
