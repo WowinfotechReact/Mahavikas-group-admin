@@ -20,7 +20,7 @@ import { GetCompanyLookupListWithoutAuth } from 'services/Company/CompanyApi';
 const Header = ({ drawerToggle, drawerWidth }) => {
   const { user } = useContext(ConfigContext);
 
-  console.log(user.userKeyID, 'iujgd08s7agd08s7agdysa');
+  console.log(user.selectedCompanies, 'iujgd08s7agd08s7agdysa');
 
   const { companyID, changeCompany } = useAuth();
   const [companyOption, setCompanyOption] = useState([]);
@@ -52,33 +52,35 @@ const Header = ({ drawerToggle, drawerWidth }) => {
 
   const GetCompanyLookupListData = async () => {
     try {
-      const response = await GetCompanyLookupListWithoutAuth();
+      // ❌ No API call needed
+      // const response = await GetCompanyLookupListWithoutAuth();
 
-      if (response?.data?.statusCode === 200) {
-        const companyLookupList = response?.data?.responseData?.data || [];
-        const formattedCompanyList = companyLookupList?.map((company) => ({
-          value: company?.companyKeyID,
-          label: company?.companyName,
-          companyKeyID: company?.companyKeyID
-        }));
+      // ✅ Use ONLY selectedCompanies from user:
+      const formattedCompanyList = user.selectedCompanies?.map((company) => ({
+        value: company.companyKeyID,
+        label: company.companyName,
+        companyKeyID: company.companyKeyID
+      })) || [];
 
-        setCompanyOption(formattedCompanyList);
+      setCompanyOption(formattedCompanyList);
 
-        if (!companyID && formattedCompanyList?.length > 0) {
+      // Auto-select logic remains same
+      if (!companyID && formattedCompanyList.length > 0) {
+        changeCompany(formattedCompanyList[0]?.value);
+      } else if (companyID) {
+        const companyExists = formattedCompanyList.some(c => c.value == companyID);
+        if (!companyExists && formattedCompanyList.length > 0) {
           changeCompany(formattedCompanyList[0]?.value);
-        } else if (companyID) {
-          const companyExists = formattedCompanyList?.some((company) => company.value == companyID);
-          if (!companyExists && formattedCompanyList?.length > 0) {
-            changeCompany(formattedCompanyList[0]?.value);
-          } else {
-            changeCompany(companyID);
-          }
+        } else {
+          changeCompany(companyID);
         }
       }
+
     } catch (error) {
-      console.error('Error fetching company list:', error);
+      console.error("Error:", error);
     }
   };
+
 
   const handleCompanyChange = (selectedOption) => {
     if (!selectedOption) return;
