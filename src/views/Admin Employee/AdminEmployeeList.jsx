@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router';
 import PaginationComponent from 'component/Pagination';
 import { ConfigContext } from 'context/ConfigContext';
-
+import { BsPerson, BsEnvelope, BsTelephone } from "react-icons/bs";
 import NoResultFoundModel from 'component/NoResultFoundModal';
 import ImageModal from 'component/ImageModal';
 import Android12Switch from 'component/Android12Switch';
@@ -18,6 +18,8 @@ import { Link } from 'react-router-dom';
 import InstituteUserAddUpdateModal from 'views/Employee/InstituteUserAddUpdateModal';
 import { GetInstituteList } from 'services/Institute/InstituteApi';
 import AdminEmployeeAddUpdateModal from './AdminEmployeeAddUpdateModal';
+import { GetAppUserList } from 'services/Employee Staff/EmployeeApi';
+import { GetAdminUserList } from 'services/Company/CompanyApi';
 
 const AdminEmployeeList = () => {
       const [stateChangeStatus, setStateChangeStatus] = useState('');
@@ -60,21 +62,21 @@ const AdminEmployeeList = () => {
       useEffect(() => {
             // debugger
             if (isAddUpdateActionDone) {
-                  GetInstituteListData(1, null, toDate, fromDate);
+                  GetAppUserListData(1, null, toDate, fromDate);
                   setSearchKeyword('');
             }
             setIsAddUpdateActionDone(false);
       }, [isAddUpdateActionDone]);
 
       useEffect(() => {
-            GetInstituteListData(1, null, toDate, fromDate);
+            GetAppUserListData(1, null, toDate, fromDate);
       }, [setIsAddUpdateActionDone]);
 
-      const GetInstituteListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
+      const GetAppUserListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
             // debugger
             setLoader(true);
             try {
-                  const data = await GetInstituteList({
+                  const data = await GetAdminUserList({
                         pageSize,
                         userKeyID: user.userKeyID,
                         pageNo: pageNumber - 1, // Page numbers are typically 0-based in API calls
@@ -110,7 +112,7 @@ const AdminEmployeeList = () => {
       const customerViewModalBtnClick = (row) => {
             setModelRequestData({
                   ...modelRequestData,
-                  instituteKeyID: row.instituteKeyID,
+                  userKeyIDForUpdate: row.userKeyIDForUpdate,
                   Action: 'View'
             });
             setOpenCustomerViewModal(true);
@@ -119,7 +121,7 @@ const AdminEmployeeList = () => {
       const CustomerAddBtnClicked = () => {
             setModelRequestData({
                   ...modelRequestData,
-                  instituteKeyID: null,
+                  userKeyIDForUpdate: null,
                   Action: null
             });
             setShowVehicleModal(true);
@@ -127,7 +129,7 @@ const AdminEmployeeList = () => {
       const EditCustomerBtnClick = (row) => {
             setModelRequestData({
                   ...modelRequestData,
-                  instituteKeyID: row.instituteKeyID,
+                  userKeyIDForUpdate: row.userKeyIDForUpdate,
                   Action: 'Update'
             });
             setShowVehicleModal(true);
@@ -143,16 +145,16 @@ const AdminEmployeeList = () => {
             }
             setSearchKeyword(capitalizedValue);
             setCurrentPage(1);
-            GetInstituteListData(1, capitalizedValue, toDate, fromDate);
+            GetAppUserListData(1, capitalizedValue, toDate, fromDate);
       };
 
       const instituteUserBtnClick = (row) => {
-            navigate('/institute-employee', { state: { instituteKeyID: row.instituteKeyID, instituteName: row.instituteName } })
+            navigate('/institute-employee', { state: { userKeyIDForUpdate: row.userKeyIDForUpdate, instituteName: row.instituteName } })
       }
 
       const handlePageChange = (pageNumber) => {
             setCurrentPage(pageNumber);
-            GetInstituteListData(pageNumber, null, toDate, fromDate);
+            GetAppUserListData(pageNumber, null, toDate, fromDate);
       };
 
       const closeAll = () => {
@@ -163,7 +165,7 @@ const AdminEmployeeList = () => {
             setCurrentPage(1);
             setToDate(null);
             setFromDate(null);
-            GetInstituteListData(1, null, null, null);
+            GetAppUserListData(1, null, null, null);
       };
 
       const handleStatusChange = (row) => {
@@ -180,8 +182,8 @@ const AdminEmployeeList = () => {
 
             // debugger
             try {
-                  const { instituteKeyID } = row; // Destructure to access only what's needed
-                  const response = await ChangeCustomerStatus(instituteKeyID, user.userKeyID);
+                  const { userKeyIDForUpdate } = row; // Destructure to access only what's needed
+                  const response = await ChangeCustomerStatus(userKeyIDForUpdate, user.userKeyID);
 
                   if (response && response.data.statusCode === 200) {
                         setLoader(false);
@@ -189,7 +191,7 @@ const AdminEmployeeList = () => {
                         // Successfully changed the status
                         setShowStatusChangeModal(false);
                         setStateChangeStatus(null);
-                        GetInstituteListData(currentPage, null, toDate, fromDate);
+                        GetAppUserListData(currentPage, null, toDate, fromDate);
                         // GetMasterDistrictListData(currentPage, null, toDate, fromDate);
                         setShowSuccessModal(true);
                         setModelAction('Employee status changed successfully.');
@@ -301,13 +303,10 @@ const AdminEmployeeList = () => {
                                           <thead style={{ position: 'sticky', top: -1, zIndex: 1 }}>
                                                 <tr className="text-nowrap">
                                                       <th className="text-center">Sr No.</th>
-                                                      <th className="text-center"> Institute Name</th>
+                                                      <th className="text-center"> Employee Info</th>
 
-                                                      <th className="text-center">Project Name</th>
-                                                      <th className="text-center">State</th>
-                                                      <th className="text-center">District</th>
-                                                      <th className="text-center">Taluka</th>
-                                                      <th className="text-center">Village</th>
+                                                      <th className="text-center">Address </th>
+                                                      <th className="text-center">Company </th>
                                                       <th className="text-center actionSticky">Action</th>
                                                 </tr>
                                           </thead>
@@ -315,44 +314,38 @@ const AdminEmployeeList = () => {
                                                 {vehicleListData?.map((row, idx) => (
                                                       <tr className='text-nowrap' key={idx}>
                                                             <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
-                                                            <td style={{ minWidth: "250px", textAlign: "center", lineHeight: "1.2" }}>
-                                                                  {/* Customer Name */}
-                                                                  <div style={{ fontWeight: 600, fontSize: "14px", marginBottom: "2px", color: "#222" }}>
-                                                                        {row.instituteName}
+                                                            <td className="text-center">
+                                                                  <div className="d-flex flex-column align-items-center">
+                                                                        <div className="d-flex align-items-center gap-2 mb-1">
+                                                                              <BsPerson className="text-primary" />
+                                                                              <span>{row.fullName || "N/A"}</span>
+                                                                        </div>
+
+                                                                        <div className="d-flex align-items-center gap-2">
+                                                                              <BsTelephone className="text-success" />
+                                                                              <span>{row.mobileNo || "N/A"}</span>
+                                                                        </div>
+                                                                        <div className="d-flex align-items-center gap-2 mb-1">
+                                                                              <BsEnvelope className="text-danger" />
+                                                                              <span>{row.emailID || "N/A"}</span>
+                                                                        </div>
                                                                   </div>
+                                                            </td>
+                                                            <td className='text-center'>
+                                                                  {row.address?.length > 30 ? (
+                                                                        <Tooltip title={row.address}>{`${row.address?.substring(0, 30)}...`}</Tooltip>
+                                                                  ) : (
+                                                                        <>{row.address}</>
+                                                                  )}
 
-                                                                  {/* Phone and Email on the same line */}
+                                                            </td>
 
+                                                            <td className='text-center'>
+                                                                  {row.companyName}
                                                             </td>
 
 
 
-                                                            <td className="text-center" style={{ minWidth: "150px" }}>
-                                                                  <div >
-                                                                        <>{row.projectName}</>
-                                                                  </div>
-                                                            </td>
-                                                            <td className="text-center" style={{ minWidth: "150px" }}>
-                                                                  <div >
-                                                                        <>{row.stateName}</>
-                                                                  </div>
-                                                            </td>
-
-                                                            <td className="text-center" style={{ minWidth: "150px" }}>
-                                                                  <div >
-                                                                        <>{row.districtName}</>
-                                                                  </div>
-                                                            </td>
-                                                            <td className="text-center" style={{ minWidth: "150px" }}>
-                                                                  <div >
-                                                                        <>{row.talukaName}</>
-                                                                  </div>
-                                                            </td>
-                                                            <td className="text-center" style={{ minWidth: "150px" }}>
-                                                                  <div >
-                                                                        <>{row.villageName}</>
-                                                                  </div>
-                                                            </td>
 
 
                                                             {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
@@ -375,21 +368,7 @@ const AdminEmployeeList = () => {
                                                                               </button>
                                                                         </Tooltip>
 
-                                                                        <Tooltip title={`Add Employee To ${row.instituteName} Institute`}>
-                                                                              <button
-                                                                                    style={{
-                                                                                          padding: '4px 8px',
-                                                                                          fontSize: '12px',
-                                                                                          height: '28px',
-                                                                                          width: '100px', background: '#ffaa33', color: 'white'
-                                                                                    }}
-                                                                                    onClick={() => instituteUserBtnClick(row)}
-                                                                                    type="button"
-                                                                                    className="btn-sm btn "
-                                                                              >
-                                                                                    Add Employee
-                                                                              </button>
-                                                                        </Tooltip>
+
 
 
 

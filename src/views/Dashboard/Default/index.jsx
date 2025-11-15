@@ -163,7 +163,7 @@ const Default = () => {
             <div className="brand-logo">🏛️</div>
             <div>
               <h4 className="mb-0">{ } Dashboard</h4>
-              <small className="text-muted">{user?.companyName} — Administrative Panel</small>
+              {/* <small className="text-muted">{user?.companyName} — Administrative Panel</small> */}
             </div>
           </div>
         </div>

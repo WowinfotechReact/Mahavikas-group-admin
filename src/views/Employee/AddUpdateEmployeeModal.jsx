@@ -668,27 +668,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                 </div>
               </div>
 
-              <div className="col-12 col-md-6 mb-2">
-                <div>
-                  <label htmlFor="vehicleNumber" className="form-label">
-                    Select Institute
-                    <span style={{ color: 'red' }}>*</span>
-                  </label>
-                  <Select
-                    placeholder="Select Institute"
-                    options={instituteOption}
-                    value={instituteOption.find((option) => option.value === employeeObj.instituteKeyID) || null}
-                    onChange={(option) => setEmployeeObj((prev) => ({ ...prev, instituteKeyID: option ? option.value : '' }))}
-                    menuPosition="fixed"
-                  />
-                  {error &&
-                    (employeeObj.instituteKeyID === null || employeeObj.instituteKeyID === undefined || employeeObj.instituteKeyID === '') ? (
-                    <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                  ) : (
-                    ''
-                  )}
-                </div>
-              </div>
+
               <div className="col-12 col-md-6 mb-2">
                 <div>
                   <label htmlFor="vehicleNumber" className="form-label">

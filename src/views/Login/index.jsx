@@ -206,6 +206,48 @@ const Login = () => {
             <span className="login100-form-title">
               Admin Login
             </span>
+            <div className="wrap-input100 validate-input" data-validate="Company selection is required">
+              <Select
+                placeholder="Select Company"
+                options={companyOption}
+                menuPortalTarget={document.body}
+                menuPosition="fixed"
+                styles={{
+                  menuPortal: base => ({ ...base, zIndex: 9999 }), // ensures it appears on top
+                }}
+
+                isMulti
+                value={companyOption?.filter(option =>
+                  LoginObj?.companyKeyID?.includes(option.value)
+                )}
+                onChange={(selectedOptions) => {
+                  if (!selectedOptions || selectedOptions.length === 0) {
+                    // None selected
+                    setLoginObj(prev => ({ ...prev, companyKeyID: [] }));
+                    return;
+                  }
+
+                  const isAllSelected = selectedOptions.some(opt => opt.value === "ALL");
+
+                  if (isAllSelected) {
+                    // Select all actual company IDs
+                    const allIds = companyOption
+                      .filter(opt => opt.value !== "ALL")
+                      .map(opt => opt.value);
+
+                    setLoginObj(prev => ({ ...prev, companyKeyID: allIds }));
+                  } else {
+                    // Normal multi-select behavior
+                    const ids = selectedOptions.map(opt => opt.value);
+
+                    setLoginObj(prev => ({ ...prev, companyKeyID: ids }));
+                  }
+                }}
+              />
+
+
+
+            </div>
             <div className="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
               <input className="input100" type="text" name="email"
                 value={LoginObj.mobileNo}
@@ -283,42 +325,7 @@ const Login = () => {
                 <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`} aria-hidden="true" />
               </span>
             </div>
-            <div className="wrap-input100 validate-input" data-validate="Company selection is required">
-              <Select
-                placeholder="Select Company"
-                options={companyOption}
-                isMulti
-                value={companyOption?.filter(option =>
-                  LoginObj?.companyKeyID?.includes(option.value)
-                )}
-                onChange={(selectedOptions) => {
-                  if (!selectedOptions || selectedOptions.length === 0) {
-                    // None selected
-                    setLoginObj(prev => ({ ...prev, companyKeyID: [] }));
-                    return;
-                  }
 
-                  const isAllSelected = selectedOptions.some(opt => opt.value === "ALL");
-
-                  if (isAllSelected) {
-                    // Select all actual company IDs
-                    const allIds = companyOption
-                      .filter(opt => opt.value !== "ALL")
-                      .map(opt => opt.value);
-
-                    setLoginObj(prev => ({ ...prev, companyKeyID: allIds }));
-                  } else {
-                    // Normal multi-select behavior
-                    const ids = selectedOptions.map(opt => opt.value);
-
-                    setLoginObj(prev => ({ ...prev, companyKeyID: ids }));
-                  }
-                }}
-              />
-
-
-
-            </div>
 
             <div className="container-login100-form-btn">
               <button onClick={LoginBtnClicked} className="login100-form-btn" style={{ background: '#ff7d34' }}>

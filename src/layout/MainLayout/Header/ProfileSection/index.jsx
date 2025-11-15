@@ -119,19 +119,19 @@ const ProfileSection = () => {
                     width: '100%',
                     maxWidth: 350,
                     minWidth: 250,
-                    backgroundColor: theme.palette.background.paper,
+                    // backgroundColor: theme.palette.background.paper,
                     pb: 0,
                     borderRadius: '10px'
                   }}
                 >
-                  <ListItemButton selected={selectedIndex === 1} onClick={(event) => handleListItemClick(event, 1)}>
+                  <ListItemButton onClick={(event) => handleListItemClick(event, 1)}>
                     <ListItemIcon>
                       <PersonTwoToneIcon />
                     </ListItemIcon>
                     <ListItemText primary="Profile" onClick={() => ClickToProfileUpdate()} />
                   </ListItemButton>
 
-                  <ListItemButton selected={selectedIndex === 4}>
+                  <ListItemButton >
                     <ListItemIcon>
                       <MeetingRoomTwoToneIcon />
                     </ListItemIcon>

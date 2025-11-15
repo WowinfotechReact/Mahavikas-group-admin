@@ -30,23 +30,14 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
       const [errorMessage, setErrorMessage] = useState();
       const [showPassword, setShowPassword] = useState(false);
 
-      const [employeeObj, setEmployeeObj] = useState({
-            password: null,
-            lastName: null,
+      const [adminObj, setAdminObj] = useState({
+            userKeyID: null,
+            userKeyIDForUpdate: null,
             firstName: null,
-            designationID: null,
-            companyKeyID: null,
-            empCode: null,
-            employeeKeyID: null,
-            dateOfJoining: null,
-            dateOfBirth: null,
-            mobileNo: null,
-            alternativeNumber: null,
+            lastName: null,
+            roleKeyID: null,
             emailID: null,
-            bloodGroupID: null,
-            aadhaarNumber: null,
-            panNumber: null,
-            employeeTypeID: null,
+            mobileNo: null,
             password: null,
             address: null
       });
@@ -70,7 +61,26 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
             }
       }, [modelRequestData?.Action]);
 
-
+      useEffect(() => {
+            GetRoleLookupListData()
+      }, [])
+      const GetRoleLookupListData = async () => {
+            try {
+                  const response = await GetRoleLookupList();
+                  if (response?.data?.statusCode === 200) {
+                        const designationList = response?.data?.responseData?.data || [];
+                        const formattedDesignationList = designationList.map((comp) => ({
+                              value: comp.roleKeyID,
+                              label: comp.roleName
+                        }));
+                        setRoleOption(formattedDesignationList);
+                  } else {
+                        console.error('Failed to fetch designation list:', response?.data?.statusMessage || 'Unknown error');
+                  }
+            } catch (error) {
+                  console.error('Error fetching designation list:', error);
+            }
+      };
       useEffect(() => {
             GetCompanyLookupListData();
       }, [show]);
@@ -81,7 +91,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                   if (response?.data?.statusCode === 200) {
                         const designationList = response?.data?.responseData?.data || [];
                         const formattedDesignationList = designationList.map((comp) => ({
-                              value: comp.companyKeyID,
+                              value: comp.roleKeyID,
                               label: comp.companyName
                         }));
                         setCompanyOption(formattedDesignationList);
@@ -111,12 +121,12 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                         setLoader(false);
                         const ModelData = data.data.responseData.data; // Assuming data is an array
                         console.log(ModelData.dateOfBirth, 'dsadsadasdas');
-                        setEmployeeObj({
-                              ...employeeObj,
+                        setAdminObj({
+                              ...adminObj,
                               userKeyIDForUpdate: modelRequestData.userKeyIDForUpdate,
                               firstName: ModelData.firstName,
                               lastName: ModelData.lastName,
-                              companyKeyID: ModelData.companyKeyID,
+                              roleKeyID: ModelData.roleKeyID,
                               emailID: ModelData.emailID,
                               mobileNo: ModelData.mobileNo,
                               password: ModelData.password,
@@ -140,29 +150,29 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
             let isValid = false;
 
             if (
-                  employeeObj.firstName === null ||
-                  employeeObj.firstName === undefined ||
-                  employeeObj.firstName === '' ||
-                  employeeObj.lastName === null ||
-                  employeeObj.lastName === undefined ||
-                  employeeObj.lastName === '' ||
+                  adminObj.firstName === null ||
+                  adminObj.firstName === undefined ||
+                  adminObj.firstName === '' ||
+                  adminObj.lastName === null ||
+                  adminObj.lastName === undefined ||
+                  adminObj.lastName === '' ||
 
 
-                  employeeObj.mobileNo === null ||
-                  employeeObj.mobileNo === undefined ||
-                  employeeObj.mobileNo === '' ||
-                  employeeObj.mobileNo?.length < 10 ||
-                  employeeObj.emailID === undefined ||
-                  employeeObj.emailID === '' ||
-                  employeeObj.emailID === null ||
+                  adminObj.mobileNo === null ||
+                  adminObj.mobileNo === undefined ||
+                  adminObj.mobileNo === '' ||
+                  adminObj.mobileNo?.length < 10 ||
+                  adminObj.emailID === undefined ||
+                  adminObj.emailID === '' ||
+                  adminObj.emailID === null ||
 
-                  employeeObj.password === null ||
-                  employeeObj.password === undefined ||
-                  employeeObj.password === '' ||
-                  employeeObj.password.length < 8 ||
-                  employeeObj.address === null ||
-                  employeeObj.address === undefined ||
-                  employeeObj.address === ''
+                  adminObj.password === null ||
+                  adminObj.password === undefined ||
+                  adminObj.password === '' ||
+                  adminObj.password.length < 8 ||
+                  adminObj.address === null ||
+                  adminObj.address === undefined ||
+                  adminObj.address === ''
             ) {
                   setErrors(true);
                   isValid = true;
@@ -174,13 +184,13 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
             const apiParam = {
                   userKeyID: user.userKeyID,
                   userKeyIDForUpdate: modelRequestData?.userKeyIDForUpdate,
-                  firstName: employeeObj.firstName,
-                  lastName: employeeObj.lastName,
-                  mobileNo: employeeObj.mobileNo,
-                  emailID: employeeObj.emailID,
-                  password: employeeObj.password,
-                  address: employeeObj.address,
-                  companyKeyID: employeeObj.companyKeyID,
+                  firstName: adminObj.firstName,
+                  lastName: adminObj.lastName,
+                  mobileNo: adminObj.mobileNo,
+                  emailID: adminObj.emailID,
+                  password: adminObj.password,
+                  address: adminObj.address,
+                  roleKeyID: adminObj.roleKeyID,
                   instituteKeyID: modelRequestData.instituteKeyID,
             };
             if (!isValid) {
@@ -244,7 +254,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                         <Modal.Header closeButton>
                               <Modal.Title>
                                     <h3 className="text-center">
-                                          {modelRequestData?.Action !== null ? 'Update Employee Of Institute' : modelRequestData?.Action === null ? 'Add Employee For Institute' : ''}
+                                          {modelRequestData?.Action !== null ? 'Update Admin Employee ' : modelRequestData?.Action === null ? 'Add Admin Employee ' : ''}
                                     </h3>
                               </Modal.Title>
                         </Modal.Header>
@@ -264,7 +274,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                             id="customerName"
                                                             placeholder="Enter First Name"
                                                             aria-describedby="Employee"
-                                                            value={employeeObj.firstName}
+                                                            value={adminObj.firstName}
                                                             onChange={(e) => {
                                                                   setErrorMessage(false);
                                                                   let inputValue = e.target.value;
@@ -280,13 +290,13 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                                         inputValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
                                                                   }
 
-                                                                  setEmployeeObj((prev) => ({
+                                                                  setAdminObj((prev) => ({
                                                                         ...prev,
                                                                         firstName: inputValue
                                                                   }));
                                                             }}
                                                       />
-                                                      {error && (employeeObj.firstName === null || employeeObj.firstName === undefined || employeeObj.firstName === '') ? (
+                                                      {error && (adminObj.firstName === null || adminObj.firstName === undefined || adminObj.firstName === '') ? (
                                                             <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                                                       ) : (
                                                             ''
@@ -307,7 +317,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                             id="customerLName"
                                                             placeholder="Enter Last Name"
                                                             aria-describedby="Employee"
-                                                            value={employeeObj.lastName}
+                                                            value={adminObj.lastName}
                                                             onChange={(e) => {
                                                                   setErrorMessage(false);
                                                                   let inputValue = e.target.value;
@@ -323,13 +333,13 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                                         inputValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
                                                                   }
 
-                                                                  setEmployeeObj((prev) => ({
+                                                                  setAdminObj((prev) => ({
                                                                         ...prev,
                                                                         lastName: inputValue
                                                                   }));
                                                             }}
                                                       />
-                                                      {error && (employeeObj.lastName === null || employeeObj.lastName === undefined || employeeObj.lastName === '') ? (
+                                                      {error && (adminObj.lastName === null || adminObj.lastName === undefined || adminObj.lastName === '') ? (
                                                             <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                                                       ) : (
                                                             ''
@@ -343,17 +353,17 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label className="form-label">
-                                                            Select Company
+                                                            Select Role
                                                             <span style={{ color: 'red' }}>*</span>
                                                       </label>
                                                       <div>
                                                             <Select
-                                                                  value={companyOption.find((option) => option.value === employeeObj.companyKeyID) || null}
-                                                                  onChange={(option) => setEmployeeObj((prev) => ({ ...prev, companyKeyID: option ? option.value : '' }))}
+                                                                  value={roleOption.find((option) => option.value === adminObj.roleKeyID) || null}
+                                                                  onChange={(option) => setAdminObj((prev) => ({ ...prev, roleKeyID: option ? option.value : '' }))}
 
-                                                                  options={companyOption} placeholder='Select Company' />
+                                                                  options={roleOption} placeholder='Select Role' />
                                                             {error &&
-                                                                  (employeeObj.companyKeyID === null || employeeObj.companyKeyID === undefined || employeeObj.companyKeyID === '') ? (
+                                                                  (adminObj.roleKeyID === null || adminObj.roleKeyID === undefined || adminObj.roleKeyID === '') ? (
                                                                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                                                             ) : (
                                                                   ''
@@ -371,19 +381,19 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                             className="form-control"
                                                             placeholder="Enter Address"
                                                             maxLength={250}
-                                                            value={employeeObj.address}
+                                                            value={adminObj.address}
                                                             onChange={(e) => {
                                                                   setErrorMessage(false);
                                                                   let InputValue = e.target.value;
                                                                   // Updated regex to allow common special characters for addresses
                                                                   const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s,.-/#&()]/g, '');
-                                                                  setEmployeeObj((prev) => ({
+                                                                  setAdminObj((prev) => ({
                                                                         ...prev,
                                                                         address: updatedValue
                                                                   }));
                                                             }}
                                                       />
-                                                      {error && (employeeObj.address === null || employeeObj.address === undefined || employeeObj.address === '') ? (
+                                                      {error && (adminObj.address === null || adminObj.address === undefined || adminObj.address === '') ? (
                                                             <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                                                       ) : (
                                                             ''
@@ -408,19 +418,19 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                                   id="customerLName"
                                                                   placeholder="Enter Employee Code"
                                                                   aria-describedby="Employee"
-                                                                  value={employeeObj.empCode}
+                                                                  value={adminObj.empCode}
                                                                   onChange={(e) => {
                                                                         setErrorMessage(false);
                                                                         let InputValue = e.target.value;
                                                                         // Allow letters, numbers, spaces, and special characters like @, &, ., -, _
                                                                         const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s@&.\-_]/g, '');
-                                                                        setEmployeeObj((prev) => ({
+                                                                        setAdminObj((prev) => ({
                                                                               ...prev,
                                                                               empCode: updatedValue
                                                                         }));
                                                                   }}
                                                             />
-                                                            {error && (employeeObj.empCode === null || employeeObj.empCode === undefined || employeeObj.empCode === '') ? (
+                                                            {error && (adminObj.empCode === null || adminObj.empCode === undefined || adminObj.empCode === '') ? (
                                                                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                                                             ) : (
                                                                   ''
@@ -442,11 +452,11 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                             id="customerAddress"
                                                             placeholder="Enter Email"
                                                             aria-describedby="Employee"
-                                                            value={employeeObj.emailID}
+                                                            value={adminObj.emailID}
                                                             onChange={(e) => {
                                                                   const inputValue = e.target.value;
                                                                   const trimmedValue = inputValue.replace(/\s+/g, '').replace(/\.{2,}/g, '.'); // Remove consecutive dots
-                                                                  setEmployeeObj((prev) => ({
+                                                                  setAdminObj((prev) => ({
                                                                         ...prev,
                                                                         emailID: trimmedValue // Use `trimmedValue`
                                                                   }));
@@ -455,10 +465,10 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
 
                                                       {error && (
                                                             <>
-                                                                  {(!employeeObj.emailID || employeeObj.emailID.trim() === '') && (
+                                                                  {(!adminObj.emailID || adminObj.emailID.trim() === '') && (
                                                                         <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                                                                   )}
-                                                                  {!(!employeeObj.emailID || employeeObj.emailID.trim() === '') && !emailRegex.test(employeeObj.emailID) && (
+                                                                  {!(!adminObj.emailID || adminObj.emailID.trim() === '') && !emailRegex.test(adminObj.emailID) && (
                                                                         <label className="validation" style={{ color: 'red' }}>
                                                                               Enter a valid email.
                                                                         </label>
@@ -479,7 +489,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                             className="form-control"
                                                             id="mobileNo"
                                                             placeholder="Enter Contact Number"
-                                                            value={employeeObj.mobileNo}
+                                                            value={adminObj.mobileNo}
                                                             onChange={(e) => {
                                                                   setErrorMessage('');
                                                                   const value = e.target.value;
@@ -487,7 +497,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
 
                                                                   // Apply regex to ensure the first digit is between 6 and 9
                                                                   FormattedNumber = FormattedNumber.replace(/^[0-5]/, '');
-                                                                  setEmployeeObj((prev) => ({
+                                                                  setAdminObj((prev) => ({
                                                                         ...prev,
                                                                         mobileNo: FormattedNumber
                                                                   }));
@@ -495,10 +505,10 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                       />
                                                       <span style={{ color: 'red' }}>
                                                             {error &&
-                                                                  (employeeObj.mobileNo === null || employeeObj.mobileNo === undefined || employeeObj.mobileNo === '')
+                                                                  (adminObj.mobileNo === null || adminObj.mobileNo === undefined || adminObj.mobileNo === '')
                                                                   ? ERROR_MESSAGES
-                                                                  : (employeeObj.mobileNo !== null || employeeObj.mobileNo !== undefined) &&
-                                                                        employeeObj?.mobileNo?.length < 10
+                                                                  : (adminObj.mobileNo !== null || adminObj.mobileNo !== undefined) &&
+                                                                        adminObj?.mobileNo?.length < 10
                                                                         ? 'Invalid phone Number'
                                                                         : ''}
                                                       </span>
@@ -531,12 +541,12 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                                   type={showPassword ? 'text' : 'Password'} // Toggle input type
                                                                   className="form-control"
                                                                   placeholder="Enter Password"
-                                                                  value={employeeObj.password}
+                                                                  value={adminObj.password}
                                                                   onChange={(e) => {
                                                                         let InputValue = e.target.value;
                                                                         // Allow alphanumeric characters and special characters like @, #, $, %, &, *, !
                                                                         const updatedValue = InputValue.replace(/[^a-zA-Z0-9@#$%&*!]/g, '');
-                                                                        setEmployeeObj((prev) => ({
+                                                                        setAdminObj((prev) => ({
                                                                               ...prev,
                                                                               password: updatedValue
                                                                         }));
@@ -553,13 +563,13 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                       </div>
                                                       {error &&
                                                             (
-                                                                  employeeObj.password === null ||
-                                                                  employeeObj.password === undefined ||
-                                                                  employeeObj.password === '' ||
-                                                                  employeeObj.password.length < 8
+                                                                  adminObj.password === null ||
+                                                                  adminObj.password === undefined ||
+                                                                  adminObj.password === '' ||
+                                                                  adminObj.password.length < 8
                                                             ) ? (
                                                             <span style={{ color: 'red' }}>
-                                                                  {employeeObj.password && employeeObj.password.length < 8
+                                                                  {adminObj.password && adminObj.password.length < 8
                                                                         ? 'Password must be at least 8 characters long'
                                                                         : ERROR_MESSAGES}
                                                             </span>

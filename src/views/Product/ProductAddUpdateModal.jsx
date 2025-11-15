@@ -60,7 +60,11 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
   const AddProductBtnClick = () => {
     let isValid = false;
-    if (productObj.projectName === null || productObj.projectName === undefined || productObj.projectName.trim() === '') {
+
+    if (
+      productObj.projectName === null || productObj.projectName === undefined || productObj.projectName === '' ||
+      productObj.projectDescription === null || productObj.projectDescription === undefined || productObj.projectDescription === ''
+    ) {
       setErrors(true);
       isValid = true;
     } else {
@@ -225,6 +229,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                     }));
                   }}
                 />
+                {error && !productObj.projectDescription && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
 
               </div>
 
