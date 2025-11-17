@@ -54,9 +54,9 @@ const Header = ({ drawerToggle, drawerWidth }) => {
     try {
 
       const formattedCompanyList = user.selectedCompanies?.map((company) => ({
-        value: company.companyKeyID,
+        value: company.companyID,
         label: company.companyName,
-        companyKeyID: company.companyKeyID
+        companyID: company.companyID
       })) || [];
 
       setCompanyOption(formattedCompanyList);

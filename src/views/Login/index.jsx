@@ -41,7 +41,7 @@ const Login = () => {
   const [LoginObj, setLoginObj] = useState({
     mobileNo: null,
     password: '',
-    companyKeyID: null,
+    companyID: null,
     loginFrom: null,
     macAddress: null
   });
@@ -92,7 +92,7 @@ const Login = () => {
       mobileNo: LoginObj.mobileNo,
       password: LoginObj.password,
       roleID: 1,
-      companyKeyIDs: LoginObj.companyKeyID
+      companyIDs: LoginObj.companyID
 
 
       // mobileNo: "8798789798",
@@ -175,7 +175,7 @@ const Login = () => {
         const list = response?.data?.responseData?.data || [];
 
         const formattedList = list.map((comp) => ({
-          value: comp.companyKeyID,
+          value: comp.companyID,
           label: comp.companyName
         }));
 
@@ -218,12 +218,12 @@ const Login = () => {
 
                 isMulti
                 value={companyOption?.filter(option =>
-                  LoginObj?.companyKeyID?.includes(option.value)
+                  LoginObj?.companyID?.includes(option.value)
                 )}
                 onChange={(selectedOptions) => {
                   if (!selectedOptions || selectedOptions.length === 0) {
                     // None selected
-                    setLoginObj(prev => ({ ...prev, companyKeyID: [] }));
+                    setLoginObj(prev => ({ ...prev, companyID: [] }));
                     return;
                   }
 
@@ -235,12 +235,12 @@ const Login = () => {
                       .filter(opt => opt.value !== "ALL")
                       .map(opt => opt.value);
 
-                    setLoginObj(prev => ({ ...prev, companyKeyID: allIds }));
+                    setLoginObj(prev => ({ ...prev, companyID: allIds }));
                   } else {
                     // Normal multi-select behavior
                     const ids = selectedOptions.map(opt => opt.value);
 
-                    setLoginObj(prev => ({ ...prev, companyKeyID: ids }));
+                    setLoginObj(prev => ({ ...prev, companyID: ids }));
                   }
                 }}
               />

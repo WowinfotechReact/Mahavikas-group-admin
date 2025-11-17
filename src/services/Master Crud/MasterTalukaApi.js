@@ -26,7 +26,7 @@ export const GetTalukaModel = async (id) => {
 };
 
 export const GetTalukaLookupList = async (id) => {
-  const url = `${MasterTalukaBaseUrl}/GetTalukaLookupList?DistrictKeyIDs=${id}`;
+  const url = `${MasterTalukaBaseUrl}/GetTalukaLookupList?DistrictIDs=${id}`;
 
   const res = await getListWithAuthenticated(url);
   return res;
