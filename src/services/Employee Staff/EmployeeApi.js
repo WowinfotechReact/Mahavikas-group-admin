@@ -39,9 +39,15 @@ export const GetEmployeeLookupList = async (params) => {
   return res;
 };
 
+//not in use
+export const GetEmployeeModel = async (id,UserDetailsKeyID) => {
+  let url = `${EmployeeBaseUrl}/GetAppUserModel`;
 
-export const GetEmployeeModel = async (id) => {
-  let url = `${EmployeeBaseUrl}/GetEmployeeModel?EmployeeKeyID=${id}`;
+  const res = await getListWithAuthenticated(url);
+  return res;
+};
+export const GetAppUserModel = async (id,UserDetailsKeyID) => {
+  let url = `${EmployeeBaseUrl}/GetAppUserModel?UserKeyIDForUpdate=${id}&UserDetailsKeyID=${UserDetailsKeyID}`;
 
   const res = await getListWithAuthenticated(url);
   return res;

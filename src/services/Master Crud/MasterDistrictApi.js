@@ -25,8 +25,8 @@ export const GetDistrictModel = async (id) => {
   return res;
 };
 
-export const GetDistrictLookupList = async (stateID) => {
-  const url = `${MasterDistrictBaseUrl}/GetDistrictLookupList?stateKeyID=${stateID}`;
+export const GetDistrictLookupList = async (zoneKeyIDs) => {
+  const url = `${MasterDistrictBaseUrl}/GetDistrictLookupList?zoneKeyIDs=${zoneKeyIDs}`;
 
   const res = await getListWithAuthenticated(url);
   return res;

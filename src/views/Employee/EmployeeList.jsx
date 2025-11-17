@@ -16,7 +16,7 @@ import SuccessPopupModal from 'component/SuccessPopupModal';
 import { Tooltip } from '@mui/material';
 // import VehicleTableViewModal from './VehicleTableViewModal';
 import AddUpdateEmployeeModal from './AddUpdateEmployeeModal';
-import { ChangeEmployeeStatus, ResetEmployeeMACAddress } from 'services/Employee Staff/EmployeeApi';
+import { ChangeEmployeeStatus, GetAppUserList, ResetEmployeeMACAddress } from 'services/Employee Staff/EmployeeApi';
 import ResetIMEIModal from 'component/Staff/ResetIMEIModal';
 import { Link } from 'react-router-dom';
 import { hasPermission } from 'Middleware/permissionUtils';
@@ -74,23 +74,23 @@ const EmployeeList = () => {
   useEffect(() => {
     // debugger
     if (isAddUpdateActionDone) {
-      GetAdminUserListData(1, null, toDate, fromDate);
+      GetAppUserListData(1, null, toDate, fromDate);
       setSearchKeyword('');
     }
     setIsAddUpdateActionDone(false);
   }, [isAddUpdateActionDone]);
 
   useEffect(() => {
-    GetAdminUserListData(1, null, toDate, fromDate);
+    GetAppUserListData(1, null, toDate, fromDate);
   }, [setIsAddUpdateActionDone]);
 
 
 
-  const GetAdminUserListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
+  const GetAppUserListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
     setLoader(true);
 
     try {
-      const data = await GetAdminUserList({
+      const data = await GetAppUserList({
         pageSize,
         userKeyID: user.userKeyID,
         pageNo: pageNumber - 1, // Page numbers are typically 0-based in API calls
@@ -127,6 +127,7 @@ const EmployeeList = () => {
     setModelRequestData({
       ...modelRequestData,
       userKeyIDForUpdate: null,
+      userDetailsKeyID: null,
       Action: null
     });
     setShowEmployeeModal(true);
@@ -136,6 +137,7 @@ const EmployeeList = () => {
     setModelRequestData({
       ...modelRequestData,
       userKeyIDForUpdate: value.userKeyIDForUpdate,
+      userDetailsKeyID: value.userDetailsKeyID,
       Action: 'Update'
     });
     setShowEmployeeModal(true);
@@ -159,12 +161,12 @@ const EmployeeList = () => {
     }
     setSearchKeyword(capitalizedValue);
     setCurrentPage(1);
-    GetAdminUserListData(1, capitalizedValue, toDate, fromDate);
+    GetAppUserListData(1, capitalizedValue, toDate, fromDate);
   };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    GetAdminUserListData(pageNumber, null, toDate, fromDate);
+    GetAppUserListData(pageNumber, null, toDate, fromDate);
   };
 
   const closeAll = () => {
@@ -175,7 +177,7 @@ const EmployeeList = () => {
     setCurrentPage(1);
     setToDate(null);
     setFromDate(null);
-    GetAdminUserListData(1, null, null, null);
+    GetAppUserListData(1, null, null, null);
   };
 
   const handleStatusChange = (row) => {
@@ -205,7 +207,7 @@ const EmployeeList = () => {
         // Successfully changed the status
         setShowStatusChangeModal(false);
         setStateChangeStatus(null);
-        GetAdminUserListData(currentPage, null, toDate, fromDate);
+        GetAppUserListData(currentPage, null, toDate, fromDate);
         // GetMasterDistrictListData(currentPage, null, toDate, fromDate);
         setShowSuccessModal(true);
         setModelAction('Employee status changed successfully.');
@@ -491,8 +493,9 @@ const EmployeeList = () => {
 
                       <div className="">
 
+                        <Tooltip title="Under Development">
 
-                        <Tooltip title=" Assigned Institute">
+                          {/* <Tooltip title=" Assigned Institute"> */}
                           <button
                             style={{
                               padding: '4px 8px', // Adjust padding for smaller size
@@ -501,7 +504,7 @@ const EmployeeList = () => {
                               // width: '28px', // Set width,
                               background: '#ffaa33', color: 'white'
                             }}
-                            onClick={() => AssignedInstituteBtn()}
+                            // onClick={() => AssignedInstituteBtn()}
                             type="button"
 
                             className="btn-sm btn me-2"
@@ -513,6 +516,7 @@ const EmployeeList = () => {
 
 
                         <Tooltip title="Update Employee">
+                          {/* <Tooltip title="Under Development"> */}
                           <button
                             style={{
                               padding: '4px 8px', // Adjust padding for smaller size
@@ -530,7 +534,8 @@ const EmployeeList = () => {
                           </button>
                         </Tooltip>
 
-                        <Tooltip title="View Employee">
+                        {/* <Tooltip title="View Employee"> */}
+                        <Tooltip title="Under Dev">
                           <button
                             style={{
                               padding: '4px 8px', // Adjust padding for smaller size
@@ -539,7 +544,7 @@ const EmployeeList = () => {
                               width: '48px', // Set width,
                               background: '#ffaa33', color: 'white'
                             }}
-                            onClick={() => viewEmpDetails()}
+                            // onClick={() => viewEmpDetails()}
                             type="button"
 
                             className="btn-sm btn me-2"

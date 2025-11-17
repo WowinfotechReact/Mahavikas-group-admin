@@ -11,6 +11,7 @@ import 'react-date-picker/dist/DatePicker.css';
 import { GetServiceLookupList } from 'services/Services/ServicesApi';
 import { AddUpdateProject, GetProjectModel } from 'services/Project/ProjectApi';
 import { GetCompanyLookupList } from 'services/Company/CompanyApi';
+import dayjs from 'dayjs';
 
 const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
   const [modelAction, setModelAction] = useState('');
@@ -29,7 +30,10 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
     projectKeyID: null,
     projectName: null,
     projectDescription: null,
-    serviceKeyID: null
+    serviceKeyID: null,
+    startDate: null,
+    endDate: null,
+    companyKeyID: null
   });
 
   useEffect(() => {
@@ -48,9 +52,9 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
       const response = await GetServiceLookupList(); // Ensure this function is imported correctly
 
       if (response?.data?.statusCode === 200) {
-        const stateLookupList = response?.data?.responseData?.data || [];
+        const serviceList = response?.data?.responseData?.data || [];
 
-        const formattedIvrList = stateLookupList.map((ivrItem) => ({
+        const formattedIvrList = serviceList.map((ivrItem) => ({
           value: ivrItem.serviceKeyID,
           label: ivrItem.serviceName
         }));
@@ -63,6 +67,9 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
       console.error('Error fetching IVR lookup list:', error);
     }
   };
+
+
+
 
   useEffect(() => {
     GetCompanyLookupListData()
@@ -110,6 +117,8 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
       projectDescription: productObj?.projectDescription,
       serviceKeyID: productObj?.serviceKeyID,
       companyKeyID: companyID,
+      startDate: productObj?.startDate,
+      endDate: productObj?.endDate
     };
 
     if (!isValid) {
@@ -209,6 +218,24 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
       // villageName:''
     }));
   };
+
+
+  const projectStateDateChange = (date) => {
+    setProductObj((prevState) => ({
+      ...prevState,
+      startDate: dayjs(date).format('YYYY-MM-DD')  // Store as string
+    }));
+  };
+  const projectEndDateChange = (date) => {
+    setProductObj((prevState) => ({
+      ...prevState,
+      endDate: dayjs(date).format('YYYY-MM-DD')  // Store as string
+    }));
+  };
+
+
+
+
   return (
     <>
       <Modal size="md" show={show} style={{ zIndex: 1300 }} onHide={onHide} backdrop="static" keyboard={false} centered>
@@ -364,9 +391,12 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                     Start Date
                   </label>
                   <DatePicker
+                    value={productObj?.startDate} // Use "selected" instead of "value"
+                    onChange={projectStateDateChange}
                     id="startDate"
                     label="From Date"
                     format="dd/MM/yyyy"
+
                     clearIcon={null}
                     popperPlacement="bottom-start"
                   />
@@ -377,6 +407,8 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                     End Date
                   </label>
                   <DatePicker
+                    value={productObj?.endDate} // Use "selected" instead of "value"
+                    onChange={projectEndDateChange}
                     id="endDate"
                     label="To Date"
                     format="dd/MM/yyyy"
