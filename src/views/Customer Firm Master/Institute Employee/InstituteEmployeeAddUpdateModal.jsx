@@ -18,7 +18,7 @@ import { AddUpdateVehicleApi, GetVehicleModel } from 'services/Vehicle/VehicleAp
 import { GetVehicleTypeLookupList } from 'services/Master Crud/MasterVehicleTypeApi';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { Tooltip } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 // import AddUpdateCustomerModal from 'views/Customer/AddUpdateCustomerModal';
 import { AddUpdateAppUser, GetEmployeeModel } from 'services/Employee Staff/EmployeeApi';
 import { AddUpdateAdminUser, GetAdminUserModel, GetCompanyLookupList, GetRoleLookupList } from 'services/Company/CompanyApi';
@@ -55,7 +55,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
             address: null
       });
 
-
+      const location = useLocation()
       const [selectedRole, setSelectedRole] = useState(null);
       const [designationOption, setDesignationOption] = useState([]);
       const [companyOption, setCompanyOption] = useState([]);
@@ -78,6 +78,9 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
       useEffect(() => {
             GetCompanyLookupListData();
       }, [show]);
+
+      console.log(location.state, '33333333sssss');
+
 
       const GetCompanyLookupListData = async () => {
             try {
@@ -206,8 +209,8 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   password: employeeObj.password,
                   address: employeeObj.address,
                   roleKeyID: employeeObj.roleKeyID,
-                  companyKeyID: employeeObj.companyKeyID,
-                  instituteKeyID: modelRequestData.instituteKeyID,
+                  companyID: companyID,
+                  instituteID: location.state.instituteKeyID,
             };
             if (!isValid) {
                   AddUpdateAppUserData(apiParam);
@@ -368,95 +371,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
 
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
-                                                      <label className="form-label">
-                                                            Select Company
-                                                            <span style={{ color: 'red' }}>*</span>
-                                                      </label>
-                                                      <div>
-                                                            <Select
-                                                                  value={companyOption.find((option) => option.value === employeeObj.companyKeyID) || null}
-                                                                  onChange={(option) => setEmployeeObj((prev) => ({ ...prev, companyKeyID: option ? option.value : '' }))}
-
-                                                                  options={companyOption} placeholder='Select Company' />
-                                                            {error &&
-                                                                  (employeeObj.companyKeyID === null || employeeObj.companyKeyID === undefined || employeeObj.companyKeyID === '') ? (
-                                                                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                            ) : (
-                                                                  ''
-                                                            )}
-                                                      </div>
-                                                </div>
-                                          </div>
-                                          <div className="col-12 col-md-6 mb-2">
-                                                <div>
-                                                      <label htmlFor="vehicleNumber" className="form-label">
-                                                            Address
-                                                            <span style={{ color: 'red' }}>*</span>
-                                                      </label>
-                                                      <textarea
-                                                            className="form-control"
-                                                            placeholder="Enter Address"
-                                                            maxLength={250}
-                                                            value={employeeObj.address}
-                                                            onChange={(e) => {
-                                                                  setErrorMessage(false);
-                                                                  let InputValue = e.target.value;
-                                                                  // Updated regex to allow common special characters for addresses
-                                                                  const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s,.-/#&()]/g, '');
-                                                                  setEmployeeObj((prev) => ({
-                                                                        ...prev,
-                                                                        address: updatedValue
-                                                                  }));
-                                                            }}
-                                                      />
-                                                      {error && (employeeObj.address === null || employeeObj.address === undefined || employeeObj.address === '') ? (
-                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                      ) : (
-                                                            ''
-                                                      )}
-                                                </div>
-                                          </div>
-
-
-                                    </div>
-
-                                    <div className="row">
-                                          {/* <div className="col-12 col-md-6 mb-2">
-                                                <div>
-                                                      <label className="form-label">
-                                                            Employee Code
-                                                      </label>
-                                                      <div>
-                                                            <input
-                                                                  maxLength={50}
-                                                                  type="text"
-                                                                  className="form-control"
-                                                                  id="customerLName"
-                                                                  placeholder="Enter Employee Code"
-                                                                  aria-describedby="Employee"
-                                                                  value={employeeObj.empCode}
-                                                                  onChange={(e) => {
-                                                                        setErrorMessage(false);
-                                                                        let InputValue = e.target.value;
-                                                                        // Allow letters, numbers, spaces, and special characters like @, &, ., -, _
-                                                                        const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s@&.\-_]/g, '');
-                                                                        setEmployeeObj((prev) => ({
-                                                                              ...prev,
-                                                                              empCode: updatedValue
-                                                                        }));
-                                                                  }}
-                                                            />
-                                                            {error && (employeeObj.empCode === null || employeeObj.empCode === undefined || employeeObj.empCode === '') ? (
-                                                                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                            ) : (
-                                                                  ''
-                                                            )}
-                                                      </div>
-                                                </div>
-                                          </div> */}
-
-                                          <div className="col-12 col-md-6 mb-2">
-                                                <div>
                                                       <label htmlFor="vehicleNumber" className="form-label">
                                                             Email
                                                             <span style={{ color: 'red' }}>*</span>
@@ -531,20 +445,38 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                 </div>
                                           </div>
                                     </div>
-
                                     <div className="row">
 
 
-
-
-                                    </div>
-
-                                    <div className="row">
-
-
-
-
-
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <div>
+                                                      <label htmlFor="vehicleNumber" className="form-label">
+                                                            Address
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <textarea
+                                                            className="form-control"
+                                                            placeholder="Enter Address"
+                                                            maxLength={250}
+                                                            value={employeeObj.address}
+                                                            onChange={(e) => {
+                                                                  setErrorMessage(false);
+                                                                  let InputValue = e.target.value;
+                                                                  // Updated regex to allow common special characters for addresses
+                                                                  const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s,.-/#&()]/g, '');
+                                                                  setEmployeeObj((prev) => ({
+                                                                        ...prev,
+                                                                        address: updatedValue
+                                                                  }));
+                                                            }}
+                                                      />
+                                                      {error && (employeeObj.address === null || employeeObj.address === undefined || employeeObj.address === '') ? (
+                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                      ) : (
+                                                            ''
+                                                      )}
+                                                </div>
+                                          </div>
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="Password" className="form-label">
@@ -595,7 +527,14 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
 
                                                 </div>
                                           </div>
+
+
                                     </div>
+
+
+
+
+
 
                                     <span style={{ color: 'red' }}>{errorMessage}</span>
                               </div>

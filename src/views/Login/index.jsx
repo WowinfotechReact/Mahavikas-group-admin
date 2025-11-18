@@ -12,18 +12,15 @@ import AuthLogin from './AuthLogin';
 import MVGlogo from '../../assets/images/logo.jpeg'
 // assets
 import './main.css'
-import Logo from '../../assets/images/logo.jpeg';
 
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Button, Grid, TextField, FormControl, FormLabel, OutlinedInput, InputAdornment, IconButton } from '@mui/material';
 // assets
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 import { VerifyLoginCredential } from 'services/LoginAuth/LoginApi';
 import { ConfigContext, useAuth } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { useNavigate } from 'react-router';
-import { GetCompanyLookupList, GetCompanyLookupListWithoutAuth } from 'services/Company/CompanyApi';
+import { GetCompanyLookupListWithoutAuth } from 'services/Company/CompanyApi';
 // import Logo from '../../assets/images/velvetLogo.png'
 
 // ==============================|| LOGIN ||============================== //
@@ -38,10 +35,12 @@ const Login = () => {
   const [ErrorMessage, setErrorMessage] = useState();
   const [showPassword, setShowPassword] = useState(false);
   const [companyOption, setCompanyOption] = useState([])
+  const [roleOption, setRoleOption] = useState([])
   const [LoginObj, setLoginObj] = useState({
     mobileNo: null,
     password: '',
     companyID: null,
+    roleID: null,
     loginFrom: null,
     macAddress: null
   });
@@ -76,7 +75,7 @@ const Login = () => {
   // 2] This function validate email id & password is in valid format
   const LoginBtnClicked = () => {
     setErrorMessage('');
-    if (!LoginObj.mobileNo || !LoginObj.password || !LoginObj.companyID) {
+    if (!LoginObj.mobileNo || !LoginObj.password || !LoginObj.companyID || !LoginObj.roleID) {
       setRequireErrorMessage("This fields are required");
       return false;
     } else if (LoginObj.mobileNo.length !== 10) {
@@ -91,14 +90,10 @@ const Login = () => {
     const ApiRequest_ParamsObj = {
       mobileNo: LoginObj.mobileNo,
       password: LoginObj.password,
-      roleID: 1,
+      roleID: LoginObj.roleID,
       companyIDs: LoginObj.companyID
 
 
-      // mobileNo: "8798789798",
-      // password: "Wowadmin@1",
-      // loginFrom: "CRM Panel",
-      // macAddress: "123456789"
 
     };
     LoginData(ApiRequest_ParamsObj);
@@ -140,33 +135,13 @@ const Login = () => {
     }
   }, [location.pathname]);
 
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  // useEffect(() => {
-  //   const fetchIp = async () => {
-  //     try {
-  //       const response = await fetch('https://api.ipify.org?format=json');
-  //       const data = await response.json();
-  //       // setIpAddress(data.ip);
-  //       setLoginObj((prev) => ({
-  //         ...prev,
-  //         macAddress: data.ip
-  //       }));
-  //       console.log(data.ip, 'IP Address');
-  //     } catch (error) {
-  //       console.error('Error fetching IP address:', error);
-  //     }
-  //   };
-  //   fetchIp();
-  // }, []);
 
 
+
+  const roleType = [
+    { label: 'Admin', value: 2 },
+    { label: 'Super Admin', value: 1 }
+  ]
   const GetCompanyLookupListData = async () => {
     try {
       const response = await GetCompanyLookupListWithoutAuth();
@@ -206,6 +181,32 @@ const Login = () => {
             <span className="login100-form-title">
               Admin Login
             </span>
+            <div className="wrap-input100 validate-input" data-validate="Company selection is required">
+              <Select
+                placeholder="Select Role"
+                options={roleType}
+                menuPortalTarget={document.body}
+                menuPosition="fixed"
+                styles={{
+                  menuPortal: base => ({ ...base, zIndex: 9999 }),
+                }}
+                value={roleType.find(option => option.value === LoginObj?.roleID) || null}
+                onChange={(selectedOption) => {
+                  setLoginObj(prev => ({
+                    ...prev,
+                    roleID: selectedOption ? selectedOption.value : null,
+                  }));
+                }}
+              />
+
+
+
+              {requireErrorMessage && (!LoginObj.roleID || LoginObj.roleID === "") && (
+                <label className="validation mt-1" style={{ color: "red" }}>
+                  {ERROR_MESSAGES}
+                </label>
+              )}
+            </div>
             <div className="wrap-input100 validate-input" data-validate="Company selection is required">
               <Select
                 placeholder="Select Company"

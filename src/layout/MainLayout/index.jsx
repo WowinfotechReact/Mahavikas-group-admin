@@ -37,6 +37,7 @@ const OutletDiv = styled((props) => <div {...props} />)(({ theme }) => ({
 const routeTitles = {
   '/': 'Dashboard - Maha Vikas Group',
   '/admin-employee': 'Admin Employee - Maha Vikas Group',
+  '/institute-employee': 'Institute Employee - Maha Vikas Group',
   '/institute-wise-attendance-report': 'Institute Wise Attendance Report - Maha Vikas Group',
   '/field-service-report': 'Field Service Report - Alpha Tech System | Battery & Inverter Sales, Service & Maintenance',
   '/designation': 'Designation - Maha Vikas Group',

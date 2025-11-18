@@ -249,6 +249,13 @@ const CustomerFirmList = () => {
           {/* Top controls */}
 
           <div className="d-flex justify-content-between align-items-center mb-1">
+            <button
+              className="btn btn-light p-1 me-2"
+
+              onClick={() => navigate(-1)}
+            >
+              ⬅
+            </button>
             <div className="flex-grow-1">
               <h5 className="mb-0">
 
