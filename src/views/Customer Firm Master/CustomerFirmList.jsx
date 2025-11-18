@@ -153,7 +153,7 @@ const CustomerFirmList = () => {
   };
 
   const instituteUserBtnClick = (row) => {
-    navigate('/institute-employee', { state: { instituteKeyID: row.instituteKeyID, instituteName: row.instituteName } })
+    navigate('/institute-employee', { state: { instituteKeyID: row.instituteID, instituteName: row.instituteName } })
   }
 
   const handlePageChange = (pageNumber) => {
@@ -294,7 +294,7 @@ const CustomerFirmList = () => {
             </div> */}
 
             <div className="d-flex align-items-center ms-2 gap-2 mt-2 mt-sm-0">
-              <Tooltip title="Add Customer / Firm" >
+              <Tooltip title="Add Institute" >
                 <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
                   <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
                   <span className="d-none d-sm-inline">Add</span>

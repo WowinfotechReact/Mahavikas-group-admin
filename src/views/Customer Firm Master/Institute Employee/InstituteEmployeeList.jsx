@@ -186,6 +186,13 @@ const InstituteEmployeeList = () => {
                               {/* Top controls */}
 
                               <div className="d-flex justify-content-between align-items-center mb-1">
+                                    <button
+                                          className="btn btn-light p-1 me-2"
+
+                                          onClick={() => navigate(-1)}
+                                    >
+                                          ⬅
+                                    </button>
                                     <div className="flex-grow-1">
                                           <h5 className="mb-0">Employee Institute : {location.state.instituteName} </h5>
                                     </div>
@@ -217,7 +224,7 @@ const InstituteEmployeeList = () => {
             </div> */}
 
                                     <div className="d-flex align-items-center ms-2 gap-2 mt-2 mt-sm-0">
-                                          <Tooltip title="Add Customer / Firm" >
+                                          <Tooltip title={`Add Employee Against ${location.state.instituteName}`} >
                                                 <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
                                                       <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
                                                       <span className="d-none d-sm-inline">Add</span>
@@ -243,8 +250,7 @@ const InstituteEmployeeList = () => {
                                                       <th className="text-center"> Employee Name</th>
 
                                                       <th className="text-center">Address</th>
-                                                      <th className="text-center">Role</th>
-                                                      <th className="text-center">Company</th>
+                                                      <th className="text-center">Geo Location Info</th>
                                                       <th className="text-center">Action</th>
                                                 </tr>
                                           </thead>
@@ -277,24 +283,40 @@ const InstituteEmployeeList = () => {
                                                                         <>{row.address}</>
                                                                   </div>
                                                             </td>
-                                                            <td className="text-center" style={{ minWidth: "150px" }}>
-                                                                  <div >
-                                                                        <>{row.roleName}</>
+                                                            <td className="text-start" style={{ minWidth: "250px" }}>
+                                                                  <div style={{ lineHeight: "1.4" }}>
+
+                                                                        {/* Zone */}
+                                                                        <div style={{ marginBottom: "4px", display: "flex", alignItems: "center" }}>
+                                                                              <span style={{ marginRight: "6px" }}>📍</span>
+                                                                              <strong>Zone:</strong>&nbsp;
+                                                                              <span>{row.zoneNames || "-"}</span>
+                                                                        </div>
+
+                                                                        {/* District */}
+                                                                        <div style={{ marginBottom: "4px", display: "flex", alignItems: "center" }}>
+                                                                              <span style={{ marginRight: "6px" }}>🏙️</span>
+                                                                              <strong>District:</strong>&nbsp;
+                                                                              <span>{row.districtNames || "-"}</span>
+                                                                        </div>
+
+                                                                        {/* Taluka */}
+                                                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                                                              <span style={{ marginRight: "6px" }}>🗺️</span>
+                                                                              <strong>Taluka:</strong>&nbsp;
+                                                                              <span>{row.talukaNames || "-"}</span>
+                                                                        </div>
+
                                                                   </div>
                                                             </td>
 
-                                                            <td className="text-center" style={{ minWidth: "150px" }}>
-                                                                  <div >
-                                                                        <>{row.companyName}</>
-                                                                  </div>
-                                                            </td>
 
 
 
                                                             {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                                                             <td className="text-center">
                                                                   <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
-                                                                        <Tooltip title="Update Institute">
+                                                                        <Tooltip title={`Update Employee :- ${row.fullName} `}>
                                                                               <button
                                                                                     style={{
                                                                                           padding: '4px 8px',
@@ -330,7 +352,7 @@ const InstituteEmployeeList = () => {
             )} */}
                               </div>
                         </div>
-                  </div>
+                  </div >
 
                   {showVehicleModal && (
                         <InstituteEmployeeAddUpdateModal
@@ -345,28 +367,33 @@ const InstituteEmployeeList = () => {
                               isAddUpdateActionDone={isAddUpdateActionDone}
                               setIsAddUpdateActionDone={setIsAddUpdateActionDone}
                         />
-                  )}
+                  )
+                  }
                   <StatusChangeModal
                         open={showStatusChangeModal}
                         onClose={() => setShowStatusChangeModal(false)}
                         onConfirm={() => confirmStatusChange(stateChangeStatus, user)} // Pass the required arguments
                   />
-                  {showSuccessModal && (
-                        <SuccessPopupModal
-                              show={showSuccessModal}
-                              onHide={() => closeAllModal()}
-                              setShowSuccessModal={setShowSuccessModal}
-                              modelAction={modelAction}
-                        />
-                  )}
+                  {
+                        showSuccessModal && (
+                              <SuccessPopupModal
+                                    show={showSuccessModal}
+                                    onHide={() => closeAllModal()}
+                                    setShowSuccessModal={setShowSuccessModal}
+                                    modelAction={modelAction}
+                              />
+                        )
+                  }
 
-                  {showInstituteUserModal && (
-                        <InstituteUserAddUpdateModal
-                              show={showInstituteUserModal}
-                              onHide={() => setShowInstituteUserModal(false)}
-                              modelRequestData={modelRequestData}
-                        />
-                  )}
+                  {
+                        showInstituteUserModal && (
+                              <InstituteUserAddUpdateModal
+                                    show={showInstituteUserModal}
+                                    onHide={() => setShowInstituteUserModal(false)}
+                                    modelRequestData={modelRequestData}
+                              />
+                        )
+                  }
                   <ImageModal show={imgModalShow} onHide={() => setImgModalShow(false)} imageUrl={selectedImage} title={imgModalTitle} />
             </>
       );
