@@ -13,7 +13,7 @@ import { hasPermission } from 'Middleware/permissionUtils';
 import { ChangeProjectStatus, GetProjectList } from 'services/Project/ProjectApi';
 
 const ProductList = () => {
-  const { setLoader, user, permissions } = useContext(ConfigContext);
+  const { setLoader, user, permissions, companyID } = useContext(ConfigContext);
   const navigate = useNavigate();
   const [productListData, setProductListData] = useState([])
   const [stateChangeStatus, setStateChangeStatus] = useState('');
@@ -52,7 +52,9 @@ const ProductList = () => {
         fromDate: fromDateParam ? dayjs(fromDateParam).format('YYYY-MM-DD') : null,
         sortingDirection: sortValue ?? sortingDirection,
         sortingColumnName: sortType || ProductSortType || null,
-        userKeyID: user.userKeyID
+        userKeyID: user.userKeyID,
+        companyID: Number(companyID)
+
       });
 
       if (data?.data?.statusCode === 200) {
@@ -280,13 +282,13 @@ const ProductList = () => {
                 ))}
               </tbody>
             </table>
-            {/* {totalCount === 0 && <NoResultFoundModel totalRecords={totalCount} />} */}
+            {totalCount === 0 && <NoResultFoundModel totalRecords={totalCount} />}
           </div>
 
           <div className="d-flex justify-content-end">
-            {/* {totalCount > pageSize && (
+            {totalCount > pageSize && (
               <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
-            )} */}
+            )}
           </div>
         </div>
       </div>

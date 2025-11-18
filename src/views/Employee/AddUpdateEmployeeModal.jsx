@@ -158,6 +158,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       employeeObj.lastName === '' ||
 
 
+
       employeeObj.mobileNo === null ||
       employeeObj.mobileNo === undefined ||
       employeeObj.mobileNo === '' ||
@@ -643,7 +644,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   menuPosition="fixed"
                 />
 
-                {error && (employeeObj.address === null || employeeObj.address === undefined || employeeObj.address === '') ? (
+                {error && (employeeObj.districtIDs === null || employeeObj.districtIDs === undefined || employeeObj.districtIDs === '') ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
                   ''

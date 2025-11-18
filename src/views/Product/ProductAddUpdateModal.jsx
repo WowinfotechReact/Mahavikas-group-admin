@@ -12,6 +12,9 @@ import { GetServiceLookupList } from 'services/Services/ServicesApi';
 import { AddUpdateProject, GetProjectModel } from 'services/Project/ProjectApi';
 import { GetCompanyLookupList } from 'services/Company/CompanyApi';
 import dayjs from 'dayjs';
+import { GetTalukaLookupList } from 'services/Master Crud/MasterTalukaApi';
+import { GetDistrictLookupList } from 'services/Master Crud/MasterDistrictApi';
+import { GetZoneLookupList } from 'services/Master Crud/MasterZoneApi';
 
 const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
   const [modelAction, setModelAction] = useState('');
@@ -25,15 +28,20 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
   const [districtOption, setDistrictOption] = useState([]);
   const [talukaOption, setTalukaOption] = useState([]);
 
+
   const [productObj, setProductObj] = useState({
     userKeyID: null,
     projectKeyID: null,
     projectName: null,
     projectDescription: null,
-    serviceKeyID: null,
+    serviceID: null,
     startDate: null,
     endDate: null,
-    companyKeyID: null
+    companyKeyID: null,
+    zoneIDs: [],
+    districtIDs: [],
+    talukaIDs: [],
+    instituteIDs: []
   });
 
   useEffect(() => {
@@ -55,7 +63,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
         const serviceList = response?.data?.responseData?.data || [];
 
         const formattedIvrList = serviceList.map((ivrItem) => ({
-          value: ivrItem.serviceKeyID,
+          value: ivrItem.serviceID,
           label: ivrItem.serviceName
         }));
 
@@ -83,7 +91,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
         const stateLookupList = response?.data?.responseData?.data || [];
 
         const formattedIvrList = stateLookupList.map((ivrItem) => ({
-          value: ivrItem.serviceKeyID,
+          value: ivrItem.serviceID,
           label: ivrItem.serviceName
         }));
 
@@ -115,10 +123,13 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
       projectName: productObj?.projectName,
       projectKeyID: modelRequestData?.projectKeyID,
       projectDescription: productObj?.projectDescription,
-      serviceKeyID: productObj?.serviceKeyID,
-      companyKeyID: companyID,
+      serviceID: productObj?.serviceID,
+      companyID: companyID,
       startDate: productObj?.startDate,
-      endDate: productObj?.endDate
+      endDate: productObj?.endDate,
+      zoneIDs: Array.isArray(productObj.zoneIDs) ? productObj.zoneIDs : [],
+      districtIDs: Array.isArray(productObj.districtIDs) ? productObj.districtIDs : [],
+      talukaIDs: Array.isArray(productObj.talukaIDs) ? productObj.talukaIDs : [],
     };
 
     if (!isValid) {
@@ -128,7 +139,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
   const handleServiceChange = (selectedOption) => {
     setProductObj((prev) => ({
       ...prev,
-      serviceKeyID: selectedOption ? selectedOption.value : null,
+      serviceID: selectedOption ? selectedOption.value : null,
 
     }));
   };
@@ -178,14 +189,41 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
         setLoader(false);
         const ModelData = data.data.responseData.data;
 
+        const zoneIDs = Array.isArray(ModelData.zoneIDs)
+          ? ModelData.zoneIDs
+          : ModelData.zoneIDs ? [ModelData.zoneIDs] : [];
+
+        const districtIDs = Array.isArray(ModelData.districtIDs)
+          ? ModelData.districtIDs
+          : ModelData.districtIDs ? [ModelData.districtIDs] : [];
+
+        const talukaIDs = Array.isArray(ModelData.talukaIDs)
+          ? ModelData.talukaIDs
+          : ModelData.talukaIDs ? [ModelData.talukaIDs] : [];
+
+        const projectIDs = Array.isArray(ModelData.projectIDs)
+          ? ModelData.projectIDs
+          : ModelData.projectIDs ? [ModelData.projectIDs] : [];
+
         setProductObj({
           ...productObj,
           userKeyID: ModelData.userKeyID,
           projectKeyID: modelRequestData.projectKeyID,
           projectName: ModelData.projectName,
+          startDate: ModelData.startDate,
+          endDate: ModelData.endDate,
           projectDescription: ModelData.projectDescription,
-          serviceKeyID: ModelData.serviceKeyID
+          serviceID: ModelData.serviceID,
+          zoneIDs,
+          districtIDs,
+          talukaIDs,
+          projectIDs,
+
         });
+
+        await GetDistrictLookupListData(zoneIDs);
+        await GetTalukaLookupListData(districtIDs);
+        await GetServiceLookupListData();
       } else {
         setLoader(false);
         console.error('Error fetching data: ', data?.data?.statusCode);
@@ -195,29 +233,105 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
       console.error('Error in product: ', error);
     }
   };
-  const serviceOption = [
-    { value: '1', label: 'MTS' },
-    { value: '2', label: 'Teaching' },
-    { value: '3', label: 'Nursing' },
-  ]
-
-
-  const handleDistrictChange = (selectedOption) => {
+  const handleTalukaChange = (selectedOptions) => {
     setProductObj((prev) => ({
       ...prev,
-      districtKeyID: selectedOption ? selectedOption.value : null,
-      talukaKeyID: '',
-      // villageName:''
+      talukaIDs: selectedOptions ? selectedOptions.map(item => item.value) : []
     }));
   };
 
-  const handleTalukaChange = (selectedOption) => {
-    setProductObj((prev) => ({
-      ...prev,
-      talukaKeyID: selectedOption ? selectedOption.value : null,
-      // villageName:''
-    }));
+
+  useEffect(() => {
+    GetZoneLookupListData()
+  }, [])
+  const GetZoneLookupListData = async () => {
+
+    try {
+      let response = await GetZoneLookupList();
+      if (response?.data?.statusCode === 200) {
+        const zoneList = response?.data?.responseData?.data || [];
+        const formattedCityList = zoneList.map((zone) => ({
+          value: zone.zoneID,
+          label: zone.zoneName
+        }));
+
+        setZoneOption(formattedCityList); // Ensure this is called with correct data
+      } else {
+        console.error('Bad request');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+
+
+  const GetDistrictLookupListData = async (zoneIds = []) => {
+    if (!zoneIds || zoneIds.length === 0) {
+      setDistrictOption([]);
+      return;
+    }
+
+    try {
+      const ZoneIDsParam = zoneIds.join(",");
+
+      let response = await GetDistrictLookupList(ZoneIDsParam);
+
+      if (response?.data?.statusCode === 200) {
+        const list = response?.data?.responseData?.data || [];
+
+        const formatted = list.map((d) => ({
+          value: d.districtID,
+          label: d.districtName,
+        }));
+
+        setDistrictOption(formatted);
+      } else {
+        setDistrictOption([]);
+      }
+    } catch (err) {
+      console.error("Error fetching districts:", err);
+      setDistrictOption([]);
+    }
+  };
+
+
+
+
+  const GetTalukaLookupListData = async (districtIds = []) => {
+    if (!districtIds || districtIds.length === 0) {
+      setTalukaOption([]);
+      return;
+    }
+
+    try {
+      const idsParam = districtIds.join(",");
+
+      const response = await GetTalukaLookupList(idsParam);
+
+      if (response?.data?.statusCode === 200) {
+        const talukaList = response?.data?.responseData?.data || [];
+
+        const formatted = talukaList.map((t) => ({
+          value: t.talukaID,
+          label: t.talukaName
+        }));
+
+        setTalukaOption(formatted);
+      } else {
+        setTalukaOption([]);
+      }
+    } catch (err) {
+      console.error("Error fetching talukas:", err);
+      setTalukaOption([]);
+    }
+  };
+
+
+
+
+
+
 
 
   const projectStateDateChange = (date) => {
@@ -234,6 +348,38 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
   };
 
 
+
+
+
+  const handleDistrictChange = (selectedOptions) => {
+    const ids = selectedOptions ? selectedOptions.map(o => o.value) : [];
+
+    setProductObj(prev => ({
+      ...prev,
+      districtIDs: ids,
+      talukaIDs: [] // clear talukas when district changes
+    }));
+
+    GetTalukaLookupListData(ids);
+  };
+
+
+
+
+  const handleZoneChange = (selectedOptions) => {
+    const selectedZoneIds = selectedOptions
+      ? selectedOptions.map((item) => item.value)
+      : [];
+
+    setProductObj((prev) => ({
+      ...prev,
+      zoneIDs: selectedZoneIds,
+      districtIDs: [] // RESET district when zone changes
+    }));
+
+    // Fetch district list for selected zones
+    GetDistrictLookupListData(selectedZoneIds);
+  };
 
 
   return (
@@ -319,15 +465,19 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                     Select Zone
                     <span style={{ color: 'red' }}>*</span>
                   </label>
+
+
                   <Select
-                    placeholder="Select Zone"
+                    placeholder="Select Zone(s)"
                     options={zoneOption}
-                    value={zoneOption.find((option) => option.value === productObj.zoneKeyList) || null}
-                    onChange={(option) => setProductObj((prev) => ({ ...prev, zoneKeyList: option ? option.value : '' }))}
+                    isMulti
+                    value={zoneOption.filter((item) => productObj.zoneIDs.includes(item.value))}
+                    onChange={handleZoneChange}
                     menuPosition="fixed"
                   />
+
                   {error &&
-                    (productObj.zoneKeyList === null || productObj.zoneKeyList === undefined || productObj.zoneKeyList === '') ? (
+                    (productObj.zoneIDs === null || productObj.zoneIDs === undefined || productObj.zoneIDs === '') ? (
                     <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                   ) : (
                     ''
@@ -339,12 +489,18 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                   Select District
                   <span style={{ color: 'red' }}>*</span>
                 </label>
+
                   <Select
+                    placeholder="Select District(s)"
                     options={districtOption}
-                    value={districtOption.filter((item) => item.value === productObj.districtKeyID)}
+                    isMulti
+                    value={districtOption.filter((item) =>
+                      productObj.districtIDs.includes(item.value)
+                    )}
                     onChange={handleDistrictChange}
                     menuPosition="fixed"
-                  />                {error && (productObj.address === null || productObj.address === undefined || productObj.address === '') ? (
+                  />
+                  {error && (productObj.districtIDs === null || productObj.districtIDs === undefined || productObj.districtIDs === '') ? (
                     <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                   ) : (
                     ''
@@ -358,11 +514,15 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                     <span style={{ color: 'red' }}>*</span>
                   </label>
                   <Select
+                    placeholder="Select Taluka(s)"
                     options={talukaOption}
-                    value={talukaOption.filter((item) => item.value === productObj.talukaKeyID)}
+                    isMulti
+                    value={talukaOption.filter((item) =>
+                      productObj.talukaIDs.includes(item.value)
+                    )}
                     onChange={handleTalukaChange}
                     menuPosition="fixed"
-                  />                {error && (productObj.address === null || productObj.address === undefined || productObj.address === '') ? (
+                  />              {error && (productObj.address === null || productObj.address === undefined || productObj.address === '') ? (
                     <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                   ) : (
                     ''
@@ -376,11 +536,21 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                   </label>
                   <Select
                     options={servicesOption}
-                    value={servicesOption.filter((item) => item.value === productObj.serviceKeyID)}
-                    onChange={handleServiceChange}
+                    value={
+                      servicesOption.find(
+                        (item) => item.value === Number(productObj.serviceID)
+                      ) || null
+                    }
+                    onChange={(selected) => {
+                      setProductObj(prev => ({
+                        ...prev,
+                        serviceID: Number(selected.value)
+                      }));
+                    }}
                     menuPosition="fixed"
                   />
-                  {error && !productObj.serviceKeyID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
+
+                  {error && !productObj.serviceID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
                   {errorMessage && <span style={{ color: 'red' }}>{errorMessage}</span>}
                 </div>
               </div>
