@@ -197,14 +197,14 @@ export default {
           icon: icons['AccountTreeIcon'],
           url: '/project'
         },
-        {
-          id: 'customer/firm ',
-          moduleName: 'Customer',
-          title: 'Institute',
-          type: 'item',
-          icon: icons['PersonIcon'],
-          url: '/institute-master'
-        },
+        // {
+        //   id: 'customer/firm ',
+        //   moduleName: 'Customer',
+        //   title: 'Institute',
+        //   type: 'item',
+        //   icon: icons['PersonIcon'],
+        //   url: '/institute-master'
+        // },
 
 
 

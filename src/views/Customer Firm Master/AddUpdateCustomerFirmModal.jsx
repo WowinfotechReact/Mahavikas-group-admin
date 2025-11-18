@@ -18,14 +18,10 @@ import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { AddUpdateInstitute, GetInstituteModel } from 'services/Institute/InstituteApi';
-import { GetStateLookupList } from 'services/Master Crud/MasterStateApi';
-import { GetVillageLookupList } from 'services/Master Crud/MasterVillageApi';
-import { GetProjectLookupList } from 'services/Project/ProjectApi';
 import { GetDistrictLookupList } from 'services/Master Crud/MasterDistrictApi';
 import { GetTalukaLookupList } from 'services/Master Crud/MasterTalukaApi';
+import { GetZoneLookupList } from 'services/Master Crud/MasterZoneApi';
 const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
-  const [customerOption, setCustomerOption] = useState([]);
-  const [showCustomerModal, setShowCustomerModal] = useState(false);
   const { user, setLoader, companyID } = useContext(ConfigContext);
   const [modelAction, setModelAction] = useState('');
   const [error, setErrors] = useState(null);
@@ -36,25 +32,24 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
   const [districtOption, setDistrictOption] = useState([]);
   const [talukaOption, setTalukaOption] = useState([]);
   const [villageOption, setVillageOption] = useState([]);
-  const [projectOption, setProjectOption] = useState([])
+  const [zoneOption, setZoneOption] = useState([]);
+
   const [instituteObj, setInstituteObj] = useState({
     userKeyID: null,
     instituteKeyID: null,
     instituteName: null,
-    projectKeyID: null,
-    stateKeyID: null,
-    districtKeyID: null,
-    talukaKeyID: null,
-    villageKeyID: null
+
+
+    institutDescription: null,
+    projectID: null,
+    companyID: null,
+    zoneID: null,
+    districtID: null,
+    talukaID: null,
+    institutePDF: null
   });
 
-  // useEffect(() => {
-  //   if (modelRequestData?.Action === 'Update') {
-  //     if (modelRequestData?.instituteKeyID !== null) {
-  //       GetInstituteModelData(modelRequestData?.instituteKeyID);
-  //     }
-  //   }
-  // }, [modelRequestData?.Action]);
+
 
   const [selectedFile, setSelectedFile] = useState(null);
   const handleFileChange = (e) => {
@@ -70,20 +65,24 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
     }
   };
 
+  const handleZoneChange = (selectedOption) => {
+    setInstituteObj(prev => ({
+      ...prev,
+      zoneID: selectedOption ? selectedOption.value : null,
+      districtID: null,
+      talukaID: null
+    }));
 
-  const projectOptions = () => [
-    { value: 1, label: "Secondary & Higher Secondary Teacher Bharti 2025" },
-    { value: 2, label: "Primary Teacher Bharti 2025" },
-    { value: 3, label: "Shikshak Bharti 2025Secondary & Higher Secondary Teacher Bharti 2025" },
+    GetDistrictLookupListData(selectedOption ? [selectedOption.value] : []);
+  };
 
-  ]
   const AddVehicleBtnClick = async () => {
     let isValid = false;
     // debugger
     // Start with false, set to true if any error occurs
     let hasError = false;
 
-
+    debugger
 
     // Validation logic
     if (
@@ -91,18 +90,19 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
         instituteObj.instituteName === null ||
         instituteObj.instituteName === undefined ||
         instituteObj.instituteName === '' ||
-        instituteObj.stateKeyID === null ||
-        instituteObj.stateKeyID === null ||
-        instituteObj.stateKeyID === undefined ||
-        instituteObj.districtKeyID === undefined ||
-        instituteObj.districtKeyID === undefined ||
-        instituteObj.districtKeyID === '' ||
-        instituteObj.talukaKeyID === '' ||
-        instituteObj.talukaKeyID === '' ||
-        instituteObj.talukaKeyID === '' ||
-        instituteObj.villageKeyID === null ||
-        instituteObj.villageKeyID === undefined ||
-        instituteObj.villageKeyID === ''
+        instituteObj.zoneID === null ||
+        instituteObj.zoneID === null ||
+        instituteObj.zoneID === undefined ||
+        instituteObj.districtID === undefined ||
+        instituteObj.districtID === undefined ||
+        instituteObj.districtID === '' ||
+        instituteObj.talukaID === '' ||
+        instituteObj.talukaID === '' ||
+        instituteObj.talukaID === '' ||
+        instituteObj.institutDescription === null ||
+        instituteObj.institutDescription === undefined ||
+        instituteObj.institutDescription === ''
+
       )) {
       setErrors(true);
       isValid = true;
@@ -116,11 +116,14 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       userKeyID: user.userKeyID,
       instituteKeyID: modelRequestData.instituteKeyID,
       instituteName: instituteObj.instituteName,
-      stateKeyID: instituteObj.stateKeyID,
-      districtKeyID: instituteObj.districtKeyID,
-      talukaKeyID: instituteObj.talukaKeyID,
+      zoneID: instituteObj.zoneID,
+      districtID: instituteObj.districtID,
+      talukaID: instituteObj.talukaID,
       villageKeyID: instituteObj.villageKeyID,
-      projectKeyID: 'CD69643C-CB99-4174-960F-0D053CC6F3BB'
+      projectID: modelRequestData.projectID,
+      institutDescription: instituteObj.institutDescription,
+      institutePDF: null,
+      companyID: companyID,
 
     };
 
@@ -132,8 +135,16 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       AddUpdateInstituteData(jsonData);
     }
   };
+  const handleTalukaChange = (selectedOption) => {
+    setInstituteObj(prev => ({
+      ...prev,
+      talukaID: selectedOption ? selectedOption.value : null
+    }));
+  };
+
 
   const AddUpdateInstituteData = async (apiParam) => {
+
     setLoader(true);
     try {
       let url = '/AddUpdateInstitute'; // Default URL for Adding Data
@@ -178,74 +189,60 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
 
     try {
       const data = await GetInstituteModel(id);
+
       if (data?.data?.statusCode === 200) {
         const ModelData = data.data.responseData.data;
 
-        // ✅ Directly set entire object — no merge with old state!
+        const zoneID = ModelData.zoneID ?? null;
+        const districtID = ModelData.districtID ?? null;
+        const talukaID = ModelData.talukaID ?? null;
+
         setInstituteObj({
           instituteKeyID: modelRequestData.instituteKeyID,
           instituteName: ModelData.instituteName,
-          projectKeyID: ModelData.projectKeyID,
-          stateKeyID: ModelData.stateKeyID,
-          districtKeyID: ModelData.districtKeyID,
-          talukaKeyID: ModelData.talukaKeyID,
-          villageKeyID: ModelData.villageKeyID,
-
+          institutDescription: ModelData.institutDescription,
+          zoneID,
+          districtID,
+          talukaID
         });
+
+        await GetDistrictLookupListData(zoneID ? [zoneID] : []);
+        await GetTalukaLookupListData(districtID ? [districtID] : []);
 
         setLoader(false);
       } else {
         setLoader(false);
-        console.error('Error fetching data: ', data?.data?.statusCode);
+        console.error("Error:", data?.data?.statusCode);
       }
     } catch (error) {
       setLoader(false);
-      console.error('Error in state: ', error);
+      console.error("Error fetching:", error);
     }
   };
 
-  useEffect(() => {
-    GetProjectLookupListData()
-  }, [])
-  const GetProjectLookupListData = async () => {
-    try {
-      const response = await GetProjectLookupList(); // Ensure this function is imported correctly
+  const handleDistrictChange = (selectedOption) => {
+    setInstituteObj(prev => ({
+      ...prev,
+      districtID: selectedOption ? selectedOption.value : null,
+      talukaID: null
+    }));
 
-      if (response?.data?.statusCode === 200) {
-        const stateLookupList = response?.data?.responseData?.data || [];
-
-        const formattedIvrList = stateLookupList.map((ivrItem) => ({
-          value: ivrItem.projectKeyID,
-          label: ivrItem.projectName
-        }));
-
-        setProjectOption(formattedIvrList); // Make sure you have a state setter function for IVR list
-      } else {
-        console.error('Failed to fetch IVR lookup list:', response?.data?.statusMessage || 'Unknown error');
-      }
-    } catch (error) {
-      console.error('Error fetching IVR lookup list:', error);
-    }
+    GetTalukaLookupListData(selectedOption ? [selectedOption.value] : []);
   };
+
+
   const closeAllModal = () => {
     onHide();
     setShowSuccessModal(false);
   };
 
-  useEffect(() => {
-    GetStateLookupListData()
-  }, [])
 
 
 
 
 
 
-  useEffect(() => {
-    if (instituteObj.talukaKeyID !== null && instituteObj.talukaKeyID !== undefined) {
-      GetVillageLookupListData();
-    }
-  }, [instituteObj.talukaKeyID]);
+
   useEffect(() => {
     if (instituteObj.districtKeyID !== null && instituteObj.districtKeyID !== undefined) {
       GetTalukaLookupListData();
@@ -257,40 +254,31 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       GetDistrictLookupListData();
     }
   }, [instituteObj.stateKeyID]);
-  const GetStateLookupListData = async () => {
-    try {
-      const response = await GetStateLookupList(); // Ensure this function is imported correctly
 
-      if (response?.data?.statusCode === 200) {
-        const stateLookupList = response?.data?.responseData?.data || [];
 
-        const formattedIvrList = stateLookupList.map((ivrItem) => ({
-          value: ivrItem.stateKeyID,
-          label: ivrItem.stateName
-        }));
 
-        setStateOption(formattedIvrList); // Make sure you have a state setter function for IVR list
-      } else {
-        console.error('Failed to fetch IVR lookup list:', response?.data?.statusMessage || 'Unknown error');
-      }
-    } catch (error) {
-      console.error('Error fetching IVR lookup list:', error);
-    }
-  };
 
-  const GetDistrictLookupListData = async () => {
-    if (instituteObj.stateKeyID === null) return;
+
+
+
+
+
+
+  useEffect(() => {
+    GetZoneLookupListData()
+  }, [])
+  const GetZoneLookupListData = async () => {
 
     try {
-      let response = await GetDistrictLookupList(instituteObj?.stateKeyID);
+      let response = await GetZoneLookupList();
       if (response?.data?.statusCode === 200) {
-        const cityList = response?.data?.responseData?.data || [];
-        const formattedCityList = cityList.map((city) => ({
-          value: city.districtKeyID,
-          label: city.districtName
+        const zoneList = response?.data?.responseData?.data || [];
+        const formattedCityList = zoneList.map((zone) => ({
+          value: zone.zoneID,
+          label: zone.zoneName
         }));
 
-        setDistrictOption(formattedCityList); // Ensure this is called with correct data
+        setZoneOption(formattedCityList); // Ensure this is called with correct data
       } else {
         console.error('Bad request');
       }
@@ -299,86 +287,66 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
     }
   };
 
-  const GetTalukaLookupListData = async () => {
-    if (instituteObj.districtKeyID === null) return;
+
+  const GetDistrictLookupListData = async (zoneIds = []) => {
+    if (!zoneIds || zoneIds.length === 0) {
+      setDistrictOption([]);
+      return;
+    }
 
     try {
-      let response = await GetTalukaLookupList(instituteObj?.districtKeyID);
+      const ZoneIDsParam = zoneIds.join(",");
+
+      let response = await GetDistrictLookupList(ZoneIDsParam);
+
+      if (response?.data?.statusCode === 200) {
+        const list = response?.data?.responseData?.data || [];
+
+        const formatted = list.map((d) => ({
+          value: d.districtID,
+          label: d.districtName,
+        }));
+
+        setDistrictOption(formatted);
+      } else {
+        setDistrictOption([]);
+      }
+    } catch (err) {
+      console.error("Error fetching districts:", err);
+      setDistrictOption([]);
+    }
+  };
+
+
+
+
+  const GetTalukaLookupListData = async (districtIds = []) => {
+    if (!districtIds || districtIds.length === 0) {
+      setTalukaOption([]);
+      return;
+    }
+
+    try {
+      const idsParam = districtIds.join(",");
+
+      const response = await GetTalukaLookupList(idsParam);
+
       if (response?.data?.statusCode === 200) {
         const talukaList = response?.data?.responseData?.data || [];
-        const formattedCityList = talukaList.map((taluka) => ({
-          value: taluka.talukaKeyID,
-          label: taluka.talukaName
+
+        const formatted = talukaList.map((t) => ({
+          value: t.talukaID,
+          label: t.talukaName
         }));
 
-        setTalukaOption(formattedCityList); // Ensure this is called with correct data
+        setTalukaOption(formatted);
       } else {
-        console.error('Bad request');
+        setTalukaOption([]);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.error("Error fetching talukas:", err);
+      setTalukaOption([]);
     }
-  };
-  const GetVillageLookupListData = async () => {
-    if (instituteObj.talukaKeyID === null) return;
-
-    try {
-      let response = await GetVillageLookupList(instituteObj?.talukaKeyID);
-      if (response?.data?.statusCode === 200) {
-        const villageList = response?.data?.responseData?.data || [];
-        const formattedCityList = villageList.map((taluka) => ({
-          value: taluka.villageKeyID,
-          label: taluka.villageName
-        }));
-
-        setVillageOption(formattedCityList); // Ensure this is called with correct data
-      } else {
-        console.error('Bad request');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-
-  const handleStateChange = (selectedOption) => {
-    setInstituteObj((prev) => ({
-      ...prev,
-      stateKeyID: selectedOption ? selectedOption.value : null,
-      districtKeyID: '',
-      talukaKeyID: '',
-      // villageName:''
-    }));
-  };
-  const handleProjectChange = (selectedOption) => {
-    setInstituteObj((prev) => ({
-      ...prev,
-      projectKeyID: selectedOption ? selectedOption.value : null,
-
-    }));
-  };
-  const handleDistrictChange = (selectedOption) => {
-    setInstituteObj((prev) => ({
-      ...prev,
-      districtKeyID: selectedOption ? selectedOption.value : null,
-      talukaKeyID: '',
-      // villageName:''
-    }));
-  };
-
-  const handleTalukaChange = (selectedOption) => {
-    setInstituteObj((prev) => ({
-      ...prev,
-      talukaKeyID: selectedOption ? selectedOption.value : null,
-      // villageName:''
-    }));
-  };
-  const handleVillageChange = (selectedOption) => {
-    setInstituteObj((prev) => ({
-      ...prev,
-      villageKeyID: selectedOption ? selectedOption.value : null,
-      // villageName:''
-    }));
   };
   return (
     <>
@@ -426,7 +394,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
               </div>
 
               <div className="col-12 col-md-6 mb-2">
-                <label htmlFor="gstNumber" className="form-label">
+                <label htmlFor="institutDescription" className="form-label">
                   Description Of Institute
                   {/* <span style={{ color: 'red' }}>*</span> */}
                 </label>
@@ -434,16 +402,16 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
 
                   type="text"
                   className="form-control"
-                  id="gstNumber"
+                  id="institutDescription"
                   placeholder="Enter Description Of Institute "
-                  value={instituteObj.gstNumber}
+                  value={instituteObj.institutDescription}
                   onChange={(e) => {
                     let gst = e.target.value.toUpperCase(); // Ensure uppercase
                     gst = gst.replace(/^\s+/, ''); // Remove leading spaces
-                    setInstituteObj({ ...instituteObj, gstNumber: gst });
+                    setInstituteObj({ ...instituteObj, institutDescription: gst });
                   }}
                 />
-                {error && (instituteObj.gstNumber === null || instituteObj.gstNumber === undefined || instituteObj.gstNumber === '') ? (
+                {error && (instituteObj.institutDescription === null || instituteObj.institutDescription === undefined || instituteObj.institutDescription === '') ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
                   ''
@@ -452,36 +420,20 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
             </div>
 
             <div className="row">
-              <div className="col-12 col-md-6 mb-2">
-                <label htmlFor="customerAddress" className="form-label">
-                  Select Project
-                  {/* <span style={{ color: 'red' }}>*</span> */}
-                </label>
-                <Select
-                  options={projectOption}
-                  value={projectOption.filter((item) => item.value === instituteObj.projectKeyID)}
-                  onChange={handleProjectChange}
-                  menuPosition="fixed"
-                />
-                {error && (employeeObj.projectKeyID === null || employeeObj.projectKeyID === undefined || employeeObj.villageKeyID === '') ? (
-                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                ) : (
-                  ''
-                )}
-              </div>
+
               <div className="col-12 col-md-6 mb-2">
                 <label htmlFor="customerAddress" className="form-label">
                   Select Zone
                   <span style={{ color: 'red' }}>*</span>
                 </label>
                 <Select
-                  placeholder='Select Zone'
-                  options={stateOption}
-                  value={stateOption.filter((item) => item.value === instituteObj.stateKeyID)}
-                  onChange={handleStateChange}
+                  placeholder="Select Zone"
+                  options={zoneOption}
+                  value={zoneOption.find(item => item.value === instituteObj?.zoneID)}
+                  onChange={handleZoneChange}
                   menuPosition="fixed"
                 />
-                {error && (instituteObj.address === null || instituteObj.address === undefined || instituteObj.address === '') ? (
+                {error && (instituteObj.zoneID === null || instituteObj.zoneID === undefined || instituteObj.zoneID === '') ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
                   ''
@@ -493,11 +445,13 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
                   <span style={{ color: 'red' }}>*</span>
                 </label>
                 <Select
+                  placeholder="Select District"
                   options={districtOption}
-                  value={districtOption.filter((item) => item.value === instituteObj.districtKeyID)}
+                  value={districtOption.find(item => item.value === instituteObj?.districtID)}
                   onChange={handleDistrictChange}
                   menuPosition="fixed"
-                />                {error && (instituteObj.address === null || instituteObj.address === undefined || instituteObj.address === '') ? (
+                />
+                {error && (instituteObj.districtID === null || instituteObj.districtID === undefined || instituteObj.districtID === '') ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
                   ''
@@ -509,11 +463,13 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
                   <span style={{ color: 'red' }}>*</span>
                 </label>
                 <Select
+                  placeholder="Select Taluka"
                   options={talukaOption}
-                  value={talukaOption.filter((item) => item.value === instituteObj.talukaKeyID)}
+                  value={talukaOption.find(item => item.value === instituteObj?.talukaID)}
                   onChange={handleTalukaChange}
                   menuPosition="fixed"
-                />                {error && (instituteObj.address === null || instituteObj.address === undefined || instituteObj.address === '') ? (
+                />
+                {error && (instituteObj.talukaID === null || instituteObj.talukaID === undefined || instituteObj.talukaID === '') ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
                   ''
@@ -527,7 +483,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
 
 
             <div className="row">
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <label htmlFor="pdfUpload" className="form-label fw-bold">
                   Upload PDF
                 </label>
@@ -545,7 +501,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
                     ✅ Selected: <strong>{selectedFile.name}</strong>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </Modal.Body>

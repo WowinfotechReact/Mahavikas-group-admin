@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import PaginationComponent from 'component/Pagination';
 import { ConfigContext } from 'context/ConfigContext';
 
@@ -81,7 +81,8 @@ const CustomerFirmList = () => {
         searchKeyword: searchKeywordValue === undefined ? searchKeyword : searchKeywordValue,
         toDate: toDate ? dayjs(toDate).format('YYYY-MM-DD') : null,
         fromDate: fromDate ? dayjs(fromDate).format('YYYY-MM-DD') : null,
-        companyKeyID: companyID
+        companyID: companyID,
+        projectID: location?.state?.projectID,
       });
 
       if (data) {
@@ -116,10 +117,14 @@ const CustomerFirmList = () => {
     setOpenCustomerViewModal(true);
   };
 
+  const location = useLocation()
+
+
   const CustomerAddBtnClicked = () => {
     setModelRequestData({
       ...modelRequestData,
       instituteKeyID: null,
+      projectID: location.state.projectID,
       Action: null
     });
     setShowVehicleModal(true);
@@ -128,6 +133,7 @@ const CustomerFirmList = () => {
     setModelRequestData({
       ...modelRequestData,
       instituteKeyID: row.instituteKeyID,
+      projectID: location.state.projectID,
       Action: 'Update'
     });
     setShowVehicleModal(true);
@@ -234,11 +240,7 @@ const CustomerFirmList = () => {
     setShowVehicleViewModal(true);
   };
 
-  const newDataMap = [
-    { name: 'Kilbil School Satpur', project: 'Primary Teacher Bharti 2025', state: 'MH', Dis: 'Nashik', Taluka: 'Nashik' },
-    { name: 'Kilbil School Gangapur Road', project: 'Secondary & Higher Secondary Teacher Bharti 2025', state: 'MH', Dis: 'Pune', Taluka: 'Shivaji Nagar' },
-    { name: 'Kilbil School Trimbkeshwar', project: 'Primary Teacher Bharti 2025', state: 'MH', Dis: 'Hingoli', Taluka: 'airoli' },
-  ]
+
   return (
     <>
       {/* <Sidebar drawerOpen={true} drawerToggle={() => {}} modalOpen={show} /> */}
@@ -248,7 +250,14 @@ const CustomerFirmList = () => {
 
           <div className="d-flex justify-content-between align-items-center mb-1">
             <div className="flex-grow-1">
-              <h5 className="mb-0">Institute Master</h5>
+              <h5 className="mb-0">
+
+                Institute Master: {"  "}
+                <span style={{ textDecoration: 'underline' }}>
+
+                  {location.state.projectName}
+                </span>
+              </h5>
             </div>
             <div className="position-absolute end-0 me-2">
               <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn btn-sm d-inline d-sm-none">
@@ -304,10 +313,9 @@ const CustomerFirmList = () => {
                   <th className="text-center"> Institute Name</th>
 
                   <th className="text-center">Project Name</th>
-                  <th className="text-center">State</th>
+                  <th className="text-center">Zone</th>
                   <th className="text-center">District</th>
                   <th className="text-center">Taluka</th>
-                  <th className="text-center">Village</th>
                   <th className="text-center actionSticky">Action</th>
                 </tr>
               </thead>
@@ -334,7 +342,7 @@ const CustomerFirmList = () => {
                     </td>
                     <td className="text-center" style={{ minWidth: "150px" }}>
                       <div >
-                        <>{row.stateName}</>
+                        <>{row.zoneName}</>
                       </div>
                     </td>
 
@@ -348,11 +356,7 @@ const CustomerFirmList = () => {
                         <>{row.talukaName}</>
                       </div>
                     </td>
-                    <td className="text-center" style={{ minWidth: "150px" }}>
-                      <div >
-                        <>{row.villageName}</>
-                      </div>
-                    </td>
+
 
 
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
@@ -390,6 +394,7 @@ const CustomerFirmList = () => {
                             Add Employee
                           </button>
                         </Tooltip>
+
 
 
 

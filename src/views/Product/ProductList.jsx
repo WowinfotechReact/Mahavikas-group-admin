@@ -124,6 +124,9 @@ const ProductList = () => {
     setStateChangeStatus(row);
     setShowStatusChangeModal(true);
   };
+  const addInstitute = (row) => {
+    navigate('/institute-master', { state: { projectID: row.projectID, projectName: row.projectName } })
+  }
 
   const confirmStatusChange = async () => {
     try {
@@ -264,18 +267,28 @@ const ProductList = () => {
                             <i className="fa-solid fa-pen-to-square"></i>
                           </button>
                         </Tooltip>
-                        {hasPermission(permissions, 'Model Stock', 'Can View') && (
-                          <Tooltip title="Add Model">
-                            <button
-                              style={{ background: "#ffaa33" }}
-                              onClick={() => projectDetailsBtn()}
-                              type="button"
-                              className="btn-sm btn text-white"
-                            >
-                              More Info
-                            </button>
-                          </Tooltip>
-                        )}
+                        <Tooltip title="View Details">
+                          <button
+                            style={{ background: "#ffaa33" }}
+                            onClick={() => projectDetailsBtn()}
+                            type="button"
+                            className="btn-sm btn text-white"
+                          >
+                            More Info
+                          </button>
+                        </Tooltip>
+
+                        <Tooltip title="Add Institute">
+                          <button
+                            style={{ background: "#ffaa33" }}
+                            onClick={() => addInstitute(row)}
+                            type="button"
+                            className="btn-sm btn text-white"
+                          >
+                            Add Institute
+                          </button>
+                        </Tooltip>
+
                       </div>
                     </td>
                   </tr>

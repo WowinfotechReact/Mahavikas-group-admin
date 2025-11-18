@@ -331,36 +331,15 @@ const EmployeeList = () => {
     }
 
     setShowResetIMEIModal(true); // Show modal after setting state
-    // ResetIMEI(apiParam)
   };
 
-  const ResetIMEI = async (apiParam) => {
-    setLoader(true);
-    try {
-      let url = '/ResetEmployeeMACAddress'; // Default URL for Adding Data
 
-      const response = await ResetEmployeeMACAddress(url, apiParam);
-      if (response) {
-        if (response?.data?.statusCode === 200) {
-          setLoader(false);
-          setShowSuccessModal(true);
-          setModelAction(
-            modelRequestData.Action === null || modelRequestData.Action === undefined
-              ? 'IMEI Reset Successfully!'
-              : 'IMEI Reset Successfully!'
-          ); //Do not change this naming convention
 
-          setIsAddUpdateActionDone(true);
-        } else {
-          setLoader(false);
-          setErrorMessage(response?.response?.data?.errorMessage);
-        }
-      }
-    } catch (error) {
-      setLoader(false);
-      console.error(error);
-    }
-  };
+  const addInstitute = (row) => {
+    navigate('/', { state: { instituteKeyID: row.instituteKeyID, instituteName: row.instituteName } })
+  }
+
+
 
 
   const [expandedLead, setExpandedLead] = useState(null);
@@ -574,20 +553,7 @@ const EmployeeList = () => {
         </div>
       </div>
 
-      <ResetIMEIModal
-        show={showResetIMEIModal}
-        onHide={() => setShowResetIMEIModal(false)}
-        modelRequestData={modelRequestData}
-        resetBtnClick={() =>
-          ResetIMEI({
-            userKeyID: user.userKeyID,
-            userKeyIDForUpdate: modelRequestData.userKeyIDForUpdate,
-            resetType: 'MACAddress',
 
-            // Use latest state value
-          })
-        }
-      />
       {showEmployeeModal && (
         <AddUpdateEmployeeModal
           show={showEmployeeModal}
