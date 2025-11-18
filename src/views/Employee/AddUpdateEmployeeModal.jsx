@@ -10,16 +10,12 @@ dayjs.extend(customParseFormat);
 import SuccessPopupModal from 'component/SuccessPopupModal';
 import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
-import { Tooltip } from '@mui/material';
-import { Link } from 'react-router-dom';
 import { GetInstituteLookupList } from 'services/Institute/InstituteApi';
-import { GetStateLookupList } from 'services/Master Crud/MasterStateApi';
 import { GetDistrictLookupList } from 'services/Master Crud/MasterDistrictApi';
 import { GetTalukaLookupList } from 'services/Master Crud/MasterTalukaApi';
-import { GetVillageLookupList } from 'services/Master Crud/MasterVillageApi';
 import { GetProjectLookupList } from 'services/Project/ProjectApi';
-import { AddUpdateAppUser, GetAppUserModel } from 'services/Employee Staff/EmployeeApi';
 import { GetZoneLookupList } from 'services/Master Crud/MasterZoneApi';
+import { AddUpdateAppUser, GetAppUserModel } from 'services/Employee Staff/EmployeeApi';
 
 const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData, }) => {
   const [customerOption, setCustomerOption] = useState([]);
@@ -31,7 +27,9 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
   const [errorMessage, setErrorMessage] = useState();
   const [showPassword, setShowPassword] = useState(false);
   const [employeeObj, setEmployeeObj] = useState({
-
+    zoneIDs: [],
+    districtIDs: [],
+    talukaIDs: [],
     firstName: null,
     lastName: null,
     companyKeyID: null,
@@ -44,9 +42,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
     userKeyID: null,
     userKeyIDForUpdate: null,
     userDetailsKeyID: null,
-    zoneID: [],
-    districtKeyID: [],
-    talukaKeyID: []
+
 
   });
   const [projectOption, setProjectOption] = useState([]);
@@ -60,7 +56,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
   useEffect(() => {
     if (modelRequestData?.Action === 'Update') {
       if (modelRequestData?.userKeyIDForUpdate !== null || modelRequestData?.userDetailsKeyID !== null) {
-        GetAdminUserModelData(modelRequestData?.userKeyIDForUpdate, modelRequestData.userDetailsKeyID);
+        GetAppUserModelData(modelRequestData?.userKeyIDForUpdate, modelRequestData.userDetailsKeyID);
       }
     }
   }, [modelRequestData?.Action]);
@@ -75,93 +71,70 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
 
 
 
-  const GetAdminUserModelData = async (id, UserDetailsKeyID) => {
+  const GetAppUserModelData = async (id, UserDetailsKeyID) => {
     if (id === undefined) return;
 
     try {
       setLoader(true);
 
       const data = await GetAppUserModel(id, UserDetailsKeyID);
+
       if (data?.data?.statusCode !== 200) {
-        console.error('Error fetching user model: ', data?.data?.statusCode);
+        console.error("Error fetching user model");
         setLoader(false);
         return;
       }
 
       const ModelData = data.data.responseData.data || {};
 
-      // Normalize ID arrays from server (they might be null, single value or array)
+      // Normalize multiple-select arrays
       const zoneIDs = Array.isArray(ModelData.zoneIDs)
         ? ModelData.zoneIDs
-        : ModelData.zoneIDs
-          ? [ModelData.zoneIDs]
-          : [];
+        : ModelData.zoneIDs ? [ModelData.zoneIDs] : [];
 
-      const districtID = Array.isArray(ModelData.districtIDs)
+      const districtIDs = Array.isArray(ModelData.districtIDs)
         ? ModelData.districtIDs
-        : ModelData.districtIDs
-          ? [ModelData.districtIDs]
-          : [];
+        : ModelData.districtIDs ? [ModelData.districtIDs] : [];
 
       const talukaIDs = Array.isArray(ModelData.talukaIDs)
         ? ModelData.talukaIDs
-        : ModelData.talukaIDs
-          ? [ModelData.talukaIDs]
-          : [];
+        : ModelData.talukaIDs ? [ModelData.talukaIDs] : [];
 
-      // 1) Ensure zone options exist (if you have a loader for zones, call it)
-      // If you already load zoneOption elsewhere on component mount, you can skip this.
-      // await GetZoneLookupListData(); // uncomment if you need to fetch zone options here
+      const projectIDs = Array.isArray(ModelData.projectIDs)
+        ? ModelData.projectIDs
+        : ModelData.projectIDs ? [ModelData.projectIDs] : [];
 
-      // 2) Fetch districts for the zones (this sets districtOption)
-      if (zoneIDs.length > 0) {
-        await GetDistrictLookupListData(zoneIDs);
-      } else if (districtID.length > 0) {
-        // If zones are not provided but districts exist, you might still need districtOption.
-        // If your API requires zone->district, you can attempt to fetch districts by districtID if you have such an API.
-        // Otherwise ensure districtOption is available by other means.
-        await GetDistrictLookupListData([]); // this will clear; adjust if you have another fetch path
-      }
-
-      // 3) Fetch talukas for the districts (this sets talukaOption)
-      if (districtID.length > 0) {
-        await GetTalukaLookupListData(districtID);
-      } else if (talukaIDs.length > 0) {
-        await GetTalukaLookupListData([]); // adjust if your API supports fetching talukas differently
-      }
-
-      // 4) Now set employeeObj safely using functional update
-      setEmployeeObj(prev => ({
+      // STEP 1: Set employee object
+      setEmployeeObj((prev) => ({
         ...prev,
-        userKeyIDForUpdate: ModelData.userKeyIDForUpdate ?? prev.userKeyIDForUpdate ?? null,
-        userDetailsKeyID: ModelData.userDetailsKeyID ?? prev.userDetailsKeyID ?? null,
-        firstName: ModelData.firstName ?? prev.firstName ?? '',
-        lastName: ModelData.lastName ?? prev.lastName ?? '',
-        companyKeyID: ModelData.companyKeyID ?? prev.companyKeyID ?? '',
-        emailID: ModelData.emailID ?? prev.emailID ?? '',
-        mobileNo: ModelData.mobileNo ?? prev.mobileNo ?? '',
-        password: ModelData.password ?? prev.password ?? '',
-        address: ModelData.address ?? prev.address ?? '',
-        // set the arrays your selects expect
-        zoneID: zoneIDs,
-        districtKeyID: districtID,
-        talukaKeyID: talukaIDs,
-        // keep server names too if you rely on them elsewhere
-        zoneIDs: ModelData.zoneIDs ?? [],
-        districtIDs: ModelData.districtIDs ?? [],
-        talukaIDs: ModelData.talukaIDs ?? [],
-        projectIDs: Array.isArray(ModelData.projectIDs)
-          ? ModelData.projectIDs
-          : ModelData.projectIDs
-            ? [ModelData.projectIDs]
-            : prev.projectIDs ?? []
+        userKeyIDForUpdate: ModelData.userKeyIDForUpdate ?? null,
+        userDetailsKeyID: ModelData.userDetailsKeyID ?? null,
+        firstName: ModelData.firstName ?? "",
+        lastName: ModelData.lastName ?? "",
+        companyKeyID: ModelData.companyKeyID ?? "",
+        emailID: ModelData.emailID ?? "",
+        mobileNo: ModelData.mobileNo ?? "",
+        password: ModelData.password ?? "",
+        address: ModelData.address ?? "",
+
+        zoneIDs,
+        districtIDs,
+        talukaIDs,
+        projectIDs,
       }));
+
+      // STEP 2: Load dependent dropdowns
+      await GetDistrictLookupListData(zoneIDs);
+      await GetTalukaLookupListData(districtIDs);
+
     } catch (error) {
-      console.error('Error in GetAdminUserModelData: ', error);
+      console.error("Error in GetAppUserModelData:", error);
     } finally {
       setLoader(false);
     }
   };
+
+
 
   useEffect(() => {
     // employeeObj.districtKeyID is expected to be an array
@@ -173,7 +146,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
   const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
   const Submit = async () => {
-
+    debugger
     let isValid = false;
 
     if (
@@ -218,11 +191,11 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       emailID: employeeObj.emailID,
       password: employeeObj.password,
       address: employeeObj.address,
-      companyKeyID: companyID,
-      instituteKeyID: null,
-      zoneIDs: Array.isArray(employeeObj.zoneID) ? employeeObj.zoneID : [],
-      districtIDs: Array.isArray(employeeObj.districtKeyID) ? employeeObj.districtKeyID : [],
-      talukaIDs: Array.isArray(employeeObj.talukaKeyID) ? employeeObj.talukaKeyID : [],
+      companyID: companyID,
+      instituteID: null,
+      zoneIDs: Array.isArray(employeeObj.zoneIDs) ? employeeObj.zoneIDs : [],
+      districtIDs: Array.isArray(employeeObj.districtIDs) ? employeeObj.districtIDs : [],
+      talukaIDs: Array.isArray(employeeObj.talukaIDs) ? employeeObj.talukaIDs : [],
 
       projectIDs: employeeObj.projectIDs
     };
@@ -231,13 +204,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
     }
   };
   // selected : when isMulti => array of option objects, when single => option object or null
-  const selectedToIdsArray = (selected, isMulti) => {
-    if (isMulti) {
-      return selected ? selected.map(s => s.value) : [];
-    } else {
-      return selected ? [selected.value] : [];
-    }
-  };
+
 
   const AddUpdateAppUserData = async (apiParam) => {
     try {
@@ -263,87 +230,82 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       console.error(error);
     }
   };
-  useEffect(() => {
-    GetStateLookupListData()
-  }, [])
 
 
+  const handleDistrictChange = (selectedOptions) => {
+    const ids = selectedOptions ? selectedOptions.map(o => o.value) : [];
 
-
-
-
-  const handleZoneChange = (selected) => {
-    const selectedZoneIds = selectedToIdsArray(selected, zoneIsMulti);
-
-    // Update state: keep arrays internally
     setEmployeeObj(prev => ({
       ...prev,
-      zoneID: selectedZoneIds,
-      districtKeyID: [], // clear children when parent changes
-      talukaKeyID: []
+      districtIDs: ids,
+      talukaIDs: [] // clear talukas when district changes
     }));
 
-    // clear downstream options and fetch districts
-    setDistrictOption([]);
-    setTalukaOption([]);
+    GetTalukaLookupListData(ids);
+  };
+
+
+
+
+  const handleZoneChange = (selectedOptions) => {
+    const selectedZoneIds = selectedOptions
+      ? selectedOptions.map((item) => item.value)
+      : [];
+
+    setEmployeeObj((prev) => ({
+      ...prev,
+      zoneIDs: selectedZoneIds,
+      districtIDs: [] // RESET district when zone changes
+    }));
+
+    // Fetch district list for selected zones
     GetDistrictLookupListData(selectedZoneIds);
   };
 
-  // value for react-select: either option object (single) or array (multi)
-  const zoneValue = zoneIsMulti
-    ? zoneOption.filter(opt => (employeeObj.zoneID || []).includes(opt.value))
-    : (zoneOption.find(opt => (employeeObj.zoneID || [])[0] === opt.value) || null);
 
 
-  useEffect(() => {
-    if (employeeObj.stateKeyID !== null && employeeObj.stateKeyID !== undefined) {
-      GetDistrictLookupListData();
-    }
-  }, [employeeObj.stateKeyID]);
-  const GetStateLookupListData = async () => {
-    try {
-      const response = await GetStateLookupList(); // Ensure this function is imported correctly
 
-      if (response?.data?.statusCode === 200) {
-        const stateLookupList = response?.data?.responseData?.data || [];
 
-        const formattedIvrList = stateLookupList.map((ivrItem) => ({
-          value: ivrItem.stateKeyID,
-          label: ivrItem.stateName
-        }));
 
-        setStateOption(formattedIvrList); // Make sure you have a state setter function for IVR list
-      } else {
-        console.error('Failed to fetch IVR lookup list:', response?.data?.statusMessage || 'Unknown error');
-      }
-    } catch (error) {
-      console.error('Error fetching IVR lookup list:', error);
-    }
-  };
 
   useEffect(() => {
     GetProjectLookupListData()
   }, [])
+
   const GetProjectLookupListData = async () => {
     try {
-      const response = await GetProjectLookupList(); // Ensure this function is imported correctly
+      const response = await GetProjectLookupList();
 
       if (response?.data?.statusCode === 200) {
-        const stateLookupList = response?.data?.responseData?.data || [];
+        const list = response?.data?.responseData?.data || [];
 
-        const formattedIvrList = stateLookupList.map((ivrItem) => ({
-          value: ivrItem.projectKeyID,
-          label: ivrItem.projectName
+        // 🔥 Remove duplicate projectID
+        const unique = [
+          ...new Map(list.map(item => [item.projectID, item])).values()
+        ];
+
+        const formatted = unique.map((p) => ({
+          value: p.projectID,
+          label: p.projectName
         }));
 
-        setProjectOption(formattedIvrList); // Make sure you have a state setter function for IVR list
+        setProjectOption(formatted);
       } else {
-        console.error('Failed to fetch IVR lookup list:', response?.data?.statusMessage || 'Unknown error');
+        console.error("Failed to fetch project list");
       }
     } catch (error) {
-      console.error('Error fetching IVR lookup list:', error);
+      console.error("Error fetching project lookup list:", error);
     }
   };
+
+  const handleTalukaChange = (selectedOptions) => {
+    setEmployeeObj((prev) => ({
+      ...prev,
+      talukaIDs: selectedOptions ? selectedOptions.map(item => item.value) : []
+    }));
+  };
+
+
 
   const GetDistrictLookupListData = async (zoneIds = []) => {
     if (!zoneIds || zoneIds.length === 0) {
@@ -352,7 +314,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
     }
 
     try {
-      const ZoneIDsParam = zoneIds.join(","); // UUID1,UUID2
+      const ZoneIDsParam = zoneIds.join(",");
 
       let response = await GetDistrictLookupList(ZoneIDsParam);
 
@@ -360,13 +322,12 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
         const list = response?.data?.responseData?.data || [];
 
         const formatted = list.map((d) => ({
-          value: d.districtKeyID,
-          label: d.districtName
+          value: d.districtID,
+          label: d.districtName,
         }));
 
         setDistrictOption(formatted);
       } else {
-        console.error("District fetch failed");
         setDistrictOption([]);
       }
     } catch (err) {
@@ -377,27 +338,28 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
 
 
 
+
   const GetTalukaLookupListData = async (districtIds = []) => {
-    // if no districts, clear taluka options
     if (!districtIds || districtIds.length === 0) {
       setTalukaOption([]);
       return;
     }
 
     try {
-      const districtKeyIDsParam = districtIds.join(","); // "id1,id2"
-      const response = await GetTalukaLookupList(districtKeyIDsParam); // your helper
+      const idsParam = districtIds.join(",");
+
+      const response = await GetTalukaLookupList(idsParam);
 
       if (response?.data?.statusCode === 200) {
         const talukaList = response?.data?.responseData?.data || [];
+
         const formatted = talukaList.map((t) => ({
-          value: t.talukaKeyID,
+          value: t.talukaID,
           label: t.talukaName
         }));
 
         setTalukaOption(formatted);
       } else {
-        console.error("Bad response fetching talukas", response?.data);
         setTalukaOption([]);
       }
     } catch (err) {
@@ -405,6 +367,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       setTalukaOption([]);
     }
   };
+
 
 
 
@@ -416,10 +379,10 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
     try {
       let response = await GetZoneLookupList();
       if (response?.data?.statusCode === 200) {
-        const villageList = response?.data?.responseData?.data || [];
-        const formattedCityList = villageList.map((taluka) => ({
-          value: taluka.zoneID,
-          label: taluka.zoneName
+        const zoneList = response?.data?.responseData?.data || [];
+        const formattedCityList = zoneList.map((zone) => ({
+          value: zone.zoneID,
+          label: zone.zoneName
         }));
 
         setZoneOption(formattedCityList); // Ensure this is called with correct data
@@ -439,34 +402,10 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
 
 
 
-  const handleDistrictChange = (selected) => {
-    const selectedDistrictIds = selectedToIdsArray(selected, districtIsMulti);
-
-    setEmployeeObj(prev => ({
-      ...prev,
-      districtKeyID: selectedDistrictIds,
-      talukaKeyID: [] // clear taluka when district changes
-    }));
-
-    setTalukaOption([]);
-    GetTalukaLookupListData(selectedDistrictIds);
-  };
-
-  const districtValue = districtIsMulti
-    ? districtOption.filter(opt => (employeeObj.districtKeyID || []).includes(opt.value))
-    : (districtOption.find(opt => (employeeObj.districtKeyID || [])[0] === opt.value) || null);
 
 
 
 
-  function convertDateStringToDate(date) {
-    if (typeof date !== 'string' || !date.includes('/')) {
-      return null;
-    }
-    const [day, month, year] = date.split('/');
-    // month is 0-based in JS Date
-    return new Date(Number(year), Number(month) - 1, Number(day));
-  }
 
 
 
@@ -480,18 +419,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       projectIDs: values,
     }));
   };
-  const handleTalukaChange = (selected) => {
-    const selectedTalukaIds = selectedToIdsArray(selected, talukaIsMulti);
 
-    setEmployeeObj(prev => ({
-      ...prev,
-      talukaKeyID: selectedTalukaIds
-    }));
-  };
-
-  const talukaValue = talukaIsMulti
-    ? talukaOption.filter(opt => (employeeObj.talukaKeyID || []).includes(opt.value))
-    : (talukaOption.find(opt => (employeeObj.talukaKeyID || [])[0] === opt.value) || null);
 
 
   return (
@@ -684,14 +612,15 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   <Select
                     placeholder="Select Zone(s)"
                     options={zoneOption}
-                    value={zoneValue}
+                    isMulti
+                    value={zoneOption.filter((item) => employeeObj.zoneIDs.includes(item.value))}
                     onChange={handleZoneChange}
-                    isMulti={zoneIsMulti}
                     menuPosition="fixed"
                   />
 
+
                   {error &&
-                    (employeeObj.zoneID === null || employeeObj.zoneID === undefined || employeeObj.zoneID === '') ? (
+                    (employeeObj.zoneIDs === null || employeeObj.zoneIDs === undefined || employeeObj.zoneIDs === '') ? (
                     <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                   ) : (
                     ''
@@ -706,11 +635,14 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                 <Select
                   placeholder="Select District(s)"
                   options={districtOption}
-                  value={districtValue}
+                  isMulti
+                  value={districtOption.filter((item) =>
+                    employeeObj.districtIDs.includes(item.value)
+                  )}
                   onChange={handleDistrictChange}
-                  isMulti={districtIsMulti}
                   menuPosition="fixed"
                 />
+
                 {error && (employeeObj.address === null || employeeObj.address === undefined || employeeObj.address === '') ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
@@ -730,11 +662,14 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                 <Select
                   placeholder="Select Taluka(s)"
                   options={talukaOption}
-                  value={talukaValue}
+                  isMulti
+                  value={talukaOption.filter((item) =>
+                    employeeObj.talukaIDs.includes(item.value)
+                  )}
                   onChange={handleTalukaChange}
-                  isMulti={talukaIsMulti}
                   menuPosition="fixed"
-                />          {error && (employeeObj.address === null || employeeObj.address === undefined || employeeObj.address === '') ? (
+                />
+                {error && (employeeObj.address === null || employeeObj.address === undefined || employeeObj.address === '') ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
                   ''
@@ -754,7 +689,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   )}
                   onChange={handleProjectChange}
                   menuPosition="fixed"
-                />           {error && (employeeObj.projectIDs === null || employeeObj.projectIDs === undefined || employeeObj.villageKeyID === '') ? (
+                />         {error && (employeeObj.projectIDs === null || employeeObj.projectIDs === undefined || employeeObj.villageKeyID === '') ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
                   ''

@@ -97,7 +97,7 @@ const EmployeeList = () => {
         searchKeyword: searchKeywordValue === undefined ? searchKeyword : searchKeywordValue,
         toDate: toDate ? dayjs(toDate).format('YYYY-MM-DD') : null,
         fromDate: fromDate ? dayjs(fromDate).format('YYYY-MM-DD') : null,
-        companyKeyID: companyID
+        companyID: companyID
       });
 
       if (data) {

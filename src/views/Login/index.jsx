@@ -76,7 +76,7 @@ const Login = () => {
   // 2] This function validate email id & password is in valid format
   const LoginBtnClicked = () => {
     setErrorMessage('');
-    if (!LoginObj.mobileNo || !LoginObj.password) {
+    if (!LoginObj.mobileNo || !LoginObj.password || !LoginObj.companyID) {
       setRequireErrorMessage("This fields are required");
       return false;
     } else if (LoginObj.mobileNo.length !== 10) {
@@ -246,7 +246,11 @@ const Login = () => {
               />
 
 
-
+              {requireErrorMessage && (!LoginObj.companyID || LoginObj.companyID === "") && (
+                <label className="validation mt-1" style={{ color: "red" }}>
+                  {ERROR_MESSAGES}
+                </label>
+              )}
             </div>
             <div className="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
               <input className="input100" type="text" name="email"
