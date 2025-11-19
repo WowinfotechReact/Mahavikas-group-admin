@@ -152,7 +152,7 @@ const Default = () => {
   const stats = [
     { id: 1, title: 'Total Users', value: 23, icon: <FaUsers size={28} />, colorClass: 'bg-warning' },
     { id: 2, title: 'Total Projects', value: 4, icon: <FaProjectDiagram size={28} />, colorClass: 'bg-danger', route: '/project' },
-    { id: 3, title: 'Total Institutes', value: 3, icon: <FaUniversity size={28} />, colorClass: 'bg-info', route: '/institute-master' },
+    { id: 3, title: 'Total Institutes', value: 3, icon: <FaUniversity size={28} />, colorClass: 'bg-info', },
     { id: 4, title: 'Total Employees', value: 40, icon: <FaUserTie size={28} />, colorClass: 'bg-success', route: '/employee-list' }
   ];
   return (

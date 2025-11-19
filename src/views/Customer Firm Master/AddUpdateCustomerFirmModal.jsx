@@ -82,7 +82,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
     // Start with false, set to true if any error occurs
     let hasError = false;
 
-    debugger
+
 
     // Validation logic
     if (
@@ -91,13 +91,13 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
         instituteObj.instituteName === undefined ||
         instituteObj.instituteName === '' ||
         instituteObj.zoneID === null ||
-        instituteObj.zoneID === null ||
+        instituteObj.zoneID === '' ||
         instituteObj.zoneID === undefined ||
         instituteObj.districtID === undefined ||
         instituteObj.districtID === undefined ||
         instituteObj.districtID === '' ||
-        instituteObj.talukaID === '' ||
-        instituteObj.talukaID === '' ||
+        instituteObj.talukaID === null ||
+        instituteObj.talukaID === undefined ||
         instituteObj.talukaID === '' ||
         instituteObj.institutDescription === null ||
         instituteObj.institutDescription === undefined ||
@@ -433,6 +433,8 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
                   onChange={handleZoneChange}
                   menuPosition="fixed"
                 />
+
+
                 {error && (instituteObj.zoneID === null || instituteObj.zoneID === undefined || instituteObj.zoneID === '') ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (

@@ -521,7 +521,7 @@ const EmployeeList = () => {
                         </Tooltip>
 
                         {/* <Tooltip title="View Employee"> */}
-                        <Tooltip title="Under Dev">
+                        <Tooltip title="View Employee Details">
                           <button
                             style={{
                               padding: '4px 8px', // Adjust padding for smaller size

@@ -146,7 +146,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
   const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
   const Submit = async () => {
-    debugger
+
     let isValid = false;
 
     if (
@@ -166,6 +166,19 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       employeeObj.emailID === undefined ||
       employeeObj.emailID === '' ||
       employeeObj.emailID === null ||
+
+      employeeObj.zoneIDs === null ||
+      employeeObj.zoneIDs === undefined ||
+      employeeObj.zoneIDs.length === 0 ||
+      employeeObj.districtIDs.length === 0 ||
+      employeeObj.districtIDs === null ||
+      employeeObj.districtIDs === undefined ||
+      employeeObj.talukaIDs === undefined ||
+      employeeObj.talukaIDs === null ||
+      employeeObj.talukaIDs.length === 0 ||
+      employeeObj.projectIDs.length === 0 ||
+      employeeObj.projectIDs === null ||
+      employeeObj.projectIDs === undefined ||
 
       employeeObj.password === null ||
       employeeObj.password === undefined ||
@@ -208,12 +221,14 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
 
 
   const AddUpdateAppUserData = async (apiParam) => {
+    setLoader(true)
     try {
       let url = '/AddUpdateAppUser'; // Default URL for Adding Data
 
       const response = await AddUpdateAppUser(url, apiParam);
       if (response) {
         if (response?.data?.statusCode === 200) {
+          setLoader(false)
 
           setShowSuccessModal(true);
           setModelAction(
@@ -224,10 +239,14 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
 
           setIsAddUpdateActionDone(true);
         } else {
+          setLoader(false)
+
           setErrorMessage(response?.response?.data?.errorMessage);
         }
       }
     } catch (error) {
+      setLoader(false)
+
       console.error(error);
     }
   };
@@ -274,7 +293,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
   }, [])
 
   const GetProjectLookupListData = async (companyID) => {
-    debugger
+
     try {
       const response = await GetProjectLookupList(null, companyID);
 
@@ -622,12 +641,17 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
 
 
                   {error &&
-                    (employeeObj.zoneIDs === null || employeeObj.zoneIDs === undefined || employeeObj.zoneIDs === '') ? (
+                    (employeeObj.zoneIDs === null ||
+                      employeeObj.zoneIDs === undefined ||
+                      employeeObj.zoneIDs.length === 0) ? (
                     <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                   ) : (
                     ''
                   )}
+
                 </div>
+
+
               </div>
               <div className="col-12 col-md-6 mb-2">
                 <label htmlFor="customerAddress" className="form-label">
@@ -644,12 +668,15 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   onChange={handleDistrictChange}
                   menuPosition="fixed"
                 />
-
-                {error && (employeeObj.districtIDs === null || employeeObj.districtIDs === undefined || employeeObj.districtIDs === '') ? (
+                {error &&
+                  (employeeObj.districtIDs === null ||
+                    employeeObj.districtIDs === undefined ||
+                    employeeObj.districtIDs.length === 0) ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
                   ''
                 )}
+
               </div>
 
             </div>
@@ -671,11 +698,15 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   onChange={handleTalukaChange}
                   menuPosition="fixed"
                 />
-                {error && (employeeObj.address === null || employeeObj.address === undefined || employeeObj.address === '') ? (
+                {error &&
+                  (employeeObj.talukaIDs === null ||
+                    employeeObj.talukaIDs === undefined ||
+                    employeeObj.talukaIDs.length === 0) ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
                   ''
                 )}
+
               </div>
 
               <div className="col-12 col-md-6 mb-2">
@@ -691,11 +722,17 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   )}
                   onChange={handleProjectChange}
                   menuPosition="fixed"
-                />         {error && (employeeObj.projectIDs === null || employeeObj.projectIDs === undefined || employeeObj.villageKeyID === '') ? (
+                />
+                {error &&
+                  (employeeObj.projectIDs === null ||
+                    employeeObj.projectIDs === undefined ||
+                    employeeObj.projectIDs.length === 0) ? (
                   <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                 ) : (
                   ''
                 )}
+
+
               </div>
 
             </div>

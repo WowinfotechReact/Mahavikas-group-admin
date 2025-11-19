@@ -459,6 +459,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                             menuPosition="fixed"
                                                       />
 
+                                                      {error && !employeeObj.designationID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
 
 
 
@@ -477,6 +478,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                             onChange={handleAttendanceTypeChange}
                                                             menuPosition="fixed"
                                                       />
+                                                      {error && !employeeObj.attendanceTypeID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
 
 
 

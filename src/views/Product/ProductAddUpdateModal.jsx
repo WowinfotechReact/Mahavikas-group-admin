@@ -86,6 +86,18 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
     if (
       productObj.projectName === null || productObj.projectName === undefined || productObj.projectName === '' ||
+      productObj.zoneIDs.length === 0 ||
+      productObj.zoneIDs === null ||
+      productObj.zoneIDs === undefined ||
+      productObj.districtIDs.length === 0 ||
+      productObj.districtIDs.length === 0 ||
+      productObj.districtIDs === null ||
+      productObj.talukaIDs === null ||
+      productObj.talukaIDs === undefined ||
+      productObj.talukaIDs === undefined ||
+      productObj.startDate === null || productObj.startDate === undefined || productObj.startDate === '' ||
+      productObj.endDate === null || productObj.endDate === undefined || productObj.endDate === '' ||
+      productObj.serviceID === null || productObj.serviceID === undefined || productObj.serviceID === '' ||
       productObj.projectDescription === null || productObj.projectDescription === undefined || productObj.projectDescription === ''
     ) {
       setErrors(true);
@@ -414,6 +426,8 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
               <div className="mb-3">
                 <label htmlFor="HSN" className="form-label">
                   Project Description
+                  <span style={{ color: 'red' }}>*</span>
+
                 </label>
                 <textarea
                   maxLength={700}
@@ -454,7 +468,9 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                   />
 
                   {error &&
-                    (productObj.zoneIDs === null || productObj.zoneIDs === undefined || productObj.zoneIDs === '') ? (
+                    (productObj.zoneIDs === null ||
+                      productObj.zoneIDs === undefined ||
+                      productObj.zoneIDs.length === 0) ? (
                     <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                   ) : (
                     ''
@@ -477,11 +493,15 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                     onChange={handleDistrictChange}
                     menuPosition="fixed"
                   />
-                  {error && (productObj.districtIDs === null || productObj.districtIDs === undefined || productObj.districtIDs === '') ? (
+                  {error &&
+                    (productObj.districtIDs === null ||
+                      productObj.districtIDs === undefined ||
+                      productObj.districtIDs.length === 0) ? (
                     <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                   ) : (
                     ''
                   )}
+
                 </div>
               </div>
               <div className="row">
@@ -499,11 +519,16 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                     )}
                     onChange={handleTalukaChange}
                     menuPosition="fixed"
-                  />              {error && (productObj.address === null || productObj.address === undefined || productObj.address === '') ? (
+                  />
+                  {error &&
+                    (productObj.talukaIDs === null ||
+                      productObj.talukaIDs === undefined ||
+                      productObj.talukaIDs.length === 0) ? (
                     <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                   ) : (
                     ''
                   )}
+
                 </div>
 
 
@@ -547,6 +572,8 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                     clearIcon={null}
                     popperPlacement="bottom-start"
                   />
+                  {error && !productObj.startDate && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
+
                 </div>
 
                 <div className="col-md-6 mb-3">
@@ -562,6 +589,8 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                     clearIcon={null}
                     popperPlacement="bottom-start"
                   />
+                  {error && !productObj.endDate && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
+
                 </div>
               </div>
 
