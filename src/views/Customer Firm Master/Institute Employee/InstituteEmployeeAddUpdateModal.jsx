@@ -1,30 +1,17 @@
-
-
-
 import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import Select from 'react-select';
-import DatePicker from 'react-date-picker';
 import 'react-calendar/dist/Calendar.css';
 import 'react-date-picker/dist/DatePicker.css';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat);
-
 import SuccessPopupModal from 'component/SuccessPopupModal';
-import { GetCustomerLookupList, } from 'services/CustomerStaff/CustomerStaffApi';
 import { ConfigContext } from 'context/ConfigContext';
-import { AddUpdateVehicleApi, GetVehicleModel } from 'services/Vehicle/VehicleApi';
-import { GetVehicleTypeLookupList } from 'services/Master Crud/MasterVehicleTypeApi';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
-import { Tooltip } from '@mui/material';
-import { Link, useLocation } from 'react-router-dom';
-// import AddUpdateCustomerModal from 'views/Customer/AddUpdateCustomerModal';
-import { AddUpdateAppUser, GetEmployeeModel } from 'services/Employee Staff/EmployeeApi';
-import { AddUpdateAdminUser, GetAdminUserModel, GetCompanyLookupList, GetRoleLookupList } from 'services/Company/CompanyApi';
+import { useLocation } from 'react-router-dom';
+import { AddUpdateAppUser, GetAppUserModel } from 'services/Employee Staff/EmployeeApi';
 
 const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData, }) => {
-      const [customerOption, setCustomerOption] = useState([]);
 
       const { user, setLoader, companyID } = useContext(ConfigContext);
       const [modelAction, setModelAction] = useState('');
@@ -56,88 +43,28 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
       });
 
       const location = useLocation()
-      const [selectedRole, setSelectedRole] = useState(null);
-      const [designationOption, setDesignationOption] = useState([]);
-      const [companyOption, setCompanyOption] = useState([]);
-      const [roleOption, setRoleOption] = useState([]);
-      const [employeeTypeOption, setEmployeeTypeOption] = useState([]);
-
-
-
-
 
       useEffect(() => {
             if (modelRequestData?.Action === 'Update') {
-                  if (modelRequestData?.userKeyIDForUpdate !== null) {
-                        GetAdminUserModelData(modelRequestData?.userKeyIDForUpdate);
+                  if (modelRequestData?.userKeyIDForUpdate !== null && modelRequestData.userDetailsKeyID !== null) {
+                        GetAdminUserModelData(modelRequestData?.userKeyIDForUpdate, modelRequestData.userDetailsKeyID);
                   }
             }
       }, [modelRequestData?.Action]);
 
 
-      useEffect(() => {
-            GetCompanyLookupListData();
-      }, [show]);
 
-      console.log(location.state, '33333333sssss');
-
-
-      const GetCompanyLookupListData = async () => {
-            try {
-                  const response = await GetCompanyLookupList();
-                  if (response?.data?.statusCode === 200) {
-                        const designationList = response?.data?.responseData?.data || [];
-                        const formattedDesignationList = designationList.map((comp) => ({
-                              value: comp.companyKeyID,
-                              label: comp.companyName
-                        }));
-                        setCompanyOption(formattedDesignationList);
-                  } else {
-                        console.error('Failed to fetch designation list:', response?.data?.statusMessage || 'Unknown error');
-                  }
-            } catch (error) {
-                  console.error('Error fetching designation list:', error);
-            }
-      };
-
-      useEffect(() => {
-            GetRoleLookupListData()
-      }, [])
-      const GetRoleLookupListData = async () => {
-            try {
-                  const response = await GetRoleLookupList();
-                  if (response?.data?.statusCode === 200) {
-                        const designationList = response?.data?.responseData?.data || [];
-                        const formattedDesignationList = designationList.map((comp) => ({
-                              value: comp.roleKeyID,
-                              label: comp.roleName
-                        }));
-                        setRoleOption(formattedDesignationList);
-                  } else {
-                        console.error('Failed to fetch designation list:', response?.data?.statusMessage || 'Unknown error');
-                  }
-            } catch (error) {
-                  console.error('Error fetching designation list:', error);
-            }
-      };
-
-
-
-
-
-
-      const GetAdminUserModelData = async (id) => {
+      const GetAdminUserModelData = async (id, userDetailsKeyID) => {
 
             if (id === undefined) {
                   return;
             }
 
             try {
-                  const data = await GetAdminUserModel(id);
+                  const data = await GetAppUserModel(id, userDetailsKeyID);
                   if (data?.data?.statusCode === 200) {
                         setLoader(false);
                         const ModelData = data.data.responseData.data; // Assuming data is an array
-                        console.log(ModelData.dateOfBirth, 'dsadsadasdas');
                         setEmployeeObj({
                               ...employeeObj,
                               userKeyIDForUpdate: modelRequestData.userKeyIDForUpdate,
@@ -184,10 +111,10 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   employeeObj.emailID === '' ||
                   employeeObj.emailID === null ||
 
-                  employeeObj.password === null ||
-                  employeeObj.password === undefined ||
-                  employeeObj.password === '' ||
-                  employeeObj.password.length < 8 ||
+                  // employeeObj.password === null ||
+                  // employeeObj.password === undefined ||
+                  // employeeObj.password === '' ||
+                  // employeeObj.password.length < 8 ||
                   employeeObj.address === null ||
                   employeeObj.address === undefined ||
                   employeeObj.address === ''
@@ -201,16 +128,22 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
 
             const apiParam = {
                   userKeyID: user.userKeyID,
+
+                  userDetailsKeyID: modelRequestData?.userDetailsKeyID,
                   userKeyIDForUpdate: modelRequestData?.userKeyIDForUpdate,
                   firstName: employeeObj.firstName,
                   lastName: employeeObj.lastName,
                   mobileNo: employeeObj.mobileNo,
                   emailID: employeeObj.emailID,
-                  password: employeeObj.password,
+                  // password: employeeObj.password,
                   address: employeeObj.address,
                   roleKeyID: employeeObj.roleKeyID,
                   companyID: companyID,
                   instituteID: location.state.instituteKeyID,
+                  zoneIDs: [],
+                  districtIDs: [],
+                  talukaIDs: [],
+                  projectIDs: []
             };
             if (!isValid) {
                   AddUpdateAppUserData(apiParam);
@@ -228,8 +161,8 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                               setShowSuccessModal(true);
                               setModelAction(
                                     modelRequestData.Action === null || modelRequestData.Action === undefined
-                                          ? 'Employee Added Successfully!'
-                                          : ' Employee Updated Successfully!'
+                                          ? 'Institute Employee Added Successfully!'
+                                          : 'Institute Employee Updated Successfully!'
                               ); //Do not change this naming convention
 
                               setIsAddUpdateActionDone(true);
@@ -246,24 +179,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
             onHide();
             setShowSuccessModal(false);
       };
-
-
-
-
-
-
-
-      function convertDateStringToDate(date) {
-            if (typeof date !== 'string' || !date.includes('/')) {
-                  return null;
-            }
-            const [day, month, year] = date.split('/');
-            // month is 0-based in JS Date
-            return new Date(Number(year), Number(month) - 1, Number(day));
-      }
-
-
-
 
 
 
@@ -477,7 +392,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                       )}
                                                 </div>
                                           </div>
-                                          <div className="col-12 col-md-6 mb-2">
+                                          {/* <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="Password" className="form-label">
                                                             Password
@@ -526,16 +441,10 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                       )}
 
                                                 </div>
-                                          </div>
+                                          </div> */}
 
 
                                     </div>
-
-
-
-
-
-
                                     <span style={{ color: 'red' }}>{errorMessage}</span>
                               </div>
                         </Modal.Body>

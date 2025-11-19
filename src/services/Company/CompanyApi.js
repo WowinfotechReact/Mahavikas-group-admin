@@ -37,8 +37,8 @@ export const AddUpdateAdminUser = async (url = '', params) => {
   const res = await postApiWithAuthenticated(`${GetCompanyBaseURI}${url}`, params);
   return res;
 };
-export const GetAdminUserModel = async (id) => {
-  let url = `${GetCompanyBaseURI}/GetAdminUserModel?UserKeyIDForUpdate=${id}`;
+export const GetAdminUserModel = async (id,UserDetailsKeyID) => {
+  let url = `${GetCompanyBaseURI}/GetAdminUserModel?UserKeyIDForUpdate=${id}&UserDetailsKeyID=${UserDetailsKeyID}`;
 
   const res = await getListWithAuthenticated(url);
   return res;

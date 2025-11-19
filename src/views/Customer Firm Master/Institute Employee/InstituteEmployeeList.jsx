@@ -120,6 +120,8 @@ const InstituteEmployeeList = () => {
                   ...modelRequestData,
                   customerKeyID: row.customerKeyID,
                   instituteKeyID: location?.state?.instituteKeyID,
+                  userKeyIDForUpdate: row?.userKeyIDForUpdate,
+                  userDetailsKeyID: row?.userDetailsKeyID,
                   Action: 'Update'
             });
             setShowVehicleModal(true);
@@ -208,7 +210,7 @@ const InstituteEmployeeList = () => {
                                     <input
                                           type="text"
                                           className="form-control"
-                                          placeholder="Search Institute"
+                                          placeholder="Search Institute Employee"
                                           style={{ maxWidth: '350px' }}
                                           value={searchKeyword}
                                           onChange={(e) => {
@@ -250,7 +252,6 @@ const InstituteEmployeeList = () => {
                                                       <th className="text-center"> Employee Name</th>
 
                                                       <th className="text-center">Address</th>
-                                                      <th className="text-center">Geo Location Info</th>
                                                       <th className="text-center">Action</th>
                                                 </tr>
                                           </thead>
@@ -283,32 +284,7 @@ const InstituteEmployeeList = () => {
                                                                         <>{row.address}</>
                                                                   </div>
                                                             </td>
-                                                            <td className="text-start" style={{ minWidth: "250px" }}>
-                                                                  <div style={{ lineHeight: "1.4" }}>
 
-                                                                        {/* Zone */}
-                                                                        <div style={{ marginBottom: "4px", display: "flex", alignItems: "center" }}>
-                                                                              <span style={{ marginRight: "6px" }}>📍</span>
-                                                                              <strong>Zone:</strong>&nbsp;
-                                                                              <span>{row.zoneNames || "-"}</span>
-                                                                        </div>
-
-                                                                        {/* District */}
-                                                                        <div style={{ marginBottom: "4px", display: "flex", alignItems: "center" }}>
-                                                                              <span style={{ marginRight: "6px" }}>🏙️</span>
-                                                                              <strong>District:</strong>&nbsp;
-                                                                              <span>{row.districtNames || "-"}</span>
-                                                                        </div>
-
-                                                                        {/* Taluka */}
-                                                                        <div style={{ display: "flex", alignItems: "center" }}>
-                                                                              <span style={{ marginRight: "6px" }}>🗺️</span>
-                                                                              <strong>Taluka:</strong>&nbsp;
-                                                                              <span>{row.talukaNames || "-"}</span>
-                                                                        </div>
-
-                                                                  </div>
-                                                            </td>
 
 
 
