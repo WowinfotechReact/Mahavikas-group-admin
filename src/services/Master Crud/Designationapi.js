@@ -23,6 +23,12 @@ export const GetDesignationModel = async (id) => {
   return res;
 };
 
+export const GetDesignationLookupList = async (userKeyID) => {
+  const url = `${MasterDesignationBaseUrl}/GetDesignationLookupList`;
+
+  const res = await getListWithAuthenticated(url);
+  return res;
+};
 export const GetCompanyLookupList = async (userKeyID) => {
   const url = `${MasterDesignationBaseUrl}/GetCompanyLookupList?UserKeyID=${userKeyID}`;
 

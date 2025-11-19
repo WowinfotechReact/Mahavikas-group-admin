@@ -1,7 +1,7 @@
- 
 
 
- import React, { useState, useEffect, useContext } from 'react';
+
+import React, { useState, useEffect, useContext } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Android12Switch from 'component/Android12Switch';
@@ -22,11 +22,12 @@ import MasterZoneModal from './MasterZoneModal';
 import HolidayVillageIcon from '@mui/icons-material/HolidayVillage';
 import CabinIcon from '@mui/icons-material/Cabin';
 import { ChangeZoneStatus, GetZoneList } from 'services/Master Crud/MasterZoneApi';
+import AssignedDistrictModal from './AssignedDistrictModal';
 
 const MasterZoneList = () => {
   const [stateChangeStatus, setStateChangeStatus] = useState('');
   const [totalRecords, setTotalRecords] = useState(-1);
-  const { setLoader, user } = useContext(ConfigContext);
+  const { setLoader, user, companyID } = useContext(ConfigContext);
   const [modelAction, setModelAction] = useState();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,6 +42,7 @@ const MasterZoneList = () => {
   const [toDate, setToDate] = useState(null);
   const [stateListData, setStateListData] = useState([]);
   const [openMasterStateModal, setOpenMasterStateModal] = useState(false);
+  const [openSetDistrictModal, setOpenSetDistrictModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState();
   const [sortingDirection, setSortingDirection] = useState(null);
   const [sortDirectionObj, setSortDirectionObj] = useState({
@@ -104,6 +106,14 @@ const MasterZoneList = () => {
     }
   };
 
+  const mapDistrictZoneBtn = (row) => {
+    setModelRequestData({
+      ...modelRequestData,
+      Value: row
+    })
+    setOpenSetDistrictModal(true)
+  }
+
   const GetMasterZoneListData = async (pageNumber, searchKeywordValue, toDate, fromDate, sortValue, StateSortType) => {
     // debugger
     setLoader(true);
@@ -118,7 +128,9 @@ const MasterZoneList = () => {
 
         sortingColumnName: sortType == '' ? StateSortType : sortType || null,
 
-        userKeyID: user.userKeyID
+        userKeyID: user.userKeyID,
+        // userKeyID: null,
+        companyID: Number(companyID)
       });
 
       if (data) {
@@ -190,7 +202,7 @@ const MasterZoneList = () => {
 
   const EditMasterDistrictZoneBtnClick = (row) => {
 
-    
+
     navigate('/master-mapping-district')
   };
 
@@ -261,7 +273,7 @@ const MasterZoneList = () => {
       ...modelRequestData,
       zoneID: null,
       zoneKeyID: null,
-      zoneName:null
+      zoneName: null
     });
     const MappingState = {
       zoneID: row.zoneID,
@@ -276,7 +288,7 @@ const MasterZoneList = () => {
       ...modelRequestData,
       zoneID: null,
       zoneKeyID: null,
-      zoneName:null
+      zoneName: null
     });
     const MappingDistrict = {
       zoneID: row.zoneID,
@@ -292,36 +304,36 @@ const MasterZoneList = () => {
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           {/* Top controls */}
           <div className="d-flex justify-content-between align-items-center mb-1">
-      <h5 className="m-0">Zone</h5>
-      <button
-    onClick={() => addMasterZoneBtnClick()}
-    className="btn btn-primary btn-sm d-inline d-sm-none"
-  >
-    <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
-    <span className="d-inline d-sm-none">  Add</span>
-  </button>
-    </div>
-    <div className="d-flex justify-content-between align-items-center mb-1">
-      <input
-        type="text"
-        className="form-control "
-        placeholder="Search Zone"
-        style={{ maxWidth: "350px" }}
-        value={searchKeyword}
-        onChange={(e) => {
-          handleSearch(e);
-        }}
-      />
-      <Tooltip title="Add Zone">
-      <button
-    onClick={() => addMasterZoneBtnClick()}
-    className="btn btn-primary btn-sm d-none d-sm-inline"
-  >
-    <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
-    <span className="d-none d-sm-inline"> Add Zone</span>
-  </button>
-      </Tooltip>
-    </div>
+            <h5 className="m-0">Zone</h5>
+            <button
+              onClick={() => addMasterZoneBtnClick()}
+              className="btn btn-primary btn-sm d-inline d-sm-none"
+            >
+              <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
+              <span className="d-inline d-sm-none">  Add</span>
+            </button>
+          </div>
+          <div className="d-flex justify-content-between align-items-center mb-1">
+            <input
+              type="text"
+              className="form-control "
+              placeholder="Search Zone"
+              style={{ maxWidth: "350px" }}
+              value={searchKeyword}
+              onChange={(e) => {
+                handleSearch(e);
+              }}
+            />
+            <Tooltip title="Add Zone">
+              <button
+                onClick={() => addMasterZoneBtnClick()}
+                className="btn btn-primary btn-sm d-none d-sm-inline"
+              >
+                <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
+                <span className="d-none d-sm-inline"> Add Zone</span>
+              </button>
+            </Tooltip>
+          </div>
 
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
@@ -331,7 +343,7 @@ const MasterZoneList = () => {
                   <th className="text-center">Sr No</th>
                   <th className="text-center">
                     Zone Name
-                 
+
                   </th>
                   <th className="text-center">Status</th>
                   {/* <th className="text-center">Created On</th> */}
@@ -351,41 +363,17 @@ const MasterZoneList = () => {
                     </td>
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                     <td className="text-center">
-                      <Tooltip title="Map State">
+                      <Tooltip title="Map District">
                         <button
-                          onClick={() => MappedStateWise(row)}
+                          onClick={() => mapDistrictZoneBtn(row)}
                           type="button"
                           className="btn-sm btn btn-primary me-2 "
                         >
                           {/* <i className="fa-solid fa-pen-to-square"></i> */}
-                          <CabinIcon  fontSize="small"/>
+                          <CabinIcon fontSize="small" />
                         </button>
                       </Tooltip>
-                      <Tooltip title="Map District">
-                        <button
-                          onClick={() => MappedDistrictWise(row)}
-                          type="button"
-                          className="btn-sm btn btn-primary me-2"
-                        >
-                          <HolidayVillageIcon  fontSize="small"/>
-                          {/* <i className="fa-solid fa-pen-to-square"></i> */}
-                        </button>
-                      </Tooltip>
-                      <Tooltip title="Update Zone">
-                        <button
-                          // style={{
-                          //   padding: '4px 8px', // Adjust padding for smaller size
-                          //   fontSize: '12px', // Optional: smaller font size
-                          //   height: '28px', // Set height
-                          //   width: '28px' // Set width
-                          // }}
-                          onClick={() => EditMasterZoneBtnClick(row)}
-                          type="button"
-                          className="btn-sm btn btn-primary ms-2"
-                        >
-                          <i className="fa-solid fa-pen-to-square"></i>
-                        </button>
-                      </Tooltip>
+
                     </td>
                   </tr>
                 ))}
@@ -405,6 +393,15 @@ const MasterZoneList = () => {
         <MasterZoneModal
           show={openMasterStateModal}
           onHide={() => setOpenMasterStateModal(false)}
+          modelRequestData={modelRequestData}
+          setModelRequestData={setModelRequestData}
+          setIsAddUpdateActionDone={setIsAddUpdateActionDone}
+        />
+      )}
+      {openSetDistrictModal && (
+        <AssignedDistrictModal
+          show={openSetDistrictModal}
+          onHide={() => setOpenSetDistrictModal(false)}
           modelRequestData={modelRequestData}
           setModelRequestData={setModelRequestData}
           setIsAddUpdateActionDone={setIsAddUpdateActionDone}

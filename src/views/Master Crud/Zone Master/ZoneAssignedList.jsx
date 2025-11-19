@@ -78,7 +78,7 @@ export default function ZoneAssignedList() {
                   <div className="card-body p-2 bg-white shadow-md rounded-lg">
 
                         <div className="d-flex justify-content-between align-items-center mb-3">
-                              <h3>Zone Master</h3>
+                              <h3>Zone Master2</h3>
                               <div>
                                     <button
                                           onClick={() => setShowCreate(true)}

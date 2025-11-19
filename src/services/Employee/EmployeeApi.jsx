@@ -39,15 +39,10 @@ export const GetRoleTypeLookupList = async (ModuleName, AdminKeyID) => {
   return res;
 };
 
-export const GetDesignationLookupList = async () => {
-    const url = `${DesignationUrl}/GetDesignationLookupList`;
-  
-    const res = await getListWithAuthenticated(url );
-    return res;
-  };
-  export const GetEmployeeTypeLookupList = async () => {
-    const url = `${EmployeeTypeUrl}/GetEmployeeTypeLookupList`;
-  
-    const res = await getListWithAuthenticated(url );
-    return res;
-  };
+
+export const GetEmployeeTypeLookupList = async () => {
+  const url = `${EmployeeTypeUrl}/GetEmployeeTypeLookupList`;
+
+  const res = await getListWithAuthenticated(url);
+  return res;
+};

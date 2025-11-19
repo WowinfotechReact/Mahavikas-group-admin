@@ -11,6 +11,7 @@ import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { useLocation } from 'react-router-dom';
 import { AddUpdateAppUser, GetAppUserModel } from 'services/Employee Staff/EmployeeApi';
+import { GetDesignationLookupList } from 'services/Master Crud/Designationapi';
 
 const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData, }) => {
 
@@ -20,8 +21,10 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
       const [showSuccessModal, setShowSuccessModal] = useState(false);
       const [errorMessage, setErrorMessage] = useState();
       const [showPassword, setShowPassword] = useState(false);
-
+      const [designationOption, setDesignationOption] = useState([])
       const [employeeObj, setEmployeeObj] = useState({
+            attendanceTypeID: null,
+            designationID: null,
             password: null,
             lastName: null,
             roleKeyID: null,
@@ -54,7 +57,10 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
       }, [modelRequestData?.Action]);
 
 
-
+      const AttendanceOption = [
+            { label: 'Daily', value: 1 },
+            { label: 'Hourly', value: 2 }
+      ]
       const GetAdminUserModelData = async (id, userDetailsKeyID) => {
 
             if (id === undefined) {
@@ -77,6 +83,8 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                               mobileNo: ModelData.mobileNo,
                               password: ModelData.password,
                               address: ModelData.address,
+                              designationID: ModelData.designationID,
+                              attendanceTypeID: ModelData.attendanceTypeID,
                         });
                         // rc book
                   } else {
@@ -92,7 +100,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
       const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
       const Submit = async () => {
-            debugger
+
             let isValid = false;
 
             if (
@@ -112,10 +120,12 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   employeeObj.emailID === '' ||
                   employeeObj.emailID === null ||
 
-                  // employeeObj.password === null ||
-                  // employeeObj.password === undefined ||
-                  // employeeObj.password === '' ||
-                  // employeeObj.password.length < 8 ||
+                  employeeObj.designationID === null ||
+                  employeeObj.designationID === undefined ||
+                  employeeObj.designationID === '' ||
+                  employeeObj.attendanceTypeID === null ||
+                  employeeObj.attendanceTypeID === undefined ||
+                  employeeObj.attendanceTypeID === '' ||
                   employeeObj.address === null ||
                   employeeObj.address === undefined ||
                   employeeObj.address === ''
@@ -136,6 +146,8 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   lastName: employeeObj.lastName,
                   mobileNo: employeeObj.mobileNo,
                   emailID: employeeObj.emailID,
+                  designationID: employeeObj.designationID,
+                  attendanceTypeID: employeeObj.attendanceTypeID,
                   // password: employeeObj.password,
                   address: employeeObj.address,
                   roleKeyID: employeeObj.roleKeyID,
@@ -180,8 +192,48 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
             onHide();
             setShowSuccessModal(false);
       };
+      useEffect(() => {
+            GetDesignationLookupListData()
+      }, [])
+      const GetDesignationLookupListData = async () => {
 
 
+
+            try {
+
+                  let response = await GetDesignationLookupList();
+
+                  if (response?.data?.statusCode === 200) {
+                        const list = response?.data?.responseData?.data || [];
+
+                        const formatted = list.map((d) => ({
+                              value: d.designationID,
+                              label: d.designationName,
+                        }));
+
+                        setDesignationOption(formatted);
+                  }
+            } catch (err) {
+                  console.error("Error fetching districts:", err);
+            }
+      };
+
+      const handleDesignationChange = (selectedOption) => {
+            setEmployeeObj(prev => ({
+                  ...prev,
+                  designationID: selectedOption ? selectedOption.value : null,
+
+            }));
+
+      };
+      const handleAttendanceTypeChange = (selectedOption) => {
+            setEmployeeObj(prev => ({
+                  ...prev,
+                  attendanceTypeID: selectedOption ? selectedOption.value : null,
+
+            }));
+
+      };
 
       return (
             <>
@@ -399,38 +451,35 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                             Select Designation
                                                             <span style={{ color: 'red' }}>*</span>
                                                       </label>
-                                                      <div className="input-group">
-                                                            <Select
-                                                                  placeholder="Select Designation"
-                                                                  // options={zoneOption}
-                                                                  // value={zoneOption.find(item => item.value === instituteObj?.zoneID)}
-                                                                  // onChange={handleZoneChange}
-                                                                  menuPosition="fixed"
-                                                            />
-                                                            <button
-                                                                  type="button"
-                                                                  className="btn btn-outline-secondary"
+                                                      <Select
+                                                            placeholder="Select Designation"
+                                                            options={designationOption}
+                                                            value={designationOption.find(item => item.value === employeeObj?.designationID)}
+                                                            onChange={handleDesignationChange}
+                                                            menuPosition="fixed"
+                                                      />
 
-                                                                  onClick={() => setShowPassword((prev) => !prev)} // Toggle Password visibility
-                                                            >
-                                                                  {showPassword ? <i class="fa-regular fa-eye-slash"></i> : <i class="fa fa-eye" aria-hidden="true"></i>}
-                                                            </button>
-                                                      </div>
-                                                      {error &&
-                                                            (
-                                                                  employeeObj.password === null ||
-                                                                  employeeObj.password === undefined ||
-                                                                  employeeObj.password === '' ||
-                                                                  employeeObj.password.length < 8
-                                                            ) ? (
-                                                            <span style={{ color: 'red' }}>
-                                                                  {employeeObj.password && employeeObj.password.length < 8
-                                                                        ? 'Password must be at least 8 characters long'
-                                                                        : ERROR_MESSAGES}
-                                                            </span>
-                                                      ) : (
-                                                            ''
-                                                      )}
+
+
+
+                                                </div>
+                                          </div>
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <div>
+                                                      <label htmlFor="Password" className="form-label">
+                                                            Select Attendance Type
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <Select
+                                                            placeholder="Select Attendance Type"
+                                                            options={AttendanceOption}
+                                                            value={AttendanceOption.find(item => item.value === employeeObj?.attendanceTypeID)}
+                                                            onChange={handleAttendanceTypeChange}
+                                                            menuPosition="fixed"
+                                                      />
+
+
+
 
                                                 </div>
                                           </div>

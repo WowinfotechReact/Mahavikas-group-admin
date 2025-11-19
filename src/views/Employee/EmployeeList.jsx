@@ -64,6 +64,7 @@ const EmployeeList = () => {
     adminID: null,
     machineID: null,
     machineName: null,
+    data: null,
     price: null,
     Action: null
   });
@@ -190,7 +191,13 @@ const EmployeeList = () => {
     setShowSuccessModal(false);
 
   };
-  const viewEmpDetails = () => {
+  const viewEmpDetails = (value) => {
+    setModelRequestData({
+      ...modelRequestData,
+      data: value,
+      Action: 'Update'
+    })
+
     setShowEmployeeViewModal(true)
   }
   const confirmStatusChange = async (row, user) => {
@@ -523,7 +530,7 @@ const EmployeeList = () => {
                               width: '48px', // Set width,
                               background: '#ffaa33', color: 'white'
                             }}
-                            // onClick={() => viewEmpDetails()}
+                            onClick={() => viewEmpDetails(value)}
                             type="button"
 
                             className="btn-sm btn me-2"

@@ -11,30 +11,11 @@ import { Tooltip } from '@mui/material';
 
 function ViewEmployeeModal({ show, onHide, modelRequestData }) {
 
+      console.log(modelRequestData, '3333333s');
 
-      const employeeObj = {
-            employeeName: "Sandeep Kumar",
-            employeeID: "EMP12345",
-            designation: "Frontend Developer",
-            department: "IT Department",
-            contactNumber: "9876543210",
-            emailID: "sandeep@company.com",
-            alternateContact: "8765432109",
-            address: "123, Tech Park, Pune, Maharashtra, India",
-            joiningDate: "12/05/2022",
-            experience: "3 Years",
-            managerName: "Amit Sharma",
-            panNumber: "ABCDE1234F",
-            aadharNumber: "1234 5678 9012",
-            bankDetails: true,
-            accountNumber: "123456789012",
-            ifscCode: "HDFC0001234",
-            branchName: "Pune Hinjewadi",
-            emergencyContact: true,
-            emergencyContactName: "Neha Sharma",
-            emergencyRelation: "Wife",
-            emergencyContactNumber: "9999998888",
-      };
+
+
+
       return (
             <Modal backdrop="static" keyboard={false} style={{ zIndex: 1300 }} show={show} onHide={onHide} centered>
 
@@ -43,96 +24,86 @@ function ViewEmployeeModal({ show, onHide, modelRequestData }) {
                   </Modal.Header>
                   <Modal.Body>
                         <div className="scrollable-table">
-                              <Table striped bordered hover>
-                                    <tbody>
-                                          <tr>
-                                                <td><b>Employee Name</b></td>
-                                                <td>{employeeObj.employeeName}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>Employee ID</b></td>
-                                                <td>{employeeObj.employeeID}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>Designation</b></td>
-                                                <td>{employeeObj.designation}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>Department</b></td>
-                                                <td>{employeeObj.department}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>Contact Number</b></td>
-                                                <td>{employeeObj.contactNumber}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>Email ID</b></td>
-                                                <td>{employeeObj.emailID}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>Alternate Contact</b></td>
-                                                <td>{employeeObj.alternateContact}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>Address</b></td>
-                                                <td>{employeeObj.address}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>Joining Date</b></td>
-                                                <td>{employeeObj.joiningDate}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>Experience</b></td>
-                                                <td>{employeeObj.experience}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>Manager Name</b></td>
-                                                <td>{employeeObj.managerName}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>PAN Number</b></td>
-                                                <td>{employeeObj.panNumber}</td>
-                                          </tr>
-                                          <tr>
-                                                <td><b>Aadhar Number</b></td>
-                                                <td>{employeeObj.aadharNumber}</td>
-                                          </tr>
+                              <div className="container mt-3">
+                                    <div className="card shadow-sm">
 
-                                          {employeeObj.bankDetails && (
-                                                <>
-                                                      <tr>
-                                                            <td><b>Account Number</b></td>
-                                                            <td>{employeeObj.accountNumber}</td>
-                                                      </tr>
-                                                      <tr>
-                                                            <td><b>IFSC Code</b></td>
-                                                            <td>{employeeObj.ifscCode}</td>
-                                                      </tr>
-                                                      <tr>
-                                                            <td><b>Branch Name</b></td>
-                                                            <td>{employeeObj.branchName}</td>
-                                                      </tr>
-                                                </>
-                                          )}
 
-                                          {employeeObj.emergencyContact && (
-                                                <>
-                                                      <tr>
-                                                            <td><b>Emergency Contact Name</b></td>
-                                                            <td>{employeeObj.emergencyContactName}</td>
-                                                      </tr>
-                                                      <tr>
-                                                            <td><b>Relation</b></td>
-                                                            <td>{employeeObj.emergencyRelation}</td>
-                                                      </tr>
-                                                      <tr>
-                                                            <td><b>Contact Number</b></td>
-                                                            <td>{employeeObj.emergencyContactNumber}</td>
-                                                      </tr>
-                                                </>
-                                          )}
-                                    </tbody>
-                              </Table>
+                                          <div className="card-body">
+
+                                                {/* Row 1 */}
+                                                <div className="row mb-3">
+                                                      <div className="col-md-4">
+                                                            <strong>Full Name:</strong>
+                                                            <div>{modelRequestData?.data.fullName || "-"}</div>
+                                                      </div>
+                                                      <div className="col-md-4">
+                                                            <strong>Project Name:</strong>
+                                                            <div>{modelRequestData?.data.projectNames || "-"}</div>
+                                                      </div>
+
+
+                                                </div>
+
+
+
+                                                {/* Row 2 */}
+                                                <div className="row mb-3">
+                                                      <div className="col-md-4">
+                                                            <strong>Email ID:</strong>
+                                                            <div>{modelRequestData?.data.emailID || "-"}</div>
+                                                      </div>
+                                                      <div className="col-md-4">
+                                                            <strong>Mobile No:</strong>
+                                                            <div>{modelRequestData?.data.mobileNo || "-"}</div>
+                                                      </div>
+                                                      <div className="col-md-4">
+                                                            <strong>Created On:</strong>
+                                                            <div>{modelRequestData?.data.createdOnDate || "-"}</div>
+                                                      </div>
+                                                </div>
+
+                                                {/* Row 3 */}
+                                                <div className="row mb-3">
+                                                      <div className="col-md-4">
+                                                            <strong>Company Name:</strong>
+                                                            <div>{modelRequestData?.data.companyName || "-"}</div>
+                                                      </div>
+                                                      <div className="col-md-4">
+                                                            <strong>Institute Name:</strong>
+                                                            <div>{modelRequestData?.data.instituteName || "-"}</div>
+                                                      </div>
+                                                      <div className="col-md-4">
+                                                            <strong>Address:</strong>
+                                                            <div>{modelRequestData?.data.address || "-"}</div>
+                                                      </div>
+                                                </div>
+
+                                                {/* Row 4 */}
+                                                <div className="row mb-3">
+                                                      <div className="col-md-4">
+                                                            <strong>Zone:</strong>
+                                                            <div>{modelRequestData?.data.zoneNames || "-"}</div>
+                                                      </div>
+                                                      <div className="col-md-4">
+                                                            <strong>District:</strong>
+                                                            <div>{modelRequestData?.data.districtNames || "-"}</div>
+                                                      </div>
+                                                      <div className="col-md-4">
+                                                            <strong>Taluka:</strong>
+                                                            <div>{modelRequestData?.data.talukaNames || "-"}</div>
+                                                      </div>
+                                                </div>
+
+                                                {/* Row 5 */}
+
+
+                                                {/* Hidden IDs (optional) */}
+
+
+                                          </div>
+                                    </div>
+                              </div>
+
                         </div>
                   </Modal.Body>
 

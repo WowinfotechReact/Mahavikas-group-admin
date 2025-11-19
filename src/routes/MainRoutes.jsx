@@ -27,6 +27,7 @@ import InstituteEmployeeList from 'views/Customer Firm Master/Institute Employee
 import AdminEmployeeList from 'views/Admin Employee/AdminEmployeeList';
 import AttendanceLetter from 'views/Hazeri/AttendanceLetter';
 import AttandanceFormat from 'views/Attandance Format/AttandanceFormat';
+import MasterZoneList from 'views/Master Crud/Master Zone/MasterZoneList';
 const Profile = Loadable(lazy(() => import('Profile')));
 const EmployeeList = Loadable(lazy(() => import('views/Employee/EmployeeList')));
 const CustomerFirmList = Loadable(lazy(() => import('views/Customer Firm Master/CustomerFirmList')));
@@ -182,7 +183,7 @@ const MainRoutes = {
       path: '/zone-manager',
       element: (
         <Suspense fallback={<Loader />}>
-          <ZoneManager />
+          <MasterZoneList />
         </Suspense>
       )
     },

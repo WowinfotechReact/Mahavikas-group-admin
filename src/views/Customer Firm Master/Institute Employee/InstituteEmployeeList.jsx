@@ -252,6 +252,8 @@ const InstituteEmployeeList = () => {
                                                       <th className="text-center"> Employee Name</th>
 
                                                       <th className="text-center">Address</th>
+                                                      <th className="text-center">Designation </th>
+                                                      <th className="text-center">Attendance Type </th>
                                                       <th className="text-center">Action</th>
                                                 </tr>
                                           </thead>
@@ -282,6 +284,16 @@ const InstituteEmployeeList = () => {
                                                             <td className="text-center" style={{ minWidth: "150px" }}>
                                                                   <div >
                                                                         <>{row.address}</>
+                                                                  </div>
+                                                            </td>
+                                                            <td className="text-center" style={{ minWidth: "150px" }}>
+                                                                  <div >
+                                                                        <>{row.designationName}</>
+                                                                  </div>
+                                                            </td>
+                                                            <td className="text-center" style={{ minWidth: "150px" }}>
+                                                                  <div >
+                                                                        <>{row.attendanceTypeName}</>
                                                                   </div>
                                                             </td>
 
