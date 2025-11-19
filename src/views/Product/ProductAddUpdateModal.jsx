@@ -79,30 +79,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
 
 
-  useEffect(() => {
-    GetCompanyLookupListData()
 
-  }, [])
-  const GetCompanyLookupListData = async () => {
-    try {
-      const response = await GetCompanyLookupList(); // Ensure this function is imported correctly
-
-      if (response?.data?.statusCode === 200) {
-        const stateLookupList = response?.data?.responseData?.data || [];
-
-        const formattedIvrList = stateLookupList.map((ivrItem) => ({
-          value: ivrItem.serviceID,
-          label: ivrItem.serviceName
-        }));
-
-        setServicesOption(formattedIvrList); // Make sure you have a state setter function for IVR list
-      } else {
-        console.error('Failed to fetch IVR lookup list:', response?.data?.statusMessage || 'Unknown error');
-      }
-    } catch (error) {
-      console.error('Error fetching IVR lookup list:', error);
-    }
-  };
 
   const AddProductBtnClick = () => {
     let isValid = false;

@@ -29,12 +29,18 @@ export const GetProjectModel = async (id) => {
   };
 
 
-export const GetProjectLookupList = async () => {
-    const url = `${projectBaseURI}/GetProjectLookupList`;
-  
-    const res = await getListWithAuthenticated(url );
-    return res;
-  };
+export const GetProjectLookupList = async (UserID, CompanyID) => {
+  const params = new URLSearchParams();
+
+  if (UserID) params.append("UserID", UserID);
+  if (CompanyID) params.append("CompanyID", CompanyID);
+
+  const url = `${projectBaseURI}/GetProjectLookupList?${params.toString()}`;
+
+  const res = await getListWithAuthenticated(url);
+  return res;
+};
+
   
   export const ChangeProjectStatus = async (id) => {
     let url = `${projectBaseURI}/ChangeProjectStatus?ProjectKeyID=${id}`;

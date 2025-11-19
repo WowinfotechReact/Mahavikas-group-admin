@@ -270,12 +270,13 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
 
 
   useEffect(() => {
-    GetProjectLookupListData()
+    GetProjectLookupListData(companyID)
   }, [])
 
-  const GetProjectLookupListData = async () => {
+  const GetProjectLookupListData = async (companyID) => {
+    debugger
     try {
-      const response = await GetProjectLookupList();
+      const response = await GetProjectLookupList(null, companyID);
 
       if (response?.data?.statusCode === 200) {
         const list = response?.data?.responseData?.data || [];

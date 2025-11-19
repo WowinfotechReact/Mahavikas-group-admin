@@ -3,6 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 import 'react-calendar/dist/Calendar.css';
 import 'react-date-picker/dist/DatePicker.css';
 import dayjs from 'dayjs';
+import Select from 'react-select';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat);
 import SuccessPopupModal from 'component/SuccessPopupModal';
@@ -392,28 +393,19 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                       )}
                                                 </div>
                                           </div>
-                                          {/* <div className="col-12 col-md-6 mb-2">
+                                          <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="Password" className="form-label">
-                                                            Password
+                                                            Select Designation
                                                             <span style={{ color: 'red' }}>*</span>
                                                       </label>
                                                       <div className="input-group">
-                                                            <input
-                                                                  maxLength={15}
-                                                                  type={showPassword ? 'text' : 'Password'} // Toggle input type
-                                                                  className="form-control"
-                                                                  placeholder="Enter Password"
-                                                                  value={employeeObj.password}
-                                                                  onChange={(e) => {
-                                                                        let InputValue = e.target.value;
-                                                                        // Allow alphanumeric characters and special characters like @, #, $, %, &, *, !
-                                                                        const updatedValue = InputValue.replace(/[^a-zA-Z0-9@#$%&*!]/g, '');
-                                                                        setEmployeeObj((prev) => ({
-                                                                              ...prev,
-                                                                              password: updatedValue
-                                                                        }));
-                                                                  }}
+                                                            <Select
+                                                                  placeholder="Select Designation"
+                                                                  // options={zoneOption}
+                                                                  // value={zoneOption.find(item => item.value === instituteObj?.zoneID)}
+                                                                  // onChange={handleZoneChange}
+                                                                  menuPosition="fixed"
                                                             />
                                                             <button
                                                                   type="button"
@@ -441,7 +433,8 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                       )}
 
                                                 </div>
-                                          </div> */}
+                                          </div>
+
 
 
                                     </div>

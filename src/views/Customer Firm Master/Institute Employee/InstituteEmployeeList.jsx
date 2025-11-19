@@ -78,7 +78,7 @@ const InstituteEmployeeList = () => {
                         searchKeyword: searchKeywordValue === undefined ? searchKeyword : searchKeywordValue,
                         toDate: toDate ? dayjs(toDate).format('YYYY-MM-DD') : null,
                         fromDate: fromDate ? dayjs(fromDate).format('YYYY-MM-DD') : null,
-                        instituteKeyID: location.state.instituteKeyID,
+                        instituteID: location.state.instituteKeyID,
                         companyID: companyID
                   });
 
