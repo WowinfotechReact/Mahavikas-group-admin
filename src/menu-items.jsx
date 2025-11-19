@@ -243,6 +243,22 @@ export default {
               icon: icons['CabinIcon'],
               url: '/site-engineer-report'
             },
+            {
+              id: 'Master',
+              title: 'Hazeri Namuna',
+              moduleName: 'Customer',
+              type: 'item',
+              icon: icons['CabinIcon'],
+              url: '/hazeri-namuna'
+            },
+            {
+              id: 'Master',
+              title: 'Attendance Format',
+              moduleName: 'Customer',
+              type: 'item',
+              icon: icons['CabinIcon'],
+              url: '/attandance-format'
+            },
 
 
 

@@ -25,6 +25,8 @@ import SiteEngineerReport from 'views/Reports/SiteEngineerReport';
 import ZoneManager from 'views/Master Crud/Zone Master/ZoneAssignedList';
 import InstituteEmployeeList from 'views/Customer Firm Master/Institute Employee/InstituteEmployeeList';
 import AdminEmployeeList from 'views/Admin Employee/AdminEmployeeList';
+import AttendanceLetter from 'views/Hazeri/AttendanceLetter';
+import AttandanceFormat from 'views/Attandance Format/AttandanceFormat';
 const Profile = Loadable(lazy(() => import('Profile')));
 const EmployeeList = Loadable(lazy(() => import('views/Employee/EmployeeList')));
 const CustomerFirmList = Loadable(lazy(() => import('views/Customer Firm Master/CustomerFirmList')));
@@ -189,6 +191,22 @@ const MainRoutes = {
       element: (
         <Suspense fallback={<Loader />}>
           <AdminEmployeeList />
+        </Suspense>
+      )
+    },
+    {
+      path: '/hazeri-namuna',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <AttendanceLetter />
+        </Suspense>
+      )
+    },
+    {
+      path: '/attandance-format',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <AttandanceFormat />
         </Suspense>
       )
     },
