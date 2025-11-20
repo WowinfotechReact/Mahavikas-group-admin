@@ -480,7 +480,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="mobileNo" className="form-label">
-                                                            Mobile Number
+                                                            Contact Number
                                                             <span style={{ color: 'red' }}>*</span>
                                                       </label>
                                                       <input
@@ -488,7 +488,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                             type="text"
                                                             className="form-control"
                                                             id="mobileNo"
-                                                            placeholder="Enter Contact Number"
+                                                            placeholder="Enter Contact No."
                                                             value={adminObj.mobileNo}
                                                             onChange={(e) => {
                                                                   setErrorMessage('');

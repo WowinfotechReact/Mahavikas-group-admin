@@ -720,6 +720,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   value={projectOption.filter(item =>
                     employeeObj.projectIDs?.includes(item.value)
                   )}
+                  placeholder="Select Project(s)"
                   onChange={handleProjectChange}
                   menuPosition="fixed"
                 />

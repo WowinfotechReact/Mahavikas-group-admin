@@ -507,26 +507,7 @@ const EmployeeList = () => {
 
                       <div className="">
 
-                        <Tooltip title="Under Development">
 
-                          {/* <Tooltip title=" Assigned Institute"> */}
-                          {/* <button
-                            style={{
-                              padding: '4px 8px', // Adjust padding for smaller size
-                              fontSize: '12px', // Optional: smaller font size
-                              // height: '28px', // Set height
-                              // width: '28px', // Set width,
-                              background: '#ffaa33', color: 'white'
-                            }}
-                            // onClick={() => AssignedInstituteBtn()}
-                            type="button"
-
-                            className="btn-sm btn me-2"
-                          >
-                            Assigned Institute
-
-                          </button> */}
-                        </Tooltip>
 
 
                         <Tooltip title="Update Employee">
