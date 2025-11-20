@@ -56,10 +56,10 @@ function ViewEmployeeModal({ show, onHide, modelRequestData }) {
                                                             <strong>Mobile No:</strong>
                                                             <div>{modelRequestData?.data.mobileNo || "-"}</div>
                                                       </div>
-                                                      <div className="col-md-4">
+                                                      {/* <div className="col-md-4">
                                                             <strong>Created On:</strong>
                                                             <div>{modelRequestData?.data.createdOnDate || "-"}</div>
-                                                      </div>
+                                                      </div> */}
                                                 </div>
 
                                                 {/* Row 3 */}
@@ -68,10 +68,10 @@ function ViewEmployeeModal({ show, onHide, modelRequestData }) {
                                                             <strong>Company Name:</strong>
                                                             <div>{modelRequestData?.data.companyName || "-"}</div>
                                                       </div>
-                                                      <div className="col-md-4">
+                                                      {/* <div className="col-md-4">
                                                             <strong>Institute Name:</strong>
                                                             <div>{modelRequestData?.data.instituteName || "-"}</div>
-                                                      </div>
+                                                      </div> */}
                                                       <div className="col-md-4">
                                                             <strong>Address:</strong>
                                                             <div>{modelRequestData?.data.address || "-"}</div>

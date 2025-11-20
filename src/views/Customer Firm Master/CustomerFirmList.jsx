@@ -332,7 +332,9 @@ const CustomerFirmList = () => {
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
             <table className="table table-bordered table-striped">
-              <thead style={{ position: 'sticky', top: -1, zIndex: 1 }}>
+              <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff' }}>
+
+                {/* <thead style={{ position: 'sticky', top: -1, zIndex: 1 }}> */}
                 <tr className="text-nowrap">
                   <th className="text-center">Sr No.</th>
                   <th className="text-center"> Institute Name</th>
@@ -347,7 +349,12 @@ const CustomerFirmList = () => {
               <tbody>
                 {vehicleListData?.map((row, idx) => (
                   <tr className='text-nowrap' key={idx}>
-                    <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
+                    <td className="text-center">
+                      <span className="index-badge">
+                        {(currentPage - 1) * pageSize + idx + 1}
+                      </span>
+                    </td>
+
                     <td style={{ minWidth: "250px", textAlign: "center", lineHeight: "1.2" }}>
                       {/* Customer Name */}
                       <div style={{ fontWeight: 600, fontSize: "14px", marginBottom: "2px", color: "#222" }}>

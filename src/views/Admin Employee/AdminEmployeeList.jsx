@@ -317,7 +317,7 @@ const AdminEmployeeList = () => {
                               {/* Table */}
                               <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
                                     <table className="table table-bordered table-striped">
-                                          <thead style={{ position: 'sticky', top: -1, zIndex: 1 }}>
+                                          <thead className="table-gradient-orange" style={{ position: "sticky", top: -1, zIndex: 1 }}>
                                                 <tr className="text-nowrap">
                                                       <th className="text-center">Sr No.</th>
                                                       <th className="text-center"> Employee Info</th>
@@ -330,7 +330,12 @@ const AdminEmployeeList = () => {
                                           <tbody>
                                                 {vehicleListData?.map((row, idx) => (
                                                       <tr className='text-nowrap' key={idx}>
-                                                            <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
+                                                            <td className="text-center">
+                                                                  <span className="index-badge">
+                                                                        {(currentPage - 1) * pageSize + idx + 1}
+                                                                  </span>
+                                                            </td>
+
                                                             <td className="text-center">
                                                                   <div className="d-flex flex-column align-items-center">
                                                                         <div className="d-flex align-items-center gap-2 mb-1">
@@ -348,18 +353,49 @@ const AdminEmployeeList = () => {
                                                                         </div>
                                                                   </div>
                                                             </td>
-                                                            <td className='text-center'>
+                                                            <td className="text-center">
                                                                   {row.address?.length > 30 ? (
-                                                                        <Tooltip title={row.address}>{`${row.address?.substring(0, 30)}...`}</Tooltip>
+                                                                        <Tooltip title={row.address}>
+                                                                              <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                                                                                    <i className="fa-solid fa-location-dot" style={{ color: "#d94e4e" }}></i>
+                                                                                    {`${row.address?.substring(0, 30)}...`}
+                                                                              </span>
+                                                                        </Tooltip>
                                                                   ) : (
-                                                                        <>{row.address}</>
+                                                                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                                                                              <i className="fa-solid fa-location-dot" style={{ color: "#d94e4e" }}></i>
+                                                                              {row.address}
+                                                                        </span>
                                                                   )}
-
                                                             </td>
 
-                                                            <td className='text-center'>
-                                                                  {row.roleName}
+
+                                                            <td className="text-center">
+                                                                  <span
+                                                                        className={`role-badge ${row.roleName === "Admin"
+                                                                              ? "role-admin"
+                                                                              : row.roleName === "Institute"
+                                                                                    ? "role-institute"
+                                                                                    : "role-superadmin"
+                                                                              }`}
+                                                                  >
+                                                                        {row.roleName === "Admin" && (
+                                                                              <i className="fa-solid fa-user-shield role-icon"></i>
+                                                                        )}
+
+                                                                        {row.roleName === "Institute" && (
+                                                                              <i className="fa-solid fa-building-columns role-icon"></i>
+                                                                        )}
+
+                                                                        {row.roleName === "Super Admin" && (
+                                                                              <i className="fa-solid fa-star role-icon"></i>
+                                                                        )}
+
+                                                                        {row.roleName}
+                                                                  </span>
                                                             </td>
+
+
 
 
 

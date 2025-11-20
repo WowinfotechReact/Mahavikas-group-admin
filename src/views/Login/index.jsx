@@ -178,7 +178,7 @@ const Login = () => {
             <img src={MVGlogo} alt="IMG" />
           </div>
           <div className="login100-form validate-form">
-            <span className="login100-form-title">
+            <span className="login100-form-title text-white">
               Admin Login
             </span>
             <div className="wrap-input100 validate-input" data-validate="Company selection is required">
@@ -256,10 +256,12 @@ const Login = () => {
             <div className="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
               <input className="input100" type="text" name="email"
                 value={LoginObj.mobileNo}
-                inputProps={{ maxLength: 10 }}
+                maxLength={10}
                 autoComplete="off"
                 placeholder="Enter 10-digit mobile number"
                 onChange={(e) => {
+                  setErrorMessage(false)
+
                   setRequireErrorMessage(false)
                   const inputValue = e.target.value;
                   const updatedValue = inputValue.replace(/[^0-9]/g, ''); // only numbers allowed
@@ -288,7 +290,9 @@ const Login = () => {
             >
               <input
                 className="input100"
+                maxLength={20}
                 onChange={(e) => {
+                  setErrorMessage(false)
                   const inputValue = e.target.value;
                   const passwordWithoutSpaces = inputValue.replace(/\s+/g, "");
                   setLoginObj({
@@ -331,7 +335,7 @@ const Login = () => {
               </span>
             </div>
 
-
+            <span style={{ color: 'white' }}>{ErrorMessage}</span>
             <div className="container-login100-form-btn">
               <button onClick={LoginBtnClicked} className="login100-form-btn" style={{ background: '#ff7d34' }}>
                 Login

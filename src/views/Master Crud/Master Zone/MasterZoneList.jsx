@@ -19,10 +19,10 @@ import PaginationComponent from 'component/Pagination';
 import { Tooltip } from '@mui/material';
 import MasterZoneModal from './MasterZoneModal';
 
-import HolidayVillageIcon from '@mui/icons-material/HolidayVillage';
 import CabinIcon from '@mui/icons-material/Cabin';
 import { ChangeZoneStatus, GetZoneList } from 'services/Master Crud/MasterZoneApi';
 import AssignedDistrictModal from './AssignedDistrictModal';
+import ViewMappedDistrictModal from './ViewMappedDistrictModal';
 
 const MasterZoneList = () => {
   const [stateChangeStatus, setStateChangeStatus] = useState('');
@@ -30,6 +30,7 @@ const MasterZoneList = () => {
   const { setLoader, user, companyID } = useContext(ConfigContext);
   const [modelAction, setModelAction] = useState();
   const navigate = useNavigate();
+  const [showDistrictModal, setShowDistrictModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
   const [totalCount, setTotalCount] = useState(null);
@@ -113,6 +114,13 @@ const MasterZoneList = () => {
     })
     setOpenSetDistrictModal(true)
   }
+  const viewMappedDistrict = (row) => {
+    setModelRequestData({
+      ...modelRequestData,
+      Value: row
+    })
+    setShowDistrictModal(true)
+  }
 
   const GetMasterZoneListData = async (pageNumber, searchKeywordValue, toDate, fromDate, sortValue, StateSortType) => {
     // debugger
@@ -180,16 +188,6 @@ const MasterZoneList = () => {
     GetMasterZoneListData(pageNumber, null, toDate, fromDate);
   };
 
-  const closeAll = () => {
-    setShowSuccessModal(false);
-  };
-
-  const handleClearDates = () => {
-    setCurrentPage(1);
-    setToDate(null);
-    setFromDate(null);
-    GetMasterZoneListData(1, null, null, null);
-  };
 
   const addMasterZoneBtnClick = () => {
     setModelRequestData({
@@ -200,11 +198,6 @@ const MasterZoneList = () => {
     setOpenMasterStateModal(true);
   };
 
-  const EditMasterDistrictZoneBtnClick = (row) => {
-
-
-    navigate('/master-mapping-district')
-  };
 
   const handleStatusChange = (row) => {
     setStateChangeStatus(row); // You can set only relevant data if needed
@@ -236,68 +229,7 @@ const MasterZoneList = () => {
     }
   };
 
-  const handleSort = (currentSortDirection, StateSortType) => {
-    const newSortValue = currentSortDirection === 'asc' ? 'desc' : 'asc';
 
-    if (StateSortType === 'stateName') {
-      setSortingDirection(newSortValue);
-      setSortDirectionObj({
-        ...sortDirectionObj,
-        ServiceNameSort: newSortValue
-      });
-      setCurrentPage(1);
-      GetMasterZoneListData(1, searchKeyword, toDate, fromDate, newSortValue, StateSortType);
-    } else if (StateSortType === 'ProfessionType') {
-      setSortingDirection(newSortValue);
-      setSortDirectionObj({
-        ...sortDirectionObj,
-        ProfessionTypeSort: newSortValue
-      });
-      setCurrentPage(1);
-      GetMasterZoneListData(1, searchKeyword, toDate, fromDate, newSortValue, StateSortType);
-    }
-  };
-
-  const EditMasterZoneBtnClick = (row) => {
-    setModelRequestData({
-      ...modelRequestData,
-      Action: 'Update',
-      zoneKeyID: row.zoneKeyID
-    });
-    setOpenMasterStateModal(true);
-  };
-
-
-  const MappedStateWise = (row) => {
-    setModelRequestData({
-      ...modelRequestData,
-      zoneID: null,
-      zoneKeyID: null,
-      zoneName: null
-    });
-    const MappingState = {
-      zoneID: row.zoneID,
-      zoneKeyID: row.zoneKeyID,
-      zoneName: row.zoneName,
-    };
-
-    navigate('/master-mapping-state', { state: MappingState });
-  };
-  const MappedDistrictWise = (row) => {
-    setModelRequestData({
-      ...modelRequestData,
-      zoneID: null,
-      zoneKeyID: null,
-      zoneName: null
-    });
-    const MappingDistrict = {
-      zoneID: row.zoneID,
-      zoneKeyID: row.zoneKeyID,
-      zoneName: row.zoneName,
-    };
-
-    navigate('/master-mapping-district', { state: MappingDistrict });
-  };
 
   const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
 
@@ -357,7 +289,8 @@ const MasterZoneList = () => {
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
             <table className="table table-bordered table-striped">
-              <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1 }}>
+              <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff' }}>
+
                 <tr>
                   <th className="text-center">Sr No</th>
                   <th className="text-center">
@@ -372,8 +305,31 @@ const MasterZoneList = () => {
               <tbody>
                 {stateListData?.map((row, idx) => (
                   <tr key={idx}>
-                    <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
-                    <td className="text-center">{row.zoneName}</td>
+                    <td className="text-center">
+                      <span className="index-badge">
+                        {(currentPage - 1) * pageSize + idx + 1}
+                      </span>
+                    </td>
+
+                    <td className="text-center">
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          animation: "fadeUp 0.4s ease-out"
+                        }}
+                      >
+                        <i
+                          className="fa-solid fa-location-crosshairs"
+                          style={{
+                            color: "#ff7d34",               // matches your orange theme
+                            animation: "floatIcon 1.5s ease-in-out infinite"
+                          }}
+                        ></i>
+                        {row.zoneName}
+                      </span>
+                    </td>
                     <td className="text-center">
                       <Tooltip title={row.status === true ? 'Inactive' : 'Active'}>
                         {row.status === true ? 'Active' : 'Inactive'}
@@ -382,16 +338,41 @@ const MasterZoneList = () => {
                     </td>
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                     <td className="text-center">
-                      <Tooltip title="Map District">
-                        <button
-                          onClick={() => mapDistrictZoneBtn(row)}
-                          type="button"
-                          className="btn-sm btn btn-primary me-2 "
-                        >
-                          {/* <i className="fa-solid fa-pen-to-square"></i> */}
-                          <CabinIcon fontSize="small" />
-                        </button>
-                      </Tooltip>
+                      <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+
+                        <Tooltip title="Map District">
+                          <button
+                            style={{
+                              padding: '4px 8px',
+                              fontSize: '12px',
+                              height: '32px',
+                              width: '44px', background: '#ffaa33', color: 'white'
+                            }}
+                            onClick={() => mapDistrictZoneBtn(row)}
+                            type="button"
+                            className="btn-sm btn "
+                          >
+                            <CabinIcon fontSize="small" />
+                          </button>
+
+                        </Tooltip>
+                        <Tooltip title="Map District">
+                          <button
+                            style={{
+                              padding: '4px 8px',
+                              fontSize: '12px',
+                              height: '32px',
+                              background: '#ffaa33', color: 'white'
+                            }}
+                            onClick={() => viewMappedDistrict(row)}
+                            type="button"
+                            className="btn-sm btn "
+                          >
+                            View Mapped District
+                          </button>
+
+                        </Tooltip>
+                      </div>
 
                     </td>
                   </tr>
@@ -421,6 +402,15 @@ const MasterZoneList = () => {
         <AssignedDistrictModal
           show={openSetDistrictModal}
           onHide={() => setOpenSetDistrictModal(false)}
+          modelRequestData={modelRequestData}
+          setModelRequestData={setModelRequestData}
+          setIsAddUpdateActionDone={setIsAddUpdateActionDone}
+        />
+      )}
+      {showDistrictModal && (
+        <ViewMappedDistrictModal
+          show={showDistrictModal}
+          onHide={() => setShowDistrictModal(false)}
           modelRequestData={modelRequestData}
           setModelRequestData={setModelRequestData}
           setIsAddUpdateActionDone={setIsAddUpdateActionDone}

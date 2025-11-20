@@ -426,7 +426,9 @@ const EmployeeList = () => {
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
             <table className="table table-bordered table-striped table-hover">
-              <thead style={{ position: 'sticky', top: -1, zIndex: 1, backgroundColor: '#ff7d34', color: '#fff' }}>
+              <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff' }}>
+
+                {/* <thead style={{ position: 'sticky', top: -1, zIndex: 1, backgroundColor: '#ff7d34',  }}> */}
                 <tr className="text-nowrap">
                   <th className="text-center">Sr.No.</th>
                   <th className="text-center">Employee Info</th>
@@ -438,14 +440,18 @@ const EmployeeList = () => {
 
 
                   <th className="text-center">Address</th>
-                  <th className="text-center">Company Name</th>
                   <th className="text-center actionSticky">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {vehicleListData?.map((value, idx) => (
                   <tr className="tableBodyTd text-nowrap" key={idx}>
-                    <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
+                    <td className="text-center">
+                      <span className="index-badge">
+                        {(currentPage - 1) * pageSize + idx + 1}
+                      </span>
+                    </td>
+
 
 
 
@@ -475,18 +481,23 @@ const EmployeeList = () => {
                         </div>
                       </div>
                     </td>
-                    <td className='text-center'>
+                    <td className="text-center">
                       {value.address?.length > 30 ? (
-                        <Tooltip title={value.address}>{`${value.address?.substring(0, 30)}...`}</Tooltip>
+                        <Tooltip title={value.address}>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                            <i className="fa-solid fa-location-dot" style={{ color: "#d94e4e" }}></i>
+                            {`${value.address?.substring(0, 30)}...`}
+                          </span>
+                        </Tooltip>
                       ) : (
-                        <>{value.address}</>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                          <i className="fa-solid fa-location-dot" style={{ color: "#d94e4e" }}></i>
+                          {value.address}
+                        </span>
                       )}
-
                     </td>
 
-                    <td className='text-center'>
-                      {value.companyName}
-                    </td>
+
 
 
 

@@ -36,10 +36,17 @@ export const GetZoneModel = async (id) => {
   };
 
 
-export const GetZoneLookupList = async () => {
+export const GetZoneLookupList = async (ZoneID) => {
     const url = `${MasterZoneBaseUrl}/GetZoneLookupList`;
   
-    const res = await getListWithAuthenticated(url );
+    const res = await getListWithAuthenticated(url);
+    return res;
+  };
+  
+export const GetAssignedZoneDistrictList = async (ZoneID) => {
+    const url = `${MasterZoneBaseUrl}/GetAssignedZoneDistrictList?ZoneID=${ZoneID}`;
+  
+    const res = await getListWithAuthenticated(url);
     return res;
   };
   

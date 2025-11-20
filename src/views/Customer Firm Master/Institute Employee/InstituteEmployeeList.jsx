@@ -274,7 +274,8 @@ const InstituteEmployeeList = () => {
                               {/* Table */}
                               <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
                                     <table className="table table-bordered table-striped">
-                                          <thead style={{ position: 'sticky', top: -1, zIndex: 1 }}>
+                                          <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff' }}>
+
                                                 <tr className="text-nowrap">
                                                       <th className="text-center">Sr No.</th>
                                                       <th className="text-center"> Employee Name</th>
@@ -288,7 +289,12 @@ const InstituteEmployeeList = () => {
                                           <tbody>
                                                 {vehicleListData?.map((row, idx) => (
                                                       <tr className='text-nowrap' key={idx}>
-                                                            <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
+                                                            <td className="text-center">
+                                                                  <span className="index-badge">
+                                                                        {(currentPage - 1) * pageSize + idx + 1}
+                                                                  </span>
+                                                            </td>
+
                                                             <td className="text-center">
                                                                   <div className="d-flex flex-column align-items-center">
                                                                         <div className="d-flex align-items-center gap-2 mb-1">

@@ -377,7 +377,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
         <Modal.Header closeButton>
           <Modal.Title>
             <h3 className="text-center">
-              {modelRequestData?.Action !== null ? 'Update Product' : modelRequestData?.Action === null ? 'Add Project' : ' Update Project'}
+              {modelRequestData?.Action !== null ? 'Update Project' : modelRequestData?.Action === null ? 'Add Project' : ' Update Project'}
             </h3>
           </Modal.Title>
         </Modal.Header>

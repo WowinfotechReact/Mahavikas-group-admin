@@ -553,39 +553,89 @@ logout-confirmation-modal {
   -webkit-overflow-scrolling: touch;
 }
 
-.table {
-  border-collapse: collapse;
-  width: 100%;
+/* ---------------------------
+   Option A - Blue gradient
+   Usage: <thead class="table-gradient-blue">
+   --------------------------- */
+.table thead th.table-gradient-blue,
+.table thead.table-gradient-blue th {
+  background: linear-gradient(90deg, #3a57e8 0%, #6b8cff 100%);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  /* IMPORTANT for sticky */
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-.table th, .table td {
+/* ---------------------------
+   Option B - Warm red → orange
+   Usage: <thead class="table-gradient-warm">
+   --------------------------- */
+.table thead th.table-gradient-warm,
+.table thead.table-gradient-warm th {
+  background: linear-gradient(90deg, #ff4e50 0%, #ff7f8a 50%, #ffb86b 100%);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------------------------
+   Option C - Animated subtle gradient
+   Usage: <thead class="table-gradient-animated">
+   --------------------------- */
+.table thead th.table-gradient-animated,
+.table thead.table-gradient-animated th {
+  background: linear-gradient(270deg, #20c997, #58e1b7, #3a57e8, #6b8cff);
+  background-size: 800% 800%;
+  animation: gradientShift 8s ease infinite;
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Keep existing th/td styles but ensure they don't override gradients */
+.table th,
+.table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+  background: transparent;
+  /* ensure no solid bg sits on top */
 }
-
-.table th {
-  background-color: #ff7d34;
+/* Orange Gradient for Table Header */
+.table thead.table-gradient-orange th,
+.table thead th.table-gradient-orange {
+  background: linear-gradient(90deg, #ff7d34 0%, #ff944d 50%, #ffa766 100%);
   color: #fff;
-}
-
-.table td {
-  vertical-align: middle;
-}
-
-.table thead th {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-@media (max-width: 768px) {
-  .table-responsive {
-    overflow-x: auto;
-  }
-  .table th, .table td {
-    padding: 4px;
-  }
+/* Ensure base table styles don't override gradient */
+.table th,
+.table td {
+  background: transparent;
 }
 
 @media (max-width: 480px) {
@@ -866,4 +916,122 @@ logout-confirmation-modal {
   border-style: solid;
   border-color: transparent transparent white transparent;
   filter: drop-shadow(0 -1px 1px rgba(0, 0, 0, 0.1));
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.role-admin { background: #e6f0ff; color: #0056d6; }
+.role-institute { background: #e8ffe6; color: #0a8a00; }
+.role-superadmin { background: #fff4e5; color: #d67a00; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  animation: popIn 0.35s ease-out;
+  cursor: default;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover animation */
+.role-badge:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Role colors */
+.role-admin {
+  background: #e6f0ff;
+  color: #0056d6;
+}
+
+.role-institute {
+  background: #e8ffe6;
+  color: #0a8a00;
+}
+
+.role-superadmin {
+  background: #fff4e5;
+  color: #d67a00;
+}
+
+/* Entry Animation */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(-6px);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.15) translateY(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.role-icon {
+  display: inline-block;
+  animation: iconMove 1.4s ease-in-out infinite;
+}
+
+/* Soft floating wiggle */
+@keyframes iconMove {
+  0% {
+    transform: translateY(0);
+  }
+
+  30% {
+    transform: translateY(-3px);
+  }
+
+  60% {
+    transform: translateY(2px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}.index-badge {
+  display: inline-block;
+  background: #eef3ff;
+  color: #3a57e8;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  animation: popIn 0.35s ease-out;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }

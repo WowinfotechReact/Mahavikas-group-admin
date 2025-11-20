@@ -241,7 +241,9 @@ const ProductList = () => {
 
           <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
             <table className="table table-bordered table-striped">
-              <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1 }}>
+              <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff' }}>
+
+                {/* <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1 }}> */}
                 <tr>
                   <th className="text-center">Sr No</th>
                   <th className="text-center">Project Name</th>
@@ -254,17 +256,78 @@ const ProductList = () => {
               <tbody>
                 {productListData?.map((row, idx) => (
                   <tr key={idx}>
-                    <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
-                    <td className="text-center">{row.projectName}</td>
                     <td className="text-center">
-
-                      {row.projectDescription?.length > 30 ? (
-                        <Tooltip title={row.projectDescription}>{`${row.projectDescription?.substring(0, 30)}...`}</Tooltip>
-                      ) : (
-                        <>{row.projectDescription}</>
-                      )}
+                      <span className="index-badge">
+                        {(currentPage - 1) * pageSize + idx + 1}
+                      </span>
                     </td>
-                    <td className="text-center">{row.serviceName}</td>
+
+                    <td className="text-center">
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          animation: "fadeUp 0.4s ease-out"
+                        }}
+                      >
+                        <i
+                          className="fa-solid fa-folder"
+                          style={{
+                            color: "#ff7d34",
+                            animation: "floatIcon 1.5s ease-in-out infinite"
+                          }}
+                        ></i>
+                        {row.projectName}
+                      </span>
+                    </td>
+
+                    <td className="text-center">
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          animation: "fadeUp 0.4s ease-out"
+                        }}
+                      >
+                        <i
+                          className="fa-solid fa-circle-info"
+                          style={{
+                            color: "#3a57e8",
+                            animation: "floatIcon 1.5s ease-in-out infinite"
+                          }}
+                        ></i>
+
+                        {row.projectDescription?.length > 30 ? (
+                          <Tooltip title={row.projectDescription}>
+                            {`${row.projectDescription.substring(0, 30)}...`}
+                          </Tooltip>
+                        ) : (
+                          row.projectDescription
+                        )}
+                      </span>
+                    </td>
+
+                    <td className="text-center">
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          animation: "fadeUp 0.4s ease-out"
+                        }}
+                      >
+                        <i
+                          className="fa-solid fa-tags"
+                          style={{
+                            color: "#20c997",
+                            animation: "pulseIcon 1.6s ease-in-out infinite"
+                          }}
+                        ></i>
+                        {row.serviceName}
+                      </span>
+                    </td>
 
                     <td className="text-center">
                       {row.status === 'Active' ? 'Active' : 'In-Active'}
@@ -286,7 +349,7 @@ const ProductList = () => {
                             <i className="fa-solid fa-pen-to-square"></i>
                           </button>
                         </Tooltip>
-                        <Tooltip title="View Details">
+                        {/* <Tooltip title="View Details">
                           <button
                             style={{ background: "#ffaa33" }}
                             onClick={() => projectDetailsBtn()}
@@ -295,7 +358,7 @@ const ProductList = () => {
                           >
                             More Info
                           </button>
-                        </Tooltip>
+                        </Tooltip> */}
 
                         <Tooltip title="Add Institute">
                           <button
