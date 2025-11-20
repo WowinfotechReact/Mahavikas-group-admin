@@ -26,6 +26,9 @@ const AdminEmployeeList = () => {
       const [openCustomerViewModal, setOpenCustomerViewModal] = useState(false);
       const [showInstituteUserModal, setShowInstituteUserModal
       ] = useState(false);
+      const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
+      const fullText = "Search By Name / Ph No. / Mail IDD";
+      let index = 0;
       const [showVehicleViewModal, setShowVehicleViewModal] = useState(false);
       const [imgModalTitle, setImgModalTitle] = useState('');
       const [imgModalShow, setImgModalShow] = useState(false);
@@ -58,6 +61,19 @@ const AdminEmployeeList = () => {
             price: null,
             Action: null
       });
+      useEffect(() => {
+            const interval = setInterval(() => {
+                  setAnimatedPlaceholder(fullText.slice(0, index));
+                  index++;
+
+                  if (index > fullText.length) {
+                        index = 0;
+                        setAnimatedPlaceholder(""); // Restart effect
+                  }
+            }, 180);
+
+            return () => clearInterval(interval);
+      }, []);
 
       useEffect(() => {
             // debugger
@@ -264,7 +280,8 @@ const AdminEmployeeList = () => {
                                     <input
                                           type="text"
                                           className="form-control"
-                                          placeholder="Search Admin Employee"
+                                          placeholder={animatedPlaceholder}
+
                                           style={{ maxWidth: '350px' }}
                                           value={searchKeyword}
                                           onChange={(e) => {

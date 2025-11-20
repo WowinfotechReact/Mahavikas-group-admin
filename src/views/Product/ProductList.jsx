@@ -98,6 +98,25 @@ const ProductList = () => {
   useEffect(() => {
     GetProjectListData(1);
   }, []);
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
+
+  const fullText = "Search By Project Name / Desc / Service Namee";
+  let index = 0;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimatedPlaceholder(fullText.slice(0, index));
+      index++;
+
+      if (index > fullText.length) {
+        index = 0;
+        setAnimatedPlaceholder(""); // Restart effect
+      }
+    }, 180);
+
+    return () => clearInterval(interval);
+  }, []);
+
 
   const handleSearch = (e) => {
     const value = e.target.value.trimStart();
@@ -207,7 +226,7 @@ const ProductList = () => {
             <input
               type="text"
               className="form-control"
-              placeholder="Search Project"
+              placeholder={animatedPlaceholder}
               style={{ maxWidth: '350px' }}
               value={searchKeyword}
               onChange={handleSearch}

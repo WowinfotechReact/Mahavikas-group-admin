@@ -298,13 +298,31 @@ const MasterZoneList = () => {
 
     navigate('/master-mapping-district', { state: MappingDistrict });
   };
+
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
+
+  const fullText = "Search By Zone Namee";
+  let index = 0;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimatedPlaceholder(fullText.slice(0, index));
+      index++;
+
+      if (index > fullText.length) {
+        index = 0;
+        setAnimatedPlaceholder(""); // Restart effect
+      }
+    }, 180);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <>
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           {/* Top controls */}
           <div className="d-flex justify-content-between align-items-center mb-1">
-            <h5 className="m-0">Zone</h5>
+            <h5 className="m-0">Zone Manager</h5>
             <button
               onClick={() => addMasterZoneBtnClick()}
               className="btn btn-primary btn-sm d-inline d-sm-none"
@@ -317,16 +335,17 @@ const MasterZoneList = () => {
             <input
               type="text"
               className="form-control "
-              placeholder="Search Zone"
+              placeholder={animatedPlaceholder}
               style={{ maxWidth: "350px" }}
               value={searchKeyword}
               onChange={(e) => {
                 handleSearch(e);
               }}
             />
-            <Tooltip title="Add Zone">
+            <Tooltip title="Under Development">
               <button
-                onClick={() => addMasterZoneBtnClick()}
+                // disabled
+                // onClick={() => addMasterZoneBtnClick()}
                 className="btn btn-primary btn-sm d-none d-sm-inline"
               >
                 <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
@@ -356,9 +375,9 @@ const MasterZoneList = () => {
                     <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
                     <td className="text-center">{row.zoneName}</td>
                     <td className="text-center">
-                      <Tooltip title={row.status === true ? 'Enable' : 'Disable'}>
-                        {row.status === true ? 'Enable' : 'Disable'}
-                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === true} />
+                      <Tooltip title={row.status === true ? 'Inactive' : 'Active'}>
+                        {row.status === true ? 'Active' : 'Inactive'}
+                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === 'Active'} />
                       </Tooltip>
                     </td>
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}

@@ -16,7 +16,7 @@ import SuccessPopupModal from 'component/SuccessPopupModal';
 import { Tooltip } from '@mui/material';
 // import VehicleTableViewModal from './VehicleTableViewModal';
 import AddUpdateEmployeeModal from './AddUpdateEmployeeModal';
-import { ChangeEmployeeStatus, GetAppUserList, ResetEmployeeMACAddress } from 'services/Employee Staff/EmployeeApi';
+import { ChangeEmployeeStatus, GetAppUserList, } from 'services/Employee Staff/EmployeeApi';
 import ResetIMEIModal from 'component/Staff/ResetIMEIModal';
 import { Link } from 'react-router-dom';
 import { hasPermission } from 'Middleware/permissionUtils';
@@ -30,6 +30,9 @@ import { GetAdminUserList } from 'services/Company/CompanyApi';
 
 
 const EmployeeList = () => {
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
+  const fullText = "Search By Name / Ph No. / Mail ID / Company Namee";
+  let index = 0;
   const [visiblePasswords, setVisiblePasswords] = useState({});
   const [showResetIMEIModal, setShowResetIMEIModal] = useState();
   const [stateChangeStatus, setStateChangeStatus] = useState('');
@@ -69,6 +72,19 @@ const EmployeeList = () => {
     Action: null
   });
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimatedPlaceholder(fullText.slice(0, index));
+      index++;
+
+      if (index > fullText.length) {
+        index = 0;
+        setAnimatedPlaceholder(""); // Restart effect
+      }
+    }, 180);
+
+    return () => clearInterval(interval);
+  }, []);
 
 
 
@@ -381,7 +397,8 @@ const EmployeeList = () => {
             <input
               type="text"
               className="form-control"
-              placeholder="Search Employee"
+              placeholder={animatedPlaceholder}
+
               style={{ maxWidth: '350px' }}
               value={searchKeyword}
               onChange={(e) => {

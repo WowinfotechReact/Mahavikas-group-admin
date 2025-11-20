@@ -239,6 +239,24 @@ const CustomerFirmList = () => {
     });
     setShowVehicleViewModal(true);
   };
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
+
+  const fullText = "Search By Institute / Project / Zone / Distractt";
+  let index = 0;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimatedPlaceholder(fullText.slice(0, index));
+      index++;
+
+      if (index > fullText.length) {
+        index = 0;
+        setAnimatedPlaceholder(""); // Restart effect
+      }
+    }, 180);
+
+    return () => clearInterval(interval);
+  }, []);
+
 
 
   return (
@@ -278,7 +296,7 @@ const CustomerFirmList = () => {
             <input
               type="text"
               className="form-control"
-              placeholder="Search Institute"
+              placeholder={animatedPlaceholder}
               style={{ maxWidth: '350px' }}
               value={searchKeyword}
               onChange={(e) => {

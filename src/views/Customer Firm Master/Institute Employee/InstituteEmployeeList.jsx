@@ -16,9 +16,11 @@ import InstituteUserAddUpdateModal from 'views/Employee/InstituteUserAddUpdateMo
 import InstituteEmployeeAddUpdateModal from './InstituteEmployeeAddUpdateModal';
 import { GetInstituteList } from 'services/Institute/InstituteApi';
 import { GetAppUserList } from 'services/Employee Staff/EmployeeApi';
+import SetPasswordModal from './SetPasswordModal';
 
 const InstituteEmployeeList = () => {
       const [stateChangeStatus, setStateChangeStatus] = useState('');
+      const [showPasswordModal, setShowPasswordModal] = useState(false);
       const [showInstituteUserModal, setShowInstituteUserModal
       ] = useState(false);
       const [showVehicleViewModal, setShowVehicleViewModal] = useState(false);
@@ -178,8 +180,34 @@ const InstituteEmployeeList = () => {
             }
       };
 
+      const setAppUserBtnClick = (row) => {
+            setModelRequestData({
+                  ...modelRequestData,
+                  userKeyIDForUpdate: row?.userKeyIDForUpdate,
+                  userDetailsKeyID: row?.userDetailsKeyID,
+                  Action: 'Update'
+            })
+            setShowPasswordModal(true)
+      }
 
 
+      const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
+
+      const fullText = "Search By Name / Phone No. / Mail IDD";
+      let index = 0;
+      useEffect(() => {
+            const interval = setInterval(() => {
+                  setAnimatedPlaceholder(fullText.slice(0, index));
+                  index++;
+
+                  if (index > fullText.length) {
+                        index = 0;
+                        setAnimatedPlaceholder(""); // Restart effect
+                  }
+            }, 180);
+
+            return () => clearInterval(interval);
+      }, []);
       return (
             <>
                   {/* <Sidebar drawerOpen={true} drawerToggle={() => {}} modalOpen={show} /> */}
@@ -210,7 +238,7 @@ const InstituteEmployeeList = () => {
                                     <input
                                           type="text"
                                           className="form-control"
-                                          placeholder="Search Institute Employee"
+                                          placeholder={animatedPlaceholder}
                                           style={{ maxWidth: '350px' }}
                                           value={searchKeyword}
                                           onChange={(e) => {
@@ -319,6 +347,23 @@ const InstituteEmployeeList = () => {
                                                                                     <i className="fa-solid fa-pen-to-square"></i>
                                                                               </button>
                                                                         </Tooltip>
+                                                                        {row.isWebAppUser !== 1 &&
+                                                                              <Tooltip title={`Set APP User `}>
+                                                                                    <button
+                                                                                          style={{
+                                                                                                padding: '4px 8px',
+                                                                                                fontSize: '12px',
+                                                                                                height: '28px',
+                                                                                                background: '#ffaa33', color: 'white'
+                                                                                          }}
+                                                                                          onClick={() => setAppUserBtnClick(row)}
+                                                                                          type="button"
+                                                                                          className="btn-sm btn "
+                                                                                    >
+                                                                                          Set App User
+                                                                                    </button>
+                                                                              </Tooltip>
+                                                                        }
 
 
 
@@ -378,6 +423,15 @@ const InstituteEmployeeList = () => {
                               <InstituteUserAddUpdateModal
                                     show={showInstituteUserModal}
                                     onHide={() => setShowInstituteUserModal(false)}
+                                    modelRequestData={modelRequestData}
+                              />
+                        )
+                  }
+                  {
+                        showPasswordModal && (
+                              <SetPasswordModal
+                                    show={showPasswordModal}
+                                    onHide={() => setShowPasswordModal(false)}
                                     modelRequestData={modelRequestData}
                               />
                         )

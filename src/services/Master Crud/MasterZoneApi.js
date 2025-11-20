@@ -18,6 +18,14 @@ export const AddUpdateZone = async (url = '', params) => {
   const res = await postApiWithAuthenticated(`${MasterZoneBaseUrl}${url}`, params);
   return res;
 };
+export const AddUpdateZoneDistrictMapping = async (url = '', params) => {
+  if (params.zoneKeyID === null || params.zoneKeyID === undefined) {
+    delete params.zoneKeyID;
+  }
+
+  const res = await postApiWithAuthenticated(`${MasterZoneBaseUrl}${url}`, params);
+  return res;
+};
 
 
 export const GetZoneModel = async (id) => {

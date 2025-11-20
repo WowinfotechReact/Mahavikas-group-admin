@@ -219,30 +219,30 @@ export default {
 
           icon: icons['AssessmentIcon'],
           children: [
+            // {
+            //   id: 'Master',
+            //   title: 'Project Wise Attendance',
+            //   moduleName: 'Customer',
+            //   type: 'item',
+            //   icon: icons['CabinIcon'],
+            //   url: '/project-wise-attendance-report'
+            // },
             {
               id: 'Master',
-              title: 'Project Wise Attendance',
-              moduleName: 'Customer',
-              type: 'item',
-              icon: icons['CabinIcon'],
-              url: '/project-wise-attendance-report'
-            },
-            {
-              id: 'Master',
-              title: 'Institute Wise Attendance',
+              title: ' Attendance Report',
               moduleName: 'Customer',
               type: 'item',
               icon: icons['CabinIcon'],
               url: '/institute-wise-attendance-report'
             },
-            {
-              id: 'Master',
-              title: 'Site Engineer Report',
-              moduleName: 'Customer',
-              type: 'item',
-              icon: icons['CabinIcon'],
-              url: '/site-engineer-report'
-            },
+            // {
+            //   id: 'Master',
+            //   title: 'Site Engineer Report',
+            //   moduleName: 'Customer',
+            //   type: 'item',
+            //   icon: icons['CabinIcon'],
+            //   url: '/site-engineer-report'
+            // },
             {
               id: 'Master',
               title: 'Hazeri Namuna',

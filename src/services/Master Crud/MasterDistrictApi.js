@@ -25,12 +25,24 @@ export const GetDistrictModel = async (id) => {
   return res;
 };
 
-export const GetDistrictLookupList = async (ZoneIDs) => {
-  const url = `${MasterDistrictBaseUrl}/GetDistrictLookupList?ZoneIDs=${ZoneIDs}`;
+export const GetDistrictLookupList = async (ZoneIDs, userID, StateID) => {
+  let url = `${MasterDistrictBaseUrl}/GetDistrictLookupList`;
+
+  let params = [];
+
+  if (ZoneIDs) params.push(`ZoneIDs=${ZoneIDs}`);
+  if (userID) params.push(`userID=${userID}`);
+  if (StateID) params.push(`StateID=${StateID}`);
+
+  if (params.length > 0) {
+    url += `?${params.join("&")}`;
+  }
 
   const res = await getListWithAuthenticated(url);
   return res;
 };
+
+
 
 export const ChangeDistrictStatus = async (id, UserKeyID) => {
   let url = `${MasterDistrictBaseUrl}/ChangeDistrictStatus?DistrictID=${id}&UserKeyID=${UserKeyID}`;
