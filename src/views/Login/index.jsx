@@ -75,7 +75,7 @@ const Login = () => {
   // 2] This function validate email id & password is in valid format
   const LoginBtnClicked = () => {
     setErrorMessage('');
-    if (!LoginObj.mobileNo || !LoginObj.password || !LoginObj.companyID || !LoginObj.roleID) {
+    if (!LoginObj.mobileNo || !LoginObj.password || !LoginObj.companyID) {
       setRequireErrorMessage("This fields are required");
       return false;
     } else if (LoginObj.mobileNo.length !== 10) {
@@ -181,32 +181,7 @@ const Login = () => {
             <span className="login100-form-title text-white">
               Admin Login
             </span>
-            <div className="wrap-input100 validate-input" data-validate="Company selection is required">
-              <Select
-                placeholder="Select Role"
-                options={roleType}
-                menuPortalTarget={document.body}
-                menuPosition="fixed"
-                styles={{
-                  menuPortal: base => ({ ...base, zIndex: 9999 }),
-                }}
-                value={roleType.find(option => option.value === LoginObj?.roleID) || null}
-                onChange={(selectedOption) => {
-                  setLoginObj(prev => ({
-                    ...prev,
-                    roleID: selectedOption ? selectedOption.value : null,
-                  }));
-                }}
-              />
 
-
-
-              {requireErrorMessage && (!LoginObj.roleID || LoginObj.roleID === "") && (
-                <label className="validation mt-1" style={{ color: "red" }}>
-                  {ERROR_MESSAGES}
-                </label>
-              )}
-            </div>
             <div className="wrap-input100 validate-input" data-validate="Company selection is required">
               <Select
                 placeholder="Select Company"

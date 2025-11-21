@@ -4,8 +4,7 @@ import { Fade } from "react-bootstrap"; // optional fade animation
 import './dash.css'
 import dayjs from 'dayjs';
 // material-ui
-import { useTheme, styled } from '@mui/material/styles';
-import { Grid, Card, CardHeader, CardContent, Typography, Divider, LinearProgress } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import PersonIcon from '@mui/icons-material/Person';
@@ -84,6 +83,7 @@ const Default = () => {
   const handleClearDates = () => {
     setFromDate(null);
     setToDate(null);
+    DashboardCountData(null, null);
   };
 
   const [show, setShow] = useState(false);
@@ -150,10 +150,10 @@ const Default = () => {
     setShowEmployeeModal(true);
   };
   const stats = [
-    { id: 1, title: 'Total Contractual Employee', value: 0, icon: <FaUsers size={28} />, colorClass: 'bg-warning' },
-    { id: 2, title: 'Total Projects', value: 0, icon: <FaProjectDiagram size={28} />, colorClass: 'bg-danger', route: '/project' },
-    { id: 3, title: 'Total Institutes', value: 0, icon: <FaUniversity size={28} />, colorClass: 'bg-info', },
-    { id: 4, title: 'Total Employees', value: 0, icon: <FaUserTie size={28} />, colorClass: 'bg-success', route: '/employee-list' }
+    { id: 1, title: 'Total Contractual Employee', value: dashboardCount.totalContractualEmployees, icon: <FaUsers size={28} />, colorClass: 'bg-warning' },
+    { id: 2, title: 'Total Projects', value: dashboardCount.totalProjects, icon: <FaProjectDiagram size={28} />, colorClass: 'bg-danger', route: '/project' },
+    { id: 3, title: 'Total Institutes', value: dashboardCount.totalInstitutes, icon: <FaUniversity size={28} />, colorClass: 'bg-info', },
+    { id: 4, title: 'Total Employees', value: dashboardCount.totalEmployees, icon: <FaUserTie size={28} />, colorClass: 'bg-success', route: '/employee-list' }
   ];
   return (
     <div className="gov-dashboard container-fluid py-4">
@@ -220,16 +220,15 @@ const Default = () => {
               <div className="card shadow-sm h-100 hover-card" role="button" tabIndex={0}>
                 <div className="card-body d-flex justify-content-between align-items-center">
                   <div>
-                    <h5 className="card-title mb-1">{item.title}</h5>
+                    {/* <h5 className="card-title mb-1">{item.title}</h5> */}
                     <p className="display-6 fw-bold mb-0">{item.value}</p>
-                    <small className="text-muted">Compared to last month</small>
+                    {/* <small className="text-muted">Compared to last month</small> */}
                   </div>
                   <div className={`avatar ${item.colorClass}`}>{item.icon}</div>
                 </div>
                 <div className={`card-footer small text-white ${item.colorClass}`}>
                   <div className="d-flex justify-content-between align-items-center">
                     <span>{item.title}</span>
-                    <span>+3%</span>
                   </div>
                 </div>
               </div>
@@ -244,33 +243,11 @@ const Default = () => {
           </div>
 
 
-          <div className="col-lg-4 mb-3">
-            <div className="card h-100 shadow-sm">
-              <div className="card-header">
-                <h6 className="mb-0">Quick Actions</h6>
-              </div>
-              <div className="card-body d-flex flex-column gap-2">
-                <button onClick={() => addProductBtnClick()} className="btn btn-outline-primary w-100">Create New Project</button>
-                <button onClick={() => VehicleAddBtnClicked()} className="btn btn-outline-secondary w-100">Add Employee</button>
-                {/* <button className="btn btn-outline-success w-100">Generate Report</button> */}
-                <div className="mt-3">
-                  <h6 className="mb-1">Daily Progress</h6>
-                  <div className="progress" style={{ height: '10px' }}>
-                    <div className="progress-bar" role="progressbar" style={{ width: '72%' }} aria-valuenow={72} aria-valuemin={0} aria-valuemax={100}></div>
-                  </div>
-                  <small className="text-muted">72% completion across tracked tasks</small>
-                </div>
-              </div>
-            </div>
-
-
-
-          </div>
         </div>
       </section>
-      <footer className="mt-4 text-center small text-muted">
+      {/* <footer className="mt-4 text-center small text-muted">
         © {new Date().getFullYear()} Government Project — Maha Vikas Group
-      </footer>
+      </footer> */}
       {showEmployeeModal && (
         <AddUpdateEmployeeModal
           show={showEmployeeModal}

@@ -28,6 +28,7 @@ import AdminEmployeeList from 'views/Admin Employee/AdminEmployeeList';
 import AttendanceLetter from 'views/Hazeri/AttendanceLetter';
 import AttandanceFormat from 'views/Attandance Format/AttandanceFormat';
 import MasterZoneList from 'views/Master Crud/Master Zone/MasterZoneList';
+import MapCityList from 'views/Master Crud/Zone Master/MapCityList';
 const Profile = Loadable(lazy(() => import('Profile')));
 const EmployeeList = Loadable(lazy(() => import('views/Employee/EmployeeList')));
 const CustomerFirmList = Loadable(lazy(() => import('views/Customer Firm Master/CustomerFirmList')));
@@ -184,6 +185,14 @@ const MainRoutes = {
       element: (
         <Suspense fallback={<Loader />}>
           <MasterZoneList />
+        </Suspense>
+      )
+    },
+    {
+      path: '/mapped-city',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <MapCityList />
         </Suspense>
       )
     },
