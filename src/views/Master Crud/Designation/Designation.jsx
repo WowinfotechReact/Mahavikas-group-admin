@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Android12Switch from 'component/Android12Switch';
 import { ConfigContext } from 'context/ConfigContext';
-import { ChangeStateStatus, MasterStatGetStateList } from 'services/Master Crud/MasterStateApi';
+import { ChangeStateStatus, GetStateList } from 'services/Master Crud/MasterStateApi';
 import dayjs from 'dayjs';
 import StatusChangeModal from 'component/StatusChangeModal ';
 import SuccessPopupModal from 'component/SuccessPopupModal';

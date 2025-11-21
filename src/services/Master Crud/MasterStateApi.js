@@ -20,16 +20,16 @@ export const GetStateList = async (params) => {
 //   return res;
 // };
 
-export const AddUpdateState = async (requestJson) => {
+export const AddUpdateStateApi = async (requestJson) => {
     const res = await postApiWithAuthenticated(
-    `${url}/State/AddUpdateState`, requestJson
+    `${Base_Url}/State/AddUpdateState`, requestJson
   );
   return res;
 };
 
 
-export const GetStateModel = async (id) => {
-    let url = `${MasterStateBaseUrl}/GetStateModel?StateID=${id}`;
+export const GetStateModel = async (stateKeyID) => {
+    let url = `${MasterStateBaseUrl}/GetStateModel?StateKeyID=${stateKeyID}`;
   
     const res = await getListWithAuthenticated(url);
     return res;
