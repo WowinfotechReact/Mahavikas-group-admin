@@ -246,7 +246,7 @@ const MasterZoneList = () => {
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           {/* Top controls */}
           <div className="d-flex justify-content-between align-items-center mb-1">
-            <h5 className="m-0">Zone Manager</h5>
+            <h5 className="m-0">Zone</h5>
             <button
               onClick={() => addMasterZoneBtnClick()}
               className="btn btn-primary btn-sm d-inline d-sm-none"

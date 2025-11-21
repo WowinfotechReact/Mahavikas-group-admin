@@ -202,8 +202,8 @@ console.log(tableRow)
                       </td>
                     
                     <td className="text-center">
-                      <Tooltip  title={obj.status === "Active" ? 'Disable' : 'Enable'} >
-                         { obj.status === "Active" ? 'Enable' : 'Disable' } 
+                      <Tooltip  title={obj.status === "Active" ? 'Inactive' : 'Active'} >
+                         { obj.status === "Active" ? 'Active' : 'Inactive' } 
                         <Android12Switch style={{ padding: '8px' }}  onClick={() =>  {confirmStatusChange(); setStateChangeStatusKey(obj.stateKeyID); setModelAction("Status Updated Successfully!")}} checked={obj.status === "Active"}  />
                       </Tooltip>
                     </td>

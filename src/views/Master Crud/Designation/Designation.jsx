@@ -259,14 +259,14 @@ const Designation = () => {
                 </tr>
               </thead>
               <tbody>
-                {designationData?.map((row, idx) => (
-                  <tr key={idx}>
-                    <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
-                    <td className="text-center">{row.designation}</td>
+                {designationListData?.map((row, id) => (
+                  <tr key={id}>
+                    <td className="text-center">{(currentPage - 1) * pageSize + id + 1}</td>
+                    <td className="text-center">{row.designationName}</td>
                     <td className="text-center">
-                      <Tooltip title={row.status === true ? 'Active' : 'Deactive'}>
-                        {row.status === true ? 'Active' : 'Deactive'}
-                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === true} />
+                      <Tooltip title={row.status === 'Active' ? 'Inactive' : 'Active'}>
+                        {row.status === 'Active' ? 'Active' : 'Inactive'}
+                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === 'Active'} />
                       </Tooltip>
                     </td>
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}

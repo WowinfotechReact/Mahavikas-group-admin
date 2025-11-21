@@ -175,7 +175,7 @@ const MasterZoneModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestD
           <Button variant="secondary" onClick={onHide}>
             Close
           </Button>
-          <Button type="submit" className="btn btn-primary text-center" onClick={() => AddZoneBtnClick()}>
+          <Button type="submit" className="btn btn-primary text-center" style={{background:'#ffaa33', border:'#ffaa33'}} onClick={() => AddZoneBtnClick()}>
             Submit
           </Button>
         </Modal.Footer>

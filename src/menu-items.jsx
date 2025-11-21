@@ -276,10 +276,10 @@ export default {
           children: [
             {
               id: 'Master',
-              title: 'Master Zone ',
+              title: 'Zone ',
               moduleName: 'Customer',
               type: 'item',
-              icon: icons['CabinIcon'],
+              icon: icons['LocationOnIcon'],
               url: '/zone-manager'
             },
             {
