@@ -274,10 +274,10 @@ const MasterZoneList = () => {
                 handleSearch(e);
               }}
             />
-            <Tooltip title="Under Development">
+            <Tooltip title="Add Zone">
               <button
                 // disabled
-                // onClick={() => addMasterZoneBtnClick()}
+                 onClick={() => addMasterZoneBtnClick()}
                 className="btn btn-primary btn-sm d-none d-sm-inline"
               >
                 <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>

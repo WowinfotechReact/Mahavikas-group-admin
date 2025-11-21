@@ -55,9 +55,9 @@ const MasterZoneModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestD
   const AddUpdateStateData = async (apiParam) => {
     setLoader(true);
     try {
-      let url = '/AddUpdateZone'; // Default URL for Adding Data
+      // let url = '/AddUpdateZone'; // Default URL for Adding Data
 
-      const response = await AddUpdateZone(url, apiParam);
+      const response = await AddUpdateZone(apiParam);
       if (response) {
         if (response?.data?.statusCode === 200) {
           setLoader(false);
