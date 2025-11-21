@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import SuccessPopupModal from 'component/SuccessPopupModal';
-import { AddUpdateState, GetStateModel } from 'services/Master Crud/MasterStateApi';
+import { AddUpdateStateApi, GetStateModel } from 'services/Master Crud/MasterStateApi';
 import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 
-const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
+const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone,isAddUpdateActionDone, modelRequestData }) => {
 
   const [modelAction, setModelAction] = useState('');
   const [error, setErrors] = useState(null);
@@ -21,7 +21,7 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone, mod
   useEffect(() => {
     if (modelRequestData?.Action === 'Update') {
       if (modelRequestData?.stateKeyID !== null) {
-        GetMasterStateModalData(modelRequestData.stastateKeyIDteID);
+        GetMasterStateModalData(modelRequestData.stateKeyID);
       }
     }
   }, [modelRequestData?.Action]);
@@ -49,19 +49,13 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone, mod
 
   const AddUpdateStateData = async (apiParam) => {
     setLoader(true);
-    console.log("status1")
     try {
 
-      console.log("status2")
-
+      const response = await AddUpdateStateApi(apiParam);
       
-
-      const response = await AddUpdateState(apiParam);
       
-        console.log("status")
-        console.log(response)
       if (response) {
-        console.log("status")
+       
         console.log(response?.data?.statusCode)
         if (response?.data?.statusCode === 200) {
           setLoader(false);
@@ -72,7 +66,7 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone, mod
               : 'State Updated Successfully!'
           ); //Do not change this naming convention
 
-          setIsAddUpdateActionDone(true);
+          setIsAddUpdateActionDone(!isAddUpdateActionDone);
         } else {
           setLoader(false);
           setErrorMessage(response?.data?.errorMessage);
@@ -89,23 +83,20 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone, mod
     setShowSuccessModal(false);
   };
 
-  const GetMasterStateModalData = async (id) => {
-    if (id === undefined) {
+  const GetMasterStateModalData = async (stateKeyID) => {
+    if (stateKeyID === undefined || stateKeyID === null) {
       return;
     }
     setLoader(true);
 
     try {
-      const data = await GetStateModel(id);
+      const data = await GetStateModel(stateKeyID);
       if (data?.data?.statusCode === 200) {
         setLoader(false);
         const ModelData = data.data.responseData.data; // Assuming data is an array
 
         setMasterStateObj({
           ...masterStateObj,
-          adminID: ModelData.adminID,
-          userKeyID: ModelData.userKeyID,
-          stateID: ModelData.stateID,
           stateName: ModelData.stateName
         });
       } else {
