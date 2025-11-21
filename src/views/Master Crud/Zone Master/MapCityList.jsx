@@ -160,7 +160,7 @@ const MapCityList = () => {
                                                 handleSearch(e);
                                           }}
                                     />
-                                    <Tooltip title="Under Development">
+                                    <Tooltip title="Add City">
                                           <button
                                                 style={{ background: '#ffaa33', color: 'white' }}
                                                 className="btn btn-sm d-none d-sm-inline"
@@ -180,9 +180,8 @@ const MapCityList = () => {
 
                                                 <tr>
                                                       <th className="text-center">Sr No.</th>
-                                                      <th className="text-center">Zone Name</th>
-                                                      <th className="text-center">State Name</th>
                                                       <th className="text-center">District Name</th>
+                                                      <th className="text-center">State Name</th>
                                                 </tr>
                                           </thead>
 
@@ -190,9 +189,8 @@ const MapCityList = () => {
                                                 {distList?.districtList?.map((item, index) => (
                                                       <tr key={index}>
                                                             <td className="text-center">{index + 1}</td>
-                                                            <td className="text-center">{distList.zoneName}</td>
-                                                            <td className="text-center">{item.stateName}</td>
                                                             <td className="text-center">{item.districtName}</td>
+                                                            <td className="text-center">{item.stateName}</td>
                                                       </tr>
                                                 ))}
                                           </tbody>
