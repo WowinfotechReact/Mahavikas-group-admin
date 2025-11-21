@@ -13,7 +13,7 @@ import PaginationComponent from 'component/Pagination';
 import { Tooltip } from '@mui/material';
 
 const MasterStateList = () => {
-  const [stateChangeStatus, setStateChangeStatus] = useState('');
+  const [stateChangeStatusKey, setStateChangeStatusKey] = useState('');
   const [totalRecords, setTotalRecords] = useState(-1);
   const { setLoader, user } = useContext(ConfigContext);
   const [modelAction, setModelAction] = useState();
@@ -37,8 +37,8 @@ const MasterStateList = () => {
    const [modelRequestData, setModelRequestData] = useState({
     stateID: null,
     stateKeyID:null,
-    stateName: null,
-    Action: null
+    stateName: "",
+    Action: ""
   });
   const [sortType, setSortType] = useState('');
    const [appliedFilter, setAppliedFilter] = useState({
@@ -54,7 +54,7 @@ const MasterStateList = () => {
  
   useEffect(()=>{
   GetStateListData()
-  },[])
+  },[isAddUpdateActionDone,appliedFilter])
 
   
     const GetStateListData = async () => {
@@ -97,16 +97,32 @@ console.log(tableRow)
     setOpenMasterStateModal(true);
   }
 
-  // handleStatusChange = async(stateKeyID)=>{
-  //   try {
-  //               await ChangeStateStatus(stateKeyID);
-  //               // setConfirmationModal(false)
-  //               // setAppliedFilter({ ...appliedFilter });
-  //               // setShowSuccessPopupModal(true);
-  //           } catch (error) {
-  //               console.log("error ==>>", error)
-  //           }
-  // }
+  const handleSearch=(searchValue) => {
+    setAppliedFilter({ ...appliedFilter, searchKeyword: searchValue })
+  }
+
+  const confirmStatusChange=()=>{
+    setShowStatusChangeModal(true)
+  }
+  
+  const handleStatusChange = async()=>{
+    try {
+      let res=null;
+                res = await ChangeStateStatus(stateChangeStatusKey);
+                if (res?.data?.statusCode === 200) {
+                  console.log("enter")
+                  setShowStatusChangeModal(false)
+                  setIsAddUpdateActionDone(!isAddUpdateActionDone)
+                  setShowSuccessModal(true)
+                }
+            } catch (error) {
+                console.log("error ==>>", error)
+            }
+  }
+
+  const closeAllModal=()=>{
+    setShowSuccessModal(false);
+  }
   
   return (
     <>
@@ -131,9 +147,7 @@ console.log(tableRow)
               placeholder="Search State"
               style={{ maxWidth: "350px" }}
               // value={searchKeyword}
-              // onChange={(e) => {
-              //   handleSearch(e);
-              // }}
+               onChange={(e) => handleSearch(e.target.value)}
             />
             <Tooltip title="Add State">
               <button
@@ -150,7 +164,7 @@ console.log(tableRow)
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
             <table className="table table-bordered table-striped">
-              <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1 }}>
+              <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1, backgroundColor:'white' }}>
                 <tr>
                   <th className="text-center">Sr No</th>
                   <th className="text-center">
@@ -188,9 +202,9 @@ console.log(tableRow)
                       </td>
                     
                     <td className="text-center">
-                      <Tooltip  title={obj.status === true ? 'Enable' : 'Disable'} >
-                         { obj.status === true ? 'Enable' : 'Disable' } 
-                        <Android12Switch style={{ padding: '8px' }}  onClick={() =>  handleStatusChange(obj.stateKeyID)} checked={obj.status === true}  />
+                      <Tooltip  title={obj.status === "Active" ? 'Disable' : 'Enable'} >
+                         { obj.status === "Active" ? 'Enable' : 'Disable' } 
+                        <Android12Switch style={{ padding: '8px' }}  onClick={() =>  {confirmStatusChange(); setStateChangeStatusKey(obj.stateKeyID); setModelAction("Status Updated Successfully!")}} checked={obj.status === "Active"}  />
                       </Tooltip>
                     </td>
                      {/* <td className="text-center">{obj.createdOnDate ? dayjs(obj.createdOnDate).format('DD/MM/YYYY') : '-'}</td>  */}
@@ -223,6 +237,9 @@ console.log(tableRow)
                  ))} 
               </tbody>
             </table>
+             { tableRow.length === 0 &&(
+              <NoResultFoundModel
+               />) }
           </div>
           <div className="d-flex justify-content-end ">
 
@@ -237,13 +254,14 @@ console.log(tableRow)
           modelRequestData={modelRequestData}
           setModelRequestData={setModelRequestData}
           setIsAddUpdateActionDone={setIsAddUpdateActionDone}
+          isAddUpdateActionDone={isAddUpdateActionDone}
         />
       )}
 
       <StatusChangeModal
         open={showStatusChangeModal}
         onClose={() => setShowStatusChangeModal(false)}
-        onConfirm={() => confirmStatusChange(stateChangeStatus, user)} // Pass the required arguments
+        onConfirm={() => handleStatusChange()} // Pass the required arguments
       />
 
       {showSuccessModal && (
