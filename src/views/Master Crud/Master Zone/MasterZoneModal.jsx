@@ -16,7 +16,7 @@ const MasterZoneModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestD
   const [error, setErrors] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
-  const { setLoader, user } = useContext(ConfigContext);
+  const { setLoader, user, companyID } = useContext(ConfigContext);
   const [masterZoneObj, setMasterZoneObj] = useState({
     userKeyID: null,
     zoneKeyID: null,
@@ -43,6 +43,7 @@ const MasterZoneModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestD
 
     const apiParam = {
       userKeyID: user.userKeyID,
+      companyID: Number(companyID),
       zoneName: masterZoneObj.zoneName,
       zoneKeyID: modelRequestData?.zoneKeyID
     };
@@ -63,10 +64,7 @@ const MasterZoneModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestD
           setLoader(false);
           setShowSuccessModal(true);
           setModelAction(
-            modelRequestData.Action === null || modelRequestData.Action === undefined
-              ? 'Zone Added Successfully!'
-              : 'Zone Updated Successfully!'
-          ); //Do not change this naming convention
+            modelRequestData.Action === 'Add'? 'Zone Added Successfully!': 'Zone Updated Successfully!'); //Do not change this naming convention
 
           setIsAddUpdateActionDone(true);
         } else {
@@ -85,14 +83,14 @@ const MasterZoneModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestD
     setShowSuccessModal(false);
   };
 
-  const GetMasterStateModalData = async (id) => {
-    if (id === undefined) {
+  const GetMasterStateModalData = async (zoneKeyID) => {
+    if (zoneKeyID === undefined) {
       return;
     }
 
     setLoader(true);
     try {
-      const data = await GetZoneModel(id);
+      const data = await GetZoneModel(zoneKeyID);
       if (data?.data?.statusCode === 200) {
         setLoader(false);
         const ModelData = data.data.responseData.data; // Assuming data is an array
@@ -122,7 +120,7 @@ const MasterZoneModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestD
         <Modal.Header closeButton>
           <Modal.Title>
             <h3 className="text-center">
-              {modelRequestData?.Action !== null ? 'Update Zone' : modelRequestData?.Action === null ? 'Add Zone' : ''}
+              {modelRequestData?.Action === "Update" ? 'Update Zone' : 'Add Zone'}
             </h3>
           </Modal.Title>
         </Modal.Header>

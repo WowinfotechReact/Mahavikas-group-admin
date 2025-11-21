@@ -54,6 +54,7 @@ const MasterZoneList = () => {
   const [modelRequestData, setModelRequestData] = useState({
     stateID: null,
     stateName: null,
+    zoneKeyID:null,
     Action: null
   });
 
@@ -180,14 +181,14 @@ const MasterZoneList = () => {
   };
 
 
-  const addMasterZoneBtnClick = () => {
-    setModelRequestData({
-      ...modelRequestData,
-      Action: null,
-      zoneKeyID: null
-    });
-    setOpenMasterStateModal(true);
-  };
+  // const addMasterZoneBtnClick = () => {
+  //   setModelRequestData({
+  //     ...modelRequestData,
+  //     Action: null,
+  //     zoneKeyID: null
+  //   });
+  //   setOpenMasterStateModal(true);
+  // };
 
 
   const handleStatusChange = (row) => {
@@ -266,9 +267,13 @@ const MasterZoneList = () => {
               }}
             />
             <Tooltip title="Add Zone">
-              <button
+              <button style={{background:'#ffaa33', border:'#ffaa33'}}
                 // disabled
-                 onClick={() => addMasterZoneBtnClick()}
+                 onClick={() =>{ 
+                  setModelRequestData({
+                                Action:'Add'
+                 }) 
+                 setOpenMasterStateModal(true) }}
                 className="btn btn-primary btn-sm d-none d-sm-inline"
               >
                 <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
@@ -322,21 +327,47 @@ const MasterZoneList = () => {
                       </span>
                     </td>
                     <td className="text-center">
-                      <Tooltip title={row.status === true ? 'Inactive' : 'Active'}>
-                        {row.status === true ? 'Active' : 'Inactive'}
+                      <Tooltip title={row.status === 'Active' ? 'Inactive' : 'Active'}>
+                        {row.status === 'Active' ? 'Active' : 'Inactive'}
                         <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === 'Active'} />
                       </Tooltip>
                     </td>
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                     <td className="text-center">
                       <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+                        <Tooltip title="Update Zone">
+                                                <button
+                                                  
+                                                  style={{
+                                                    padding: '4px 8px', // Adjust padding for smaller size
+                                                    fontSize: '12px', // Optional: smaller font size
+                                                    height: '28px', // Set height
+                                                    width: '28px', // Set width
+                                                    background: '#ffaa33',
+                                                    border:'#ffaa33'
+                                                  }}
+                                                  onClick={() => {
+                                                    setModelRequestData({
+                                                      Action:"Update",
+                                                      zoneKeyID:row.zoneKeyID
+                        
+                                                    })
+                                                    setOpenMasterStateModal(true)
+
+                                                  }}
+                                                  type="button"
+                                                  className="btn-sm btn btn-primary"
+                                                >
+                                                  <i className="fa-solid fa-pen-to-square"></i>
+                                                </button>
+                                              </Tooltip>
 
                         <Tooltip title="Map District">
                           <button
                             style={{
                               padding: '4px 8px',
                               fontSize: '12px',
-                              height: '32px',
+                              height: '28px',
                               width: '44px', background: '#ffaa33', color: 'white'
                             }}
                             onClick={() => mapDistrictZoneBtn(row)}

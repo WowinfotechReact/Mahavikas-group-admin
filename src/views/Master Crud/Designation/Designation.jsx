@@ -40,6 +40,7 @@ const Designation = () => {
   const [modelRequestData, setModelRequestData] = useState({
     stateID: null,
     stateName: null,
+    designationKeyID:null,
     Action: null
   });
 
@@ -270,7 +271,7 @@ const Designation = () => {
                     </td>
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                     <td className="text-center">
-                      {hasPermission(permissions, 'Designation', 'Can Update') && (
+                      
                         <Tooltip title="Update Designation">
                           <button
                             style={{
@@ -280,14 +281,18 @@ const Designation = () => {
                               width: '28px', // Set width
                               background: '#ffaa33'
                             }}
-                            onClick={() => EditMasterStateBtnClick(row)}
+                            onClick={() =>{
+                              setModelRequestData({
+                                designationKeyID: row.designationKeyID
+                              })
+                              EditMasterStateBtnClick(row)}}
                             type="button"
                             className="btn-sm btn text-white"
                           >
                             <i className="fa-solid fa-pen-to-square"></i>
                           </button>
                         </Tooltip>
-                      )}
+                      
                     </td>
                   </tr>
                 ))}
