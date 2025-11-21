@@ -90,7 +90,7 @@ function SetPasswordModal({ show, onHide, modelRequestData }) {
       }
       return (
             <Modal backdrop="static" keyboard={false} style={{ zIndex: 1300 }} show={show} onHide={onHide} centered>
-                  <Modal.Header closeButton>
+                  <Modal.Header closeButton >
                         <Modal.Title>
                               <b>Set User Password</b>
                         </Modal.Title>
@@ -156,12 +156,11 @@ function SetPasswordModal({ show, onHide, modelRequestData }) {
                         </div>
                   </Modal.Body>
                   <Modal.Footer>
-                        <Button variant="secondary" onClick={onHide}>
-                              <b>Close</b>
-                        </Button>
-                        <Button variant="primary" onClick={Submit}>
-                              <b>Close</b>
-                        </Button>
+
+                        <button onClick={() => Submit()} style={{ background: '#ffaa33', height: '40px', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
+                              <span className="d-none d-sm-inline">Create </span>
+                        </button>
+
                   </Modal.Footer>
             </Modal>
       );

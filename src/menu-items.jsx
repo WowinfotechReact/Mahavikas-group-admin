@@ -184,19 +184,20 @@ export default {
         {
           id: 'employee',
           moduleName: 'Employee',
-          title: 'Employee Master',
-          type: 'item',
-          icon: icons['SupervisedUserCircleIcon'],
-          url: '/employee-list'
-        },
-        {
-          id: 'employee',
-          moduleName: 'Employee',
           title: 'Project Master',
           type: 'item',
           icon: icons['AccountTreeIcon'],
           url: '/project'
         },
+        {
+          id: 'employee',
+          moduleName: 'Employee',
+          title: 'Employee Master',
+          type: 'item',
+          icon: icons['SupervisedUserCircleIcon'],
+          url: '/employee-list'
+        },
+
         // {
         //   id: 'customer/firm ',
         //   moduleName: 'Customer',

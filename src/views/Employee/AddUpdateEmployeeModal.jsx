@@ -285,6 +285,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
 
 
 
+  console.log(user.userID, '3333333333dddddddd');
 
 
 
@@ -295,7 +296,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
   const GetProjectLookupListData = async (companyID) => {
 
     try {
-      const response = await GetProjectLookupList(null, companyID);
+      const response = await GetProjectLookupList(user?.userID, companyID);
 
       if (response?.data?.statusCode === 200) {
         const list = response?.data?.responseData?.data || [];
