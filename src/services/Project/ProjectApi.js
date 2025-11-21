@@ -35,7 +35,7 @@ export const GetProjectLookupList = async (UserID, CompanyID) => {
   if (UserID) params.append("UserID", UserID);
   if (CompanyID) params.append("CompanyID", CompanyID);
 
-  const url = `${projectBaseURI}/GetProjectLookupList?${params.toString()}`;
+  const url = `${projectBaseURI}/GetAdminProjectLookupList?${params.toString()}`;
 
   const res = await getListWithAuthenticated(url);
   return res;

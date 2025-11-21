@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import SuccessPopupModal from 'component/SuccessPopupModal';
-import { AddUpdateStateApi, GetStateLookupList, GetStateModel } from 'services/Master Crud/MasterStateApi';
+import { GetStateLookupList, GetStateModel } from 'services/Master Crud/MasterStateApi';
 import { ConfigContext } from 'context/ConfigContext';
 import Select from 'react-select';
 import { AddUpdateDistrict, GetDistrictLookupList, GetDistrictModel } from 'services/Master Crud/MasterDistrictApi';

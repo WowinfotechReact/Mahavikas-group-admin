@@ -3,7 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 import SuccessPopupModal from 'component/SuccessPopupModal';
 import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
-import { GetStateModel, AddUpdateStateApi } from 'services/Master Crud/MasterGovPortalApi';
+import { GetStateModel } from 'services/Master Crud/MasterGovPortalApi';
 
 const MasterGovPortalDataModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
 
@@ -43,38 +43,9 @@ const MasterGovPortalDataModal = ({ show, onHide, setIsAddUpdateActionDone, mode
       governmentPortalKeyID: modelRequestData?.govtPortalCategoryID
     };
 
-    if (!isValid) {
-      AddUpdateStateData(apiParam);
-    }
+
   };
 
-  const AddUpdateStateData = async (apiParam) => {
-    setLoader(true);
-    try {
-      let url = '/AddUpdateGovtPortal'; // Default URL for Adding Data
-
-      const response = await AddUpdateStateApi(url, apiParam);
-      if (response) {
-        if (response?.data?.statusCode === 200) {
-          setLoader(false);
-          setShowSuccessModal(true);
-          setModelAction(
-            modelRequestData.Action === null || modelRequestData.Action === undefined
-              ? 'Government Portal Data Added Successfully!'
-              : 'Government Portal Data Updated Successfully!'
-          ); //Do not change this naming convention
-
-          setIsAddUpdateActionDone(true);
-        } else {
-          setLoader(false);
-          setErrorMessage(response?.response?.data?.errorMessage);
-        }
-      }
-    } catch (error) {
-      setLoader(false);
-      console.error(error);
-    }
-  };
 
   const closeAllModal = () => {
     onHide();

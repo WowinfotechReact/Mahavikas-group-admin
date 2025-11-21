@@ -3,31 +3,6 @@ import { Backdrop } from '@mui/material';
 import './Loader.css';
 
 const Loader = () => {
-  const professionalMessages = [
-    "Almost done… thank you for your patience.",
-    "Fetching the latest information…",
-    "Preparing your dashboard…",
-    "Updating records…",
-    "Retrieving your requested data…",
-    "Loading resources… almost there.",
-    "Your data is being processed.",
-    "Synchronizing information with the server…",
-    "Compiling the latest reports…",
-    "Generating insights…",
-    // "Fetching data from our super computer",
-    // "Applying your Zomato coupon… ",
-    // "Receiving 4 missed calls from NASA",
-    // "Area 51 Want to know your location",
-  ];
-
-  const [msgIndex, setMsgIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMsgIndex(prev => (prev + 1) % professionalMessages.length);
-    }, 1000); // change message every 3 sec
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <Backdrop
@@ -37,7 +12,53 @@ const Loader = () => {
       }}
       open={true}
     >
-      <span class="loader"></span>
+      <div
+        className="d-flex flex-column justify-content-center align-items-center"
+        style={{ height: "70vh" }}
+      >
+        {/* Teacher Icon */}
+        <div
+          className="mb-3"
+          style={{
+            fontSize: "60px",
+            color: "#0d6efd",
+            animation: "pulse 1.5s infinite"
+          }}
+        >
+          📚
+        </div>
+
+        {/* Bootstrap Spinner */}
+        <div className="spinner-border text-primary mb-3" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+
+        {/* Animated Text */}
+        <h5
+          style={{
+            color: "#0d6efd",
+            letterSpacing: "1px",
+            animation: "typing 2s steps(25,end) infinite"
+          }}
+        >
+          Loading Attendance Data...
+        </h5>
+
+        {/* Custom Keyframes */}
+        <style>{`
+        @keyframes pulse {
+          0%   { transform: scale(1); opacity: 0.7; }
+          50%  { transform: scale(1.2); opacity: 1; }
+          100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        @keyframes typing {
+          0% { opacity: 0.2 }
+          50% { opacity: 1 }
+          100% { opacity: 0.2 }
+        }
+      `}</style>
+      </div>
     </Backdrop>
   );
 };

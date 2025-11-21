@@ -145,8 +145,8 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
           setShowSuccessModal(true);
           setModelAction(
             modelRequestData.Action === null
-              ? 'Product Added Successfully!'
-              : 'Product Updated Successfully!'
+              ? 'Project Added Successfully!'
+              : 'Project Updated Successfully!'
           );
 
           setIsAddUpdateActionDone(true);
@@ -561,6 +561,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                 <div className="col-md-6 mb-3">
                   <label htmlFor="startDate" className="form-label">
                     Start Date
+                    <span style={{ color: 'red' }}>*</span>
                   </label>
                   <DatePicker
                     value={productObj?.startDate} // Use "selected" instead of "value"
@@ -579,6 +580,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                 <div className="col-md-6 mb-3">
                   <label htmlFor="endDate" className="form-label">
                     End Date
+                    <span style={{ color: 'red' }}>*</span>
                   </label>
                   <DatePicker
                     value={productObj?.endDate} // Use "selected" instead of "value"

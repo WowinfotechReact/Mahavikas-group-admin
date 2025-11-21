@@ -108,19 +108,10 @@ const MasterZoneList = () => {
   };
 
   const mapDistrictZoneBtn = (row) => {
-    setModelRequestData({
-      ...modelRequestData,
-      Value: row
-    })
-    setOpenSetDistrictModal(true)
+
+    navigate('/mapped-city', { state: { Value: row } })
   }
-  const viewMappedDistrict = (row) => {
-    setModelRequestData({
-      ...modelRequestData,
-      Value: row
-    })
-    setShowDistrictModal(true)
-  }
+
 
   const GetMasterZoneListData = async (pageNumber, searchKeywordValue, toDate, fromDate, sortValue, StateSortType) => {
     // debugger
@@ -356,22 +347,7 @@ const MasterZoneList = () => {
                           </button>
 
                         </Tooltip>
-                        <Tooltip title="Map District">
-                          <button
-                            style={{
-                              padding: '4px 8px',
-                              fontSize: '12px',
-                              height: '32px',
-                              background: '#ffaa33', color: 'white'
-                            }}
-                            onClick={() => viewMappedDistrict(row)}
-                            type="button"
-                            className="btn-sm btn "
-                          >
-                            View Mapped District
-                          </button>
 
-                        </Tooltip>
                       </div>
 
                     </td>

@@ -33,6 +33,7 @@ const AssignedDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
             stateID: null,
       });
 
+      console.log(modelRequestData.zoneKeyID, '333333ssssssss');
 
 
       const AddZoneBtnClick = () => {
@@ -49,7 +50,7 @@ const AssignedDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
             const apiParam = {
                   // userKeyID: user.userKeyID,
                   districtKeyList: masterZoneObj.districtID,
-                  zoneKeyID: modelRequestData?.Value.zoneKeyID
+                  zoneKeyID: modelRequestData?.zoneKeyID
             };
 
             if (!isValid) {
@@ -239,12 +240,15 @@ const AssignedDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                               </div>
                         </Modal.Body>
                         <Modal.Footer>
-                              <Button variant="secondary" onClick={onHide}>
-                                    Close
-                              </Button>
-                              <Button type="submit" className="btn btn-primary text-center" onClick={() => AddZoneBtnClick()}>
-                                    Submits
-                              </Button>
+
+                              <button
+                                    style={{ background: '#ffaa33', color: 'white' }}
+                                    className="btn btn-sm d-none d-sm-inline"
+                                    onClick={AddZoneBtnClick}
+                              >
+
+                                    Submit
+                              </button>
                         </Modal.Footer>
                   </Modal>
                   {showSuccessModal && (

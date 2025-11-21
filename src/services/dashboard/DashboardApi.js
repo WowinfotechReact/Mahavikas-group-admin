@@ -6,7 +6,7 @@ const DashboardCountUrl = `${Base_Url}`;
 
 export const GetAdminDashboardCount = async (params) => {
   const res = await postApiWithAuthenticated(
-    `${DashboardCountUrl}/Dashboard/GetAdminDashboardCount`,
+    `${DashboardCountUrl}/Dashboard/GetDashBoardCountModel`,
     params
   );
   return res;

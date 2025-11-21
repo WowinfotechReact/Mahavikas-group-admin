@@ -60,7 +60,18 @@ const InstituteWiseAttendanceReport = () => {
                   <div className="border rounded p-3 bg-light mb-4">
                         <Form>
                               <Row className="g-3 align-items-end">
-                                    <Col md={4}>
+                                    <Col md={3}>
+                                          <Form.Group>
+                                                <Form.Label className="fw-semibold small mb-1">Project Name</Form.Label>
+                                                <Form.Select size="sm">
+                                                      <option>Select Project</option>
+                                                      <option>Techno </option>
+                                                      <option>SkillUp </option>
+                                                      <option> Engineering </option>
+                                                </Form.Select>
+                                          </Form.Group>
+                                    </Col>
+                                    <Col md={3}>
                                           <Form.Group>
                                                 <Form.Label className="fw-semibold small mb-1">Institute Name</Form.Label>
                                                 <Form.Select size="sm">
@@ -73,14 +84,24 @@ const InstituteWiseAttendanceReport = () => {
                                     </Col>
                                     <Col md={3}>
                                           <Form.Group>
-                                                <Form.Label className="fw-semibold small mb-1">From Date</Form.Label>
-                                                <Form.Control size="sm" type="date" />
+                                                <Form.Label className="fw-semibold small mb-1">Select Year</Form.Label>
+                                                <Form.Select size="sm">
+                                                      <option>Select Year</option>
+                                                      <option>2021 </option>
+                                                      <option>2022 </option>
+                                                      <option> 2025 </option>
+                                                </Form.Select>
                                           </Form.Group>
                                     </Col>
                                     <Col md={3}>
                                           <Form.Group>
-                                                <Form.Label className="fw-semibold small mb-1">To Date</Form.Label>
-                                                <Form.Control size="sm" type="date" />
+                                                <Form.Label className="fw-semibold small mb-1">Select Month</Form.Label>
+                                                <Form.Select size="sm">
+                                                      <option>Select Month</option>
+                                                      <option>March </option>
+                                                      <option>April</option>
+                                                      <option> May </option>
+                                                </Form.Select>
                                           </Form.Group>
                                     </Col>
                                     <Col md={2}>
