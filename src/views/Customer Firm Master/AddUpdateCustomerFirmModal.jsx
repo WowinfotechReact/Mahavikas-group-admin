@@ -270,7 +270,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
   const GetZoneLookupListData = async () => {
 
     try {
-      let response = await GetZoneLookupList();
+      let response = await GetZoneLookupList(companyID, modelRequestData?.projectID);
       if (response?.data?.statusCode === 200) {
         const zoneList = response?.data?.responseData?.data || [];
         const formattedCityList = zoneList.map((zone) => ({
@@ -297,7 +297,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
     try {
       const ZoneIDsParam = zoneIds.join(",");
 
-      let response = await GetDistrictLookupList(ZoneIDsParam);
+      let response = await GetDistrictLookupList(ZoneIDsParam, companyID, modelRequestData?.projectID);
 
       if (response?.data?.statusCode === 200) {
         const list = response?.data?.responseData?.data || [];
@@ -329,7 +329,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
     try {
       const idsParam = districtIds.join(",");
 
-      const response = await GetTalukaLookupList(idsParam);
+      const response = await GetTalukaLookupList(idsParam, companyID, modelRequestData?.projectID);
 
       if (response?.data?.statusCode === 200) {
         const talukaList = response?.data?.responseData?.data || [];

@@ -25,12 +25,14 @@ export const GetDistrictModel = async (id) => {
   return res;
 };
 
-export const GetDistrictLookupList = async (ZoneIDs, userID, StateID) => {
+export const GetDistrictLookupList = async (ZoneIDs,companyID, projectID,userID, StateID) => {
   let url = `${MasterDistrictBaseUrl}/GetDistrictLookupList`;
 
   let params = [];
 
   if (ZoneIDs) params.push(`ZoneIDs=${ZoneIDs}`);
+  if (companyID) params.push(`CompanyID=${companyID}`);
+  if (projectID) params.push(`ProjectID=${projectID}`);
   if (userID) params.push(`userID=${userID}`);
   if (StateID) params.push(`StateID=${StateID}`);
 

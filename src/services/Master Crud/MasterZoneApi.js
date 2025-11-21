@@ -49,11 +49,11 @@ export const GetZoneLookupList = async (CompanyID, ProjectID) => {
   if (queryParams.length > 0) {
     url += `?${queryParams.join("&")}`;
   }
-  
-    const res = await getListWithAuthenticated(url);
-    return res;
-  };
-  
+
+  const res = await getListWithAuthenticated(url);
+  return res;
+};
+
 export const GetAssignedZoneDistrictList = async (ZoneID) => {
     const url = `${MasterZoneBaseUrl}/GetAssignedZoneDistrictList?ZoneID=${ZoneID}`;
   
