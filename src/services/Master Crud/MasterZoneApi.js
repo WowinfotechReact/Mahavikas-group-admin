@@ -36,8 +36,19 @@ export const GetZoneModel = async (id) => {
   };
 
 
-export const GetZoneLookupList = async (ZoneID) => {
-    const url = `${MasterZoneBaseUrl}/GetZoneLookupList`;
+export const GetZoneLookupList = async (CompanyID, ProjectID) => {
+  let url = `${MasterZoneBaseUrl}/GetZoneLookupList`;
+
+  // Build query params conditionally
+  const queryParams = [];
+
+  if (CompanyID) queryParams.push(`CompanyID=${CompanyID}`);
+  if (ProjectID) queryParams.push(`ProjectID=${ProjectID}`);
+
+  // If any params exist, append them
+  if (queryParams.length > 0) {
+    url += `?${queryParams.join("&")}`;
+  }
   
     const res = await getListWithAuthenticated(url);
     return res;
