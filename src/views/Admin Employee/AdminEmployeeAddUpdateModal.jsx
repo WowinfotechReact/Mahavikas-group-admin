@@ -110,7 +110,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
 
 
       const GetAdminUserModelData = async (id) => {
-
+            setLoader(true)
             if (id === undefined) {
                   return;
             }
@@ -199,13 +199,14 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
       };
 
       const AddUpdateAppUserData = async (apiParam) => {
+            setLoader(true)
             try {
                   let url = '/AddUpdateAdminUser'; // Default URL for Adding Data
 
                   const response = await AddUpdateAdminUser(url, apiParam);
                   if (response) {
                         if (response?.data?.statusCode === 200) {
-
+                              setLoader(false)
                               setShowSuccessModal(true);
                               setModelAction(
                                     modelRequestData.Action === null || modelRequestData.Action === undefined
@@ -215,10 +216,12 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
 
                               setIsAddUpdateActionDone(true);
                         } else {
+                              setLoader(false)
                               setErrorMessage(response?.response?.data?.errorMessage);
                         }
                   }
             } catch (error) {
+                  setLoader(false)
                   console.error(error);
             }
       };

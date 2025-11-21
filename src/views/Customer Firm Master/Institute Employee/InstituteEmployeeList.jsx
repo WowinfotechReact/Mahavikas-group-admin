@@ -215,10 +215,9 @@ const InstituteEmployeeList = () => {
                         <div className="card-body p-2 bg-white shadow-md rounded-lg">
                               {/* Top controls */}
 
-                              <div className="d-flex justify-content-between align-items-center mb-1">
+                              <div className="d-flex justify-content-between align-items-center mb-1 position-relative">
                                     <button
                                           className="btn btn-light p-1 me-2"
-
                                           onClick={() => navigate(-1)}
                                     >
                                           ⬅

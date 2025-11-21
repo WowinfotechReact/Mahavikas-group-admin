@@ -124,12 +124,12 @@ const ProfileSection = () => {
                     borderRadius: '10px'
                   }}
                 >
-                  <ListItemButton onClick={(event) => handleListItemClick(event, 1)}>
+                  {/* <ListItemButton onClick={(event) => handleListItemClick(event, 1)}>
                     <ListItemIcon>
                       <PersonTwoToneIcon />
                     </ListItemIcon>
                     <ListItemText primary="Profile" onClick={() => ClickToProfileUpdate()} />
-                  </ListItemButton>
+                  </ListItemButton> */}
 
                   <ListItemButton >
                     <ListItemIcon>

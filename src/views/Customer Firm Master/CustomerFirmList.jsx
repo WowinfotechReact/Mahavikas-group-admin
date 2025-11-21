@@ -266,24 +266,42 @@ const CustomerFirmList = () => {
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           {/* Top controls */}
 
-          <div className="d-flex justify-content-between align-items-center mb-1">
+          <div className="d-flex justify-content-between align-items-center mb-2">
             <button
               className="btn btn-light p-1 me-2"
-
+              style={{ borderRadius: "50%", width: "36px", height: "36px" }}
               onClick={() => navigate(-1)}
             >
               ⬅
             </button>
-            <div className="flex-grow-1">
+            <div className="d-flex align-items-center flex-grow-1">
+
+              <div
+                className="me-2"
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "50%",
+                  // backgroundColor: "#0d6efd",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  color: "white",
+                  fontSize: "20px",
+                  animation: "pulse 1.5s infinite"
+                }}
+              >
+                🎓
+              </div>
+
               <h5 className="mb-0">
-
-                Institute Master: {"  "}
-                <span style={{ textDecoration: 'underline' }}>
-
+                Institute :
+                <span style={{ textDecoration: "underline", marginLeft: "6px" }}>
                   {location.state.projectName}
                 </span>
               </h5>
             </div>
+
             <div className="position-absolute end-0 me-2">
               <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn btn-sm d-inline d-sm-none">
                 <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import SuccessPopupModal from 'component/SuccessPopupModal';
-import { AddUpdateStateApi, GetStateModel } from 'services/Master Crud/MasterStateApi';
+import { GetStateModel } from 'services/Master Crud/MasterStateApi';
 import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { AddUpdateSimOperator, GetSimOperatorModel } from 'services/Operator/OperatorApi';

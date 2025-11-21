@@ -150,7 +150,7 @@ const Default = () => {
     setShowEmployeeModal(true);
   };
   const stats = [
-    { id: 1, title: 'Total Users', value: 0, icon: <FaUsers size={28} />, colorClass: 'bg-warning' },
+    { id: 1, title: 'Total Contractual Employee', value: 0, icon: <FaUsers size={28} />, colorClass: 'bg-warning' },
     { id: 2, title: 'Total Projects', value: 0, icon: <FaProjectDiagram size={28} />, colorClass: 'bg-danger', route: '/project' },
     { id: 3, title: 'Total Institutes', value: 0, icon: <FaUniversity size={28} />, colorClass: 'bg-info', },
     { id: 4, title: 'Total Employees', value: 0, icon: <FaUserTie size={28} />, colorClass: 'bg-success', route: '/employee-list' }
@@ -284,7 +284,7 @@ const Default = () => {
               <div className="card-body d-flex flex-column gap-2">
                 <button onClick={() => addProductBtnClick()} className="btn btn-outline-primary w-100">Create New Project</button>
                 <button onClick={() => VehicleAddBtnClicked()} className="btn btn-outline-secondary w-100">Add Employee</button>
-                <button className="btn btn-outline-success w-100">Generate Report</button>
+                {/* <button className="btn btn-outline-success w-100">Generate Report</button> */}
                 <div className="mt-3">
                   <h6 className="mb-1">Daily Progress</h6>
                   <div className="progress" style={{ height: '10px' }}>
