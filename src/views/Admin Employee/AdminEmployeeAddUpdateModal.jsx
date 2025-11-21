@@ -286,7 +286,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                                   inputValue = inputValue.replace(/^\s+/, '');
 
                                                                   // Allow only letters and spaces
-                                                                  inputValue = inputValue.replace(/[^a-zA-Z\s]/g, '');
+                                                                  inputValue = inputValue.replace(/[^a-zA-Z]/g, '');
 
                                                                   // Auto-capitalize the first letter
                                                                   if (inputValue.length > 0) {
@@ -329,7 +329,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                                   inputValue = inputValue.replace(/^\s+/, '');
 
                                                                   // Allow only letters and spaces
-                                                                  inputValue = inputValue.replace(/[^a-zA-Z\s]/g, '');
+                                                                  inputValue = inputValue.replace(/[^a-zA-Z]/g, '');
 
                                                                   // Auto-capitalize the first letter
                                                                   if (inputValue.length > 0) {

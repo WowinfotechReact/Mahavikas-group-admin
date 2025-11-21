@@ -337,7 +337,7 @@ const ProductList = () => {
                             style={{ background: "#ffaa33" }}
                             onClick={() => addInstitute(row)}
                             type="button"
-                            className="btn-sm btn text-white"
+                            className="btn-sm btn text-white text-nowrap"
                           >
                             Add Institute
                           </button>
