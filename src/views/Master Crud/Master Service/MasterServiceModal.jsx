@@ -61,8 +61,8 @@ const MasterServiceModal = ({ show, onHide, setIsAddUpdateActionDone, modelReque
                               setShowSuccessModal(true);
                               setModelAction(
                                     modelRequestData.Action === null || modelRequestData.Action === undefined
-                                          ? 'Services Added Successfully!'
-                                          : 'Services Updated Successfully!'
+                                          ? 'Service Added Successfully!'
+                                          : 'Service Updated Successfully!'
                               ); //Do not change this naming convention
 
                               setIsAddUpdateActionDone(true);
@@ -119,7 +119,7 @@ const MasterServiceModal = ({ show, onHide, setIsAddUpdateActionDone, modelReque
                         <Modal.Header closeButton>
                               <Modal.Title>
                                     <h3 className="text-center">
-                                          {modelRequestData?.Action !== null ? 'Update Services' : modelRequestData?.Action === null ? 'Add Services' : ''}
+                                          {modelRequestData?.Action !== null ? 'Update Service' : modelRequestData?.Action === null ? 'Add Service' : ''}
                                     </h3>
                               </Modal.Title>
                         </Modal.Header>
@@ -128,7 +128,7 @@ const MasterServiceModal = ({ show, onHide, setIsAddUpdateActionDone, modelReque
                                     <div className="row">
                                           <div>
                                                 <label htmlFor="StateName" className="form-label">
-                                                      Services Name
+                                                      Service Name
                                                       <span style={{ color: 'red' }}>*</span>
                                                 </label>
                                                 <input
@@ -136,7 +136,7 @@ const MasterServiceModal = ({ show, onHide, setIsAddUpdateActionDone, modelReque
                                                       type="text"
                                                       className="form-control"
                                                       id="StateName"
-                                                      placeholder="Enter Services Name"
+                                                      placeholder="Enter Service Name"
                                                       aria-describedby="Employee"
                                                       value={masterDesignationObj.designationName}
                                                       onChange={(e) => {

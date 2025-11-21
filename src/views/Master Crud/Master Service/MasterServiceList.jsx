@@ -153,7 +153,7 @@ const MasterServiceList = () => {
                         setStateChangeStatus(null);
                         MasterDesignationListData(currentPage, null, toDate, fromDate);
                         setShowSuccessModal(true);
-                        setModelAction('Services status changed successfully.');
+                        setModelAction('Service status changed successfully.');
                   } else {
                         console.error(response?.data?.errorMessage);
                         setShowSuccessModal(true);
@@ -203,7 +203,7 @@ const MasterServiceList = () => {
 
                               <div className="d-flex justify-content-between align-items-center mb-1">
                                     <div className="flex-grow-1 ">
-                                          <h5 className="mb-0">Services</h5>
+                                          <h5 className="mb-0">Service</h5>
                                     </div>
                                     <div className="position-absolute end-0 me-2">
 
@@ -219,14 +219,14 @@ const MasterServiceList = () => {
                                     <input
                                           type="text"
                                           className="form-control "
-                                          placeholder="Search Services"
+                                          placeholder="Search Service"
                                           style={{ maxWidth: '350px' }}
                                           value={searchKeyword}
                                           onChange={(e) => {
                                                 handleSearch(e);
                                           }}
                                     />
-                                    <Tooltip title="Add Services">
+                                    <Tooltip title="Add Service">
                                           <button onClick={() => addMasterStateBtnClick()} style={{ background: '#ffaa33' }} className="btn text-white btn-sm d-none d-sm-inline">
                                                 <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
                                                 <span className="d-none d-sm-inline"> Add</span>
@@ -241,7 +241,7 @@ const MasterServiceList = () => {
                                                 <tr>
                                                       <th className="text-center">Sr No</th>
                                                       <th className="text-center">
-                                                            Services Name
+                                                            Service Name
                                                             {/* {sortDirectionObj.ServiceNameSort === "desc" ? (
     <i
       onClick={() => handleSort("desc", "stateName")}
@@ -274,7 +274,7 @@ const MasterServiceList = () => {
                                                             </td>
                                                             {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                                                             <td className="text-center">
-                                                                  <Tooltip title="Update Services">
+                                                                  <Tooltip title="Update Service">
                                                                         <button
                                                                               style={{
                                                                                     padding: '4px 8px', // Adjust padding for smaller size

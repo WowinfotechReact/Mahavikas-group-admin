@@ -26,12 +26,9 @@ const ProductList = () => {
   const [isAddUpdateActionDone, setIsAddUpdateActionDone] = useState(false);
   const [lastActionType, setLastActionType] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
 
   const [openProductModal, setOpenProductModal] = useState(false);
   const [sortingDirection, setSortingDirection] = useState(null);
-  const [sortDirectionObj, setSortDirectionObj] = useState({ ProductNameSort: null });
   const [sortType, setSortType] = useState('');
   const [totalCount, setTotalCount] = useState(0);
 
@@ -58,6 +55,8 @@ const ProductList = () => {
       });
 
       if (data?.data?.statusCode === 200) {
+        setLoader(false);
+
         const ProductData = data.data.responseData.data;
         const totalItems = data.data?.totalCount || 0;
         setTotalCount(totalItems);
@@ -69,12 +68,18 @@ const ProductList = () => {
           GetProjectListData(pageNumber - 1);
           setCurrentPage(pageNumber - 1);
         } else {
+          setLoader(false);
+
           setCurrentPage(pageNumber);
         }
       } else {
+        setLoader(false);
+
         console.error(data?.data?.errorMessage);
       }
     } catch (error) {
+      setLoader(false);
+
       console.error(error);
     } finally {
       setLoader(false);
@@ -169,44 +174,11 @@ const ProductList = () => {
     }
   };
 
-  const handleSort = (currentSortDirection, ProductSortType) => {
-    const newSortValue = currentSortDirection === 'asc' ? 'desc' : 'asc';
-    if (ProductSortType === 'productName') {
-      setSortingDirection(newSortValue);
-      setSortDirectionObj({ ...sortDirectionObj, ProductNameSort: newSortValue });
-      GetProjectListData(1, searchKeyword, toDate, fromDate, newSortValue, ProductSortType);
-    }
-  };
-
-
-  const dataMap = [
-    { projectName: 'Shikshak Bharti 2025', startDate: "10 Jan 2024", endData: '25 feb 2025', status: 'ongoing' },
-    { projectName: 'Primary Teacher Bharti 2025', startDate: "10 Jan 2024", endData: '25 feb 2025', status: 'ongoing' },
-    { projectName: 'Secondary & Higher Secondary Teacher Bharti 2025', startDate: "10 Jan 2024", endData: '25 feb 2025', status: 'Near Completion' },
-    { projectName: 'Primary Teacher Bharti 2025', startDate: "10 Jan 2024", endData: '25 feb 2025', status: 'ongoing' },
-
-
-  ]
-
-  const openModelList = (row) => {
-    navigate('/model-list', {
-      state: {
-        projectKeyID: row.projectKeyID,
-        productName: row.productName,
-        hsn: row.hsn,
-        gstPercentage: row.gstPercentage
-      }
-    });
-  };
 
   const closeAllModal = () => {
     setShowSuccessModal(false);
   };
 
-  const projectDetailsBtn = () => {
-
-    navigate('/project-details-view')
-  }
 
   return (
     <>

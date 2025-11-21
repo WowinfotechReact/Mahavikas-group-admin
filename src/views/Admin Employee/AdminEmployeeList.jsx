@@ -317,7 +317,7 @@ const AdminEmployeeList = () => {
                               {/* Table */}
                               <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
                                     <table className="table table-bordered table-striped">
-                                          <thead className="table-gradient-orange" style={{ position: "sticky", top: -1, zIndex: 1 }}>
+                                          <thead className="table-gradient-orange" style={{ position: "sticky", top: -1, zIndex: 1, animation: "fadeIn 0.6s ease" }}>
                                                 <tr className="text-nowrap">
                                                       <th className="text-center">Sr No.</th>
                                                       <th className="text-center"> Employee Info</th>

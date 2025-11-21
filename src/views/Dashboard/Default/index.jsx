@@ -240,39 +240,7 @@ const Default = () => {
       <section>
         <div className="row">
           <div className="col-lg-8 mb-3">
-            <div className="card h-100 shadow-sm">
-              <div className="card-header d-flex justify-content-between align-items-center">
-                <h6 className="mb-0">Recent Activity</h6>
-                <small className="text-muted">Updated: {new Date().toLocaleString()}</small>
-              </div>
-              <div className="card-body">
-                {/* Replace with a table or virtualized list for large data sets */}
-                <div className="table-responsive">
-                  <table className="table table-hover table-striped mb-0">
-                    <thead className="table-light">
-                      <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[1, 2, 3, 4, 5].map(i => (
-                        <tr key={i}>
-                          <td>{i}</td>
-                          <td>Sample User {i}</td>
-                          <td>Project</td>
-                          <td>{new Date().toLocaleDateString()}</td>
-                          <td><span className="badge bg-success">Active</span></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+
           </div>
 
 

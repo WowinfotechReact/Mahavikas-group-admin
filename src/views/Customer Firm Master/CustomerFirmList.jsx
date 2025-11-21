@@ -374,36 +374,50 @@ const CustomerFirmList = () => {
                     </td>
 
                     <td style={{ minWidth: "250px", textAlign: "center", lineHeight: "1.2" }}>
-                      {/* Customer Name */}
-                      <div style={{ fontWeight: 600, fontSize: "14px", marginBottom: "2px", color: "#222" }}>
-                        {row.instituteName}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: "6px",
+                          animation: "fadeSlide 0.7s ease"
+                        }}
+                      >
+                        <span style={{ fontSize: "18px" }}>🎓</span>
+                        <span style={{ fontWeight: 600, fontSize: "14px", color: "#222" }}>
+                          {row.instituteName}
+                        </span>
                       </div>
-
-                      {/* Phone and Email on the same line */}
-
                     </td>
 
 
 
                     <td className="text-center" style={{ minWidth: "150px" }}>
-                      <div >
-                        <>{row.projectName}</>
+                      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", animation: "fadeSlide 0.7s ease" }}>
+                        <span style={{ fontSize: "18px" }}>🏗️</span>
+                        <span>{row.projectName}</span>
                       </div>
                     </td>
                     <td className="text-center" style={{ minWidth: "150px" }}>
-                      <div >
-                        <>{row.zoneName}</>
+                      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", animation: "fadeSlide 0.7s ease" }}>
+                        <span style={{ fontSize: "18px" }}>🌐</span>
+                        <span>{row.zoneName}</span>
                       </div>
                     </td>
 
+                    {/* District Name */}
                     <td className="text-center" style={{ minWidth: "150px" }}>
-                      <div >
-                        <>{row.districtName}</>
+                      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", animation: "fadeSlide 0.7s ease" }}>
+                        <span style={{ fontSize: "18px" }}>🗺️</span>
+                        <span>{row.districtName}</span>
                       </div>
                     </td>
+
+                    {/* Taluka Name */}
                     <td className="text-center" style={{ minWidth: "150px" }}>
-                      <div >
-                        <>{row.talukaName}</>
+                      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", animation: "fadeSlide 0.7s ease" }}>
+                        <span style={{ fontSize: "18px" }}>📍</span>
+                        <span>{row.talukaName}</span>
                       </div>
                     </td>
 

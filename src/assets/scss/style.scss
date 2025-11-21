@@ -1036,7 +1036,28 @@ logout-confirmation-modal {
   }
 }
 
+@keyframes fadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
 
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 @keyframes pulse {
   0% {
@@ -1050,4 +1071,18 @@ logout-confirmation-modal {
   100% {
     transform: scale(1);
   }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.table-header-row th {
+  transition: 0.3s ease;
+}
+
+.table-header-row th:hover {
+  background: #e9ecef;
+  box-shadow: inset 0 -2px 0 #0d6efd;
+  cursor: pointer;
 }

@@ -273,7 +273,7 @@ const InstituteEmployeeList = () => {
                               {/* Table */}
                               <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
                                     <table className="table table-bordered table-striped">
-                                          <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff' }}>
+                                          <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff', }}>
 
                                                 <tr className="text-nowrap">
                                                       <th className="text-center">Sr No.</th>
@@ -282,7 +282,7 @@ const InstituteEmployeeList = () => {
                                                       <th className="text-center">Address</th>
                                                       <th className="text-center">Designation </th>
                                                       <th className="text-center">Attendance Type </th>
-                                                      <th className="text-center">Action</th>
+                                                      <th className="text-center actionSticky">Action</th>
                                                 </tr>
                                           </thead>
                                           <tbody>
@@ -335,7 +335,7 @@ const InstituteEmployeeList = () => {
 
 
                                                             {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
-                                                            <td className="text-center">
+                                                            <td className="text-center relative  actionColSticky " style={{ zIndex: 4 }}>
                                                                   <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
                                                                         <Tooltip title={`Update Employee :- ${row.fullName} `}>
                                                                               <button
