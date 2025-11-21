@@ -4,18 +4,26 @@ import { postApiWithAuthenticated, getListWithAuthenticated } from 'services/Api
 const MasterStateBaseUrl = `${Base_Url}/State`;
 
 
-export const MasterStatGetStateList = async (params) => {
+export const GetStateList = async (params) => {
+  
   let url = `${MasterStateBaseUrl}/GetStateList`;
 
   const res = await postApiWithAuthenticated(url, params);
   return res;
 };
-export const AddUpdateStateApi = async (url = '', params) => {
-  if (params.stateID === null || params.stateID === undefined) {
-    delete params.stateID;
-  }
+// export const AddUpdateState = async (url = '', params) => {
+//   if (params.stateID === null || params.stateID === undefined) {
+//     delete params.stateID;
+//   }
 
-  const res = await postApiWithAuthenticated(`${MasterStateBaseUrl}${url}`, params);
+//   const res = await postApiWithAuthenticated(`${MasterStateBaseUrl}${url}`, params);
+//   return res;
+// };
+
+export const AddUpdateState = async (requestJson) => {
+    const res = await postApiWithAuthenticated(
+    `${url}/State/AddUpdateState`, requestJson
+  );
   return res;
 };
 
@@ -35,8 +43,8 @@ export const GetStateLookupList = async () => {
     return res;
   };
   
-  export const ChangeStateStatus = async (id,UserKeyID) => {
-    let url = `${MasterStateBaseUrl}/ChangeStateStatus?StateID=${id}&UserKeyID=${UserKeyID}`;
+  export const ChangeStateStatus = async (StateKeyID) => {
+    let url = `${MasterStateBaseUrl}/ChangeStateStatus?StateKeyID=${StateKeyID}`;
     const res = await getListWithAuthenticated(url);
     return res;
   };

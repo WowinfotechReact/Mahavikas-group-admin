@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Android12Switch from 'component/Android12Switch';
 import { ConfigContext } from 'context/ConfigContext';
-import { ChangeStateStatus, MasterStatGetStateList } from 'services/Master Crud/MasterStateApi';
+import { ChangeStateStatus, GetStateList} from 'services/Master Crud/MasterStateApi';
 import dayjs from 'dayjs';
 import AddUpdateMasterStateModal from './MasterStateModal';
 import StatusChangeModal from 'component/StatusChangeModal ';
@@ -23,23 +23,71 @@ const MasterStateList = () => {
   const [pageSize, setPageSize] = useState(30);
   const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
   const [isAddUpdateActionDone, setIsAddUpdateActionDone] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [fromDate, setFromDate] = useState(null); // Initialize as null
-  const [toDate, setToDate] = useState(null);
+  // const [searchKeyword, setSearchKeyword] = useState('');
+  // const [fromDate, setFromDate] = useState(null); // Initialize as null
+  // const [toDate, setToDate] = useState(null);
   const [stateListData, setStateListData] = useState([]);
   const [openMasterStateModal, setOpenMasterStateModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState();
   const [sortingDirection, setSortingDirection] = useState(null);
+  const [tableRow,setTableRow]=useState([])
   const [sortDirectionObj, setSortDirectionObj] = useState({
     ServiceNameSort: null
   });
-  const [sortType, setSortType] = useState('');
-
-  const [modelRequestData, setModelRequestData] = useState({
+   const [modelRequestData, setModelRequestData] = useState({
     stateID: null,
+    stateKeyID:null,
     stateName: null,
     Action: null
   });
+  const [sortType, setSortType] = useState('');
+   const [appliedFilter, setAppliedFilter] = useState({
+        pageSize: pageSize,
+        pageNo: 0,
+        searchKeyword: null,
+        fromDate: null,
+        toDate: null
+    })
+
+
+
+ 
+  useEffect(()=>{
+  GetStateListData()
+  },[])
+
+  
+    const GetStateListData = async () => {
+
+        try {
+            
+            let response = null;
+                response = await GetStateList({
+                    ...appliedFilter,
+                });
+                  
+                if (response?.data?.statusCode === 200) {
+                  console.log("enter")  
+                  const { data, totalRecords } = response.data.responseData;
+
+                    setTableRow(data || []);
+                    setTotalRecords(totalRecords || data?.length || 0);
+                  
+                    
+                    
+                } else {
+                    console.warn("Unexpected API response", response);
+                    setTableRow([]);
+                }
+                } catch (error) {
+            console.error("Error fetching category list:", error);
+        } finally {
+            
+        }
+          
+    };
+console.log(tableRow)
+ 
   const addMasterStateBtnClick = () => {
     setModelRequestData({
       stateID: null,
@@ -49,10 +97,17 @@ const MasterStateList = () => {
     setOpenMasterStateModal(true);
   }
 
-  const empData = [
-    { stateName: 'MH' },
-    { stateName: 'Himchal Pradesh' },
-  ]
+  // handleStatusChange = async(stateKeyID)=>{
+  //   try {
+  //               await ChangeStateStatus(stateKeyID);
+  //               // setConfirmationModal(false)
+  //               // setAppliedFilter({ ...appliedFilter });
+  //               // setShowSuccessPopupModal(true);
+  //           } catch (error) {
+  //               console.log("error ==>>", error)
+  //           }
+  // }
+  
   return (
     <>
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
@@ -75,10 +130,10 @@ const MasterStateList = () => {
               className="form-control "
               placeholder="Search State"
               style={{ maxWidth: "350px" }}
-              value={searchKeyword}
-              onChange={(e) => {
-                handleSearch(e);
-              }}
+              // value={searchKeyword}
+              // onChange={(e) => {
+              //   handleSearch(e);
+              // }}
             />
             <Tooltip title="Add State">
               <button
@@ -116,32 +171,47 @@ const MasterStateList = () => {
                   </th>
                   <th className="text-center">Status</th>
                   {/* <th className="text-center">Created On</th> */}
-                  <th className="text-center">Action</th>
+                  <th className="text-center">Action </th>
                 </tr>
               </thead>
               <tbody>
-                {empData?.map((row, idx) => (
-                  <tr className='text-nowrap' key={idx}>
-                    <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
-                    <td className="text-center">{row.stateName}</td>
+                 {tableRow.length > 0 &&
+                   tableRow.map((obj,index) => ( 
+                  <tr className='text-nowrap'  key={obj.id}>
+              
                     <td className="text-center">
-                      <Tooltip title={row.status === true ? 'Enable' : 'Disable'}>
-                        {row.status === true ? 'Enable' : 'Disable'}
-                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === true} />
+                       {(currentPage - 1) * pageSize + index + 1}   
+                      </td>
+                    
+                    <td className="text-center">
+                       {obj.stateName}  
+                      </td>
+                    
+                    <td className="text-center">
+                      <Tooltip  title={obj.status === true ? 'Enable' : 'Disable'} >
+                         { obj.status === true ? 'Enable' : 'Disable' } 
+                        <Android12Switch style={{ padding: '8px' }}  onClick={() =>  handleStatusChange(obj.stateKeyID)} checked={obj.status === true}  />
                       </Tooltip>
                     </td>
-                    {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
+                     {/* <td className="text-center">{obj.createdOnDate ? dayjs(obj.createdOnDate).format('DD/MM/YYYY') : '-'}</td>  */}
                     <td className="text-center">
                       <Tooltip title="Update State">
                         <button
-                          disabled
+                          
                           style={{
                             padding: '4px 8px', // Adjust padding for smaller size
                             fontSize: '12px', // Optional: smaller font size
                             height: '28px', // Set height
                             width: '28px' // Set width
                           }}
-                          onClick={() => EditMasterStateBtnClick(row)}
+                          onClick={() => {
+                            setModelRequestData({
+                              Action:"Update",
+                              stateKeyID:obj.stateKeyID
+
+                            })
+                            setOpenMasterStateModal(true)
+                          }}
                           type="button"
                           className="btn-sm btn btn-primary"
                         >
@@ -150,7 +220,7 @@ const MasterStateList = () => {
                       </Tooltip>
                     </td>
                   </tr>
-                ))}
+                 ))} 
               </tbody>
             </table>
           </div>

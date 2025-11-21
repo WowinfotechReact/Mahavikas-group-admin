@@ -59,7 +59,7 @@ const Designation = () => {
 
   const MasterDesignationListData = async (pageNumber, searchKeywordValue, toDate, fromDate, sortValue, StateSortType) => {
     // debugger
-    setLoader(true);
+    // setLoader(true);
     try {
       const data = await GetDesignationList({
         pageSize,
@@ -293,12 +293,12 @@ const Designation = () => {
                 ))}
               </tbody>
             </table>
-            {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />}
+            {/* {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />} */}
           </div>
           <div className="d-flex justify-content-end ">
-            {totalCount > pageSize && (
+            {/* {totalCount > pageSize && (
               <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
-            )}
+            )} */}
           </div>
         </div>
       </div>
