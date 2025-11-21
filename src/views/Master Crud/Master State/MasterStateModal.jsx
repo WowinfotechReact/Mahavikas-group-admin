@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import SuccessPopupModal from 'component/SuccessPopupModal';
-import { AddUpdateStateApi, GetStateModel } from 'services/Master Crud/MasterStateApi';
+import { AddUpdateState, GetStateModel } from 'services/Master Crud/MasterStateApi';
 import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 
@@ -14,14 +14,14 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone, mod
   const { setLoader, user } = useContext(ConfigContext);
   const [masterStateObj, setMasterStateObj] = useState({
     userKeyID: null,
-    stateID: null,
+    stateKeyID: null,
     stateName: null
   });
 
   useEffect(() => {
     if (modelRequestData?.Action === 'Update') {
-      if (modelRequestData?.stateID !== null) {
-        GetMasterStateModalData(modelRequestData.stateID);
+      if (modelRequestData?.stateKeyID !== null) {
+        GetMasterStateModalData(modelRequestData.stastateKeyIDteID);
       }
     }
   }, [modelRequestData?.Action]);
@@ -34,14 +34,14 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone, mod
     } else {
       setErrors(false);
       isValid = false;
+      
     }
 
     const apiParam = {
       userKeyID: user.userKeyID,
       stateName: masterStateObj.stateName,
-      stateID: modelRequestData?.stateID
+      stateKeyID: modelRequestData?.stateKeyID
     };
-
     if (!isValid) {
       AddUpdateStateData(apiParam);
     }
@@ -49,11 +49,20 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone, mod
 
   const AddUpdateStateData = async (apiParam) => {
     setLoader(true);
+    console.log("status1")
     try {
-      let url = '/AddUpdateState'; // Default URL for Adding Data
 
-      const response = await AddUpdateStateApi(url, apiParam);
+      console.log("status2")
+
+      
+
+      const response = await AddUpdateState(apiParam);
+      
+        console.log("status")
+        console.log(response)
       if (response) {
+        console.log("status")
+        console.log(response?.data?.statusCode)
         if (response?.data?.statusCode === 200) {
           setLoader(false);
           setShowSuccessModal(true);
@@ -66,7 +75,7 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone, mod
           setIsAddUpdateActionDone(true);
         } else {
           setLoader(false);
-          setErrorMessage(response?.response?.data?.errorMessage);
+          setErrorMessage(response?.data?.errorMessage);
         }
       }
     } catch (error) {
@@ -118,7 +127,7 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone, mod
         <Modal.Header closeButton>
           <Modal.Title>
             <h3 className="text-center">
-              {modelRequestData?.Action !== null ? 'Update State' : modelRequestData?.Action === null ? 'Add State' : ''}
+              {modelRequestData?.Action === "Update" ? 'Update State' :  "Add State" }
             </h3>
           </Modal.Title>
         </Modal.Header>
