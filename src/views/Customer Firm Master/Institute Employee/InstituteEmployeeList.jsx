@@ -217,10 +217,11 @@ const InstituteEmployeeList = () => {
 
                               <div className="d-flex justify-content-between align-items-center mb-1 position-relative">
                                     <button
-                                          className="btn btn-light p-1 me-2"
+                                          className="btn btn-outline-secondary btn-sm me-2"
                                           onClick={() => navigate(-1)}
                                     >
-                                          ⬅
+                                          <i className="fa-solid fa-arrow-left"></i>
+
                                     </button>
                                     <div className="flex-grow-1">
                                           <h5 className="mb-0">Employee Institute : {location.state.instituteName} </h5>

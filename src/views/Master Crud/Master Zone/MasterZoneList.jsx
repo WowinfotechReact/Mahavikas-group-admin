@@ -2,14 +2,11 @@
 
 
 import React, { useState, useEffect, useContext } from 'react';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Android12Switch from 'component/Android12Switch';
 import { useNavigate } from 'react-router';
 
 import { ConfigContext } from 'context/ConfigContext';
-import { ChangeStateStatus } from 'services/Master Crud/MasterStateApi';
-
 import dayjs from 'dayjs';
 // import AddUpdateMasterStateModal from './MasterStateModal';
 import StatusChangeModal from 'component/StatusChangeModal ';
@@ -38,7 +35,6 @@ const MasterZoneList = () => {
   const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
   const [isAddUpdateActionDone, setIsAddUpdateActionDone] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [apiParams, setApiParams] = useState(null); // State to store API parameters
   const [fromDate, setFromDate] = useState(null); // Initialize as null
   const [toDate, setToDate] = useState(null);
   const [stateListData, setStateListData] = useState([]);
@@ -54,15 +50,10 @@ const MasterZoneList = () => {
   const [modelRequestData, setModelRequestData] = useState({
     stateID: null,
     stateName: null,
-    zoneKeyID:null,
+    zoneKeyID: null,
     Action: null
   });
 
-  useEffect(() => {
-    if (apiParams) {
-      handleApiCall(apiParams); // Trigger API call with the params
-    }
-  }, [apiParams]);
   useEffect(() => {
     // debugger
     if (isAddUpdateActionDone) {
@@ -78,35 +69,7 @@ const MasterZoneList = () => {
     GetMasterZoneListData(1, null, toDate, fromDate);
   }, [setIsAddUpdateActionDone]);
 
-  const handleApiCall = async (params) => {
-    // //setLoader(false)(true);
-    const formData = new FormData();
-    formData.append('File', params.File); // Attach the PDF file
 
-    try {
-      const response = await AddUpdatePDF(
-        {
-          ModuleID: params.ModuleID,
-          ModuleName: params.ModuleName
-        },
-        formData
-      );
-
-      if (response.data.statusCode === 200) {
-        // //setLoader(false)(false);
-        setShowSuccessModal(true);
-        setModelAction('PDF Uploaded Successfully!');
-        setIsAddUpdateActionDone(true);
-      } else {
-        //setLoader(false)(false);
-        setErrorMessage(result.errorMessage);
-      }
-    } catch (error) {
-      console.error('Error uploading PDF:', error);
-      //setLoader(false)(false);
-      setErrorMessage('An error occurred while uploading the PDF.');
-    }
-  };
 
   const mapDistrictZoneBtn = (row) => {
 
@@ -180,15 +143,6 @@ const MasterZoneList = () => {
     GetMasterZoneListData(pageNumber, null, toDate, fromDate);
   };
 
-
-  // const addMasterZoneBtnClick = () => {
-  //   setModelRequestData({
-  //     ...modelRequestData,
-  //     Action: null,
-  //     zoneKeyID: null
-  //   });
-  //   setOpenMasterStateModal(true);
-  // };
 
 
   const handleStatusChange = (row) => {
@@ -267,13 +221,14 @@ const MasterZoneList = () => {
               }}
             />
             <Tooltip title="Add Zone">
-              <button style={{background:'#ffaa33', border:'#ffaa33'}}
+              <button style={{ background: '#ffaa33', border: '#ffaa33' }}
                 // disabled
-                 onClick={() =>{ 
+                onClick={() => {
                   setModelRequestData({
-                                Action:'Add'
-                 }) 
-                 setOpenMasterStateModal(true) }}
+                    Action: 'Add'
+                  })
+                  setOpenMasterStateModal(true)
+                }}
                 className="btn btn-primary btn-sm d-none d-sm-inline"
               >
                 <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
@@ -336,31 +291,31 @@ const MasterZoneList = () => {
                     <td className="text-center">
                       <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
                         <Tooltip title="Update Zone">
-                                                <button
-                                                  
-                                                  style={{
-                                                    padding: '4px 8px', // Adjust padding for smaller size
-                                                    fontSize: '12px', // Optional: smaller font size
-                                                    height: '28px', // Set height
-                                                    width: '28px', // Set width
-                                                    background: '#ffaa33',
-                                                    border:'#ffaa33'
-                                                  }}
-                                                  onClick={() => {
-                                                    setModelRequestData({
-                                                      Action:"Update",
-                                                      zoneKeyID:row.zoneKeyID
-                        
-                                                    })
-                                                    setOpenMasterStateModal(true)
+                          <button
 
-                                                  }}
-                                                  type="button"
-                                                  className="btn-sm btn btn-primary"
-                                                >
-                                                  <i className="fa-solid fa-pen-to-square"></i>
-                                                </button>
-                                              </Tooltip>
+                            style={{
+                              padding: '4px 8px', // Adjust padding for smaller size
+                              fontSize: '12px', // Optional: smaller font size
+                              height: '28px', // Set height
+                              width: '28px', // Set width
+                              background: '#ffaa33',
+                              border: '#ffaa33'
+                            }}
+                            onClick={() => {
+                              setModelRequestData({
+                                Action: "Update",
+                                zoneKeyID: row.zoneKeyID
+
+                              })
+                              setOpenMasterStateModal(true)
+
+                            }}
+                            type="button"
+                            className="btn-sm btn btn-primary"
+                          >
+                            <i className="fa-solid fa-pen-to-square"></i>
+                          </button>
+                        </Tooltip>
 
                         <Tooltip title="Map District">
                           <button

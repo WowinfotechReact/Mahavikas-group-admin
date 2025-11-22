@@ -268,11 +268,14 @@ const CustomerFirmList = () => {
 
           <div className="d-flex justify-content-between align-items-center mb-2">
             <button
-              className="btn btn-light p-1 me-2"
-              style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+              // className="btn btn-light p-1 me-2"
+              className="btn btn-outline-secondary btn-sm me-2"
+
+              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
               onClick={() => navigate(-1)}
             >
-              ⬅
+              <i className="fa-solid fa-arrow-left"></i>
+
             </button>
             <div className="d-flex align-items-center flex-grow-1">
 

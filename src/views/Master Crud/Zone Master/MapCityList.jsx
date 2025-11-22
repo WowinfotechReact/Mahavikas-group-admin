@@ -113,16 +113,19 @@ const MapCityList = () => {
 
 
       const GetAssignedZoneDistrictListData = async () => {
+            setLoader(true);
             try {
                   let response = await GetAssignedZoneDistrictList(
                         location.state.Value.zoneIDs
                   );
 
                   if (response?.data?.statusCode === 200) {
+                        setLoader(false);
                         const result = response?.data?.responseData?.data?.[0] || null;
                         setDistList(result);
                   }
             } catch (error) {
+                  setLoader(false);
                   console.log(error);
             }
       };
@@ -140,13 +143,25 @@ const MapCityList = () => {
                         <div className="card-body p-2 bg-white shadow-md rounded-lg">
                               {/* Top controls */}
                               <div className="d-flex justify-content-between align-items-center mb-1">
-                                    <h5 className="m-0">Zone  :-  {distList?.zoneName || "N/A"}</h5>
+
+                                    {/* Back Button */}
+                                    <button
+                                          className="btn btn-outline-secondary btn-sm me-2"
+                                          onClick={() => navigate(-1)}
+                                    >
+                                          <i className="fa-solid fa-arrow-left"></i>
+                                    </button>
+
+                                    <h5 className="m-0 flex-grow-1">
+                                          Zone :- {distList?.zoneName || "N/A"}
+                                    </h5>
+
                                     <button
                                           onClick={() => addMasterZoneBtnClick()}
                                           className="btn btn-primary btn-sm d-inline d-sm-none"
                                     >
                                           <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
-                                          <span className="d-inline d-sm-none">  Add</span>
+                                          <span className="d-inline d-sm-none"> Add</span>
                                     </button>
                               </div>
                               <div className="d-flex justify-content-between align-items-center mb-1">
