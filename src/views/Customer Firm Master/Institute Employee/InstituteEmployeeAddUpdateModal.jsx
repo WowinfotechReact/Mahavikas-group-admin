@@ -87,7 +87,9 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                               address: ModelData.address,
                               designationID: ModelData.designationID,
                               attendanceTypeID: ModelData.attendanceTypeID,
+                              serviceID: ModelData.serviceID,
                         });
+                        await GetDesignationLookupListData(ModelData.serviceID)
                         // rc book
                   } else {
                         // Handle non-200 status codes if necessary
@@ -112,8 +114,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   employeeObj.lastName === null ||
                   employeeObj.lastName === undefined ||
                   employeeObj.lastName === '' ||
-
-
                   employeeObj.mobileNo === null ||
                   employeeObj.mobileNo === undefined ||
                   employeeObj.mobileNo === '' ||
@@ -121,7 +121,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   employeeObj.emailID === undefined ||
                   employeeObj.emailID === '' ||
                   employeeObj.emailID === null ||
-
                   employeeObj.designationID === null ||
                   employeeObj.designationID === undefined ||
                   employeeObj.designationID === '' ||
@@ -141,7 +140,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
 
             const apiParam = {
                   userKeyID: user.userKeyID,
-
                   userDetailsKeyID: modelRequestData?.userDetailsKeyID,
                   userKeyIDForUpdate: modelRequestData?.userKeyIDForUpdate,
                   firstName: employeeObj.firstName,
@@ -330,7 +328,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                       )}
                                                 </div>
                                           </div>
-
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="customerLName" className="form-label">
@@ -375,8 +372,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                           </div>
                                     </div>
                                     <div className="row">
-
-
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="vehicleNumber" className="form-label">
@@ -454,8 +449,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                           </div>
                                     </div>
                                     <div className="row">
-
-
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="vehicleNumber" className="form-label">
@@ -485,8 +478,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                       )}
                                                 </div>
                                           </div>
-
-
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="Password" className="form-label">
@@ -507,11 +498,8 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
 
                                                 </div>
                                           </div>
-
-
                                     </div>
                                     <div className="row">
-
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="Password" className="form-label">
@@ -526,7 +514,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                             menuPosition="fixed"
                                                       />
 
-                                                      {error && !employeeObj.ser && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
+                                                      {error && !employeeObj.serviceID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
 
 
 
@@ -553,7 +541,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
 
                                                 </div>
                                           </div>
-
                                     </div>
                                     <span style={{ color: 'red' }}>{errorMessage}</span>
                               </div>
