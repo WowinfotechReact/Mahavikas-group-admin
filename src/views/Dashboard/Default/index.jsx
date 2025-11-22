@@ -107,8 +107,8 @@ const Default = () => {
         pageSize: 30,
         fromDate: StartDate,
         toDate: EndDate,
-        userKeyID: user.userKeyID,
-        companyID: Number(companyID)
+        companyID: Number(companyID),
+        userID: user.userID,
       });
 
       if (response) {
