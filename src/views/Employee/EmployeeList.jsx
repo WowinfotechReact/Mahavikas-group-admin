@@ -406,12 +406,12 @@ const EmployeeList = () => {
               }}
             />
             <div className="d-flex align-items-center ms-2 gap-2 mt-2 mt-sm-0">
-              <Tooltip title="Export">
+              {/* <Tooltip title="Export">
                 <button onClick={exportToExcel} className="btn btn-warning btn-sm d-none d-sm-inline" style={{ marginRight: '2px' }}>
                   <i className="fa-solid fa-file-export" style={{ fontSize: '11px' }}></i>
                   {" "}  <span className="d-none d-sm-inline">Export</span>
                 </button>
-              </Tooltip>
+              </Tooltip> */}
               <Tooltip title="Add Employee">
                 <button onClick={() => VehicleAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline ">
                   <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>{" "}

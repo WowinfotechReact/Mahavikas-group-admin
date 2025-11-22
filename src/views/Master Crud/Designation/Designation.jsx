@@ -40,7 +40,7 @@ const Designation = () => {
   const [modelRequestData, setModelRequestData] = useState({
     stateID: null,
     stateName: null,
-    designationKeyID:null,
+    designationKeyID: null,
     Action: null
   });
 
@@ -233,25 +233,16 @@ const Designation = () => {
 
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
-            <table className="table table-bordered table-striped">
-              <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1 }}>
+            <table className="table table-bordered table-striped table-hover">
+              <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff' }}>
                 <tr>
                   <th className="text-center">Sr No</th>
+                  <th className="text-center">Service </th>
+
                   <th className="text-center">
-                    Designation Name
-                    {/* {sortDirectionObj.ServiceNameSort === "desc" ? (
-    <i
-      onClick={() => handleSort("desc", "stateName")}
-      style={{ cursor: "pointer" }}
-      className="fas fa-sort-alpha-up ml-1"
-    ></i>
-  ) : (
-    <i
-      onClick={() => handleSort("asc", "stateName")}
-      style={{ cursor: "pointer" }}
-      className="fas fa-sort-alpha-down ml-1"
-    ></i>
-  )} */}
+                    Designation
+
+
                   </th>
                   <th className="text-center">Status</th>
                   {/* <th className="text-center">Created On</th> */}
@@ -262,6 +253,7 @@ const Designation = () => {
                 {designationListData?.map((row, id) => (
                   <tr key={id}>
                     <td className="text-center">{(currentPage - 1) * pageSize + id + 1}</td>
+                    <td className="text-center">{row.serviceName}</td>
                     <td className="text-center">{row.designationName}</td>
                     <td className="text-center">
                       <Tooltip title={row.status === 'Active' ? 'Inactive' : 'Active'}>
@@ -271,28 +263,29 @@ const Designation = () => {
                     </td>
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                     <td className="text-center">
-                      
-                        <Tooltip title="Update Designation">
-                          <button
-                            style={{
-                              padding: '4px 8px', // Adjust padding for smaller size
-                              fontSize: '12px', // Optional: smaller font size
-                              height: '28px', // Set height
-                              width: '28px', // Set width
-                              background: '#ffaa33'
-                            }}
-                            onClick={() =>{
-                              setModelRequestData({
-                                designationKeyID: row.designationKeyID
-                              })
-                              EditMasterStateBtnClick(row)}}
-                            type="button"
-                            className="btn-sm btn text-white"
-                          >
-                            <i className="fa-solid fa-pen-to-square"></i>
-                          </button>
-                        </Tooltip>
-                      
+
+                      <Tooltip title="Update Designation">
+                        <button
+                          style={{
+                            padding: '4px 8px', // Adjust padding for smaller size
+                            fontSize: '12px', // Optional: smaller font size
+                            height: '28px', // Set height
+                            width: '28px', // Set width
+                            background: '#ffaa33'
+                          }}
+                          onClick={() => {
+                            setModelRequestData({
+                              designationKeyID: row.designationKeyID
+                            })
+                            EditMasterStateBtnClick(row)
+                          }}
+                          type="button"
+                          className="btn-sm btn text-white"
+                        >
+                          <i className="fa-solid fa-pen-to-square"></i>
+                        </button>
+                      </Tooltip>
+
                     </td>
                   </tr>
                 ))}

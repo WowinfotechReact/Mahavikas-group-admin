@@ -353,7 +353,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       <Modal size="lg" show={show} style={{ zIndex: 1300 }} onHide={onHide} backdrop="static" keyboard={false} centered>
         <Modal.Header closeButton>
           <Modal.Title>
-            <h3 className="text-center">{modelRequestData?.Action !== null ? 'Edit Institute' : 'Add Institute'}</h3>
+            <h3 className="text-center">{modelRequestData?.Action !== null ? 'Update Institute' : 'Add Institute'}</h3>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ maxHeight: '55vh', overflow: 'overlay' }}>
@@ -396,7 +396,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
               <div className="col-12 col-md-6 mb-2">
                 <label htmlFor="institutDescription" className="form-label">
                   Description Of Institute
-                  {/* <span style={{ color: 'red' }}>*</span> */}
+                  <span style={{ color: 'red' }}>*</span>
                 </label>
                 <textarea
 
@@ -406,7 +406,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
                   placeholder="Enter Description Of Institute "
                   value={instituteObj.institutDescription}
                   onChange={(e) => {
-                    let gst = e.target.value.toUpperCase(); // Ensure uppercase
+                    let gst = e.target.value; // Ensure uppercase
                     gst = gst.replace(/^\s+/, ''); // Remove leading spaces
                     setInstituteObj({ ...instituteObj, institutDescription: gst });
                   }}

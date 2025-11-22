@@ -17,6 +17,7 @@ import { Tooltip } from '@mui/material';
 import { ChenageDesignationStatus, GetDesignationList } from 'services/Master Crud/Designationapi';
 import { hasPermission } from 'Middleware/permissionUtils';
 import MasterServiceModal from './MasterServiceModal';
+import { ChangeServiceStatus, GetServiceList } from 'services/Services/ServicesApi';
 
 const MasterServiceList = () => {
       const [stateChangeStatus, setStateChangeStatus] = useState('');
@@ -50,7 +51,7 @@ const MasterServiceList = () => {
       useEffect(() => {
             // debugger
             if (isAddUpdateActionDone) {
-                  MasterDesignationListData(1, null, toDate, fromDate);
+                  GetServiceListData(1, null, toDate, fromDate);
                   setSearchKeyword('');
                   setSortingDirection(null);
             }
@@ -58,14 +59,14 @@ const MasterServiceList = () => {
       }, [isAddUpdateActionDone]);
 
       useEffect(() => {
-            MasterDesignationListData(1, null, toDate, fromDate);
+            GetServiceListData(1, null, toDate, fromDate);
       }, [setIsAddUpdateActionDone]);
 
-      const MasterDesignationListData = async (pageNumber, searchKeywordValue, toDate, fromDate, sortValue, StateSortType) => {
+      const GetServiceListData = async (pageNumber, searchKeywordValue, toDate, fromDate, sortValue, StateSortType) => {
             // debugger
             setLoader(true);
             try {
-                  const data = await GetDesignationList({
+                  const data = await GetServiceList({
                         pageSize,
                         pageNo: pageNumber - 1, // Page numbers are typically 0-based in API calls
                         searchKeyword: searchKeywordValue === undefined ? searchKeyword : searchKeywordValue,
@@ -112,19 +113,19 @@ const MasterServiceList = () => {
                   return;
             }
             setSearchKeyword(capitalizedValue);
-            MasterDesignationListData(1, capitalizedValue, toDate, fromDate);
+            GetServiceListData(1, capitalizedValue, toDate, fromDate);
       };
 
       const handlePageChange = (pageNumber) => {
             setCurrentPage(pageNumber);
-            MasterDesignationListData(pageNumber, null, toDate, fromDate);
+            GetServiceListData(pageNumber, null, toDate, fromDate);
       };
 
       const addMasterStateBtnClick = () => {
             setModelRequestData({
                   ...modelRequestData,
                   Action: null,
-                  designationKeyID: null,
+                  serviceKeyID: null,
                   userKeyID: null
             });
             setOpenMasterDesignationModal(true);
@@ -133,7 +134,7 @@ const MasterServiceList = () => {
             setModelRequestData({
                   ...modelRequestData,
                   Action: 'Update',
-                  designationKeyID: row.designationKeyID
+                  serviceKeyID: row.serviceKeyID
             });
             setOpenMasterDesignationModal(true);
       };
@@ -143,15 +144,15 @@ const MasterServiceList = () => {
             setShowStatusChangeModal(true);
       };
 
-      const confirmStatusChange = async (row, user) => {
+      const confirmStatusChange = async (row) => {
             try {
-                  const { designationKeyID } = row; // Destructure to access only what's needed
-                  const response = await ChenageDesignationStatus(designationKeyID, user.userKeyID);
+                  const { serviceKeyID } = row; // Destructure to access only what's needed
+                  const response = await ChangeServiceStatus(serviceKeyID);
 
                   if (response && response.data.statusCode === 200) {
                         setShowStatusChangeModal(false);
                         setStateChangeStatus(null);
-                        MasterDesignationListData(currentPage, null, toDate, fromDate);
+                        GetServiceListData(currentPage, null, toDate, fromDate);
                         setShowSuccessModal(true);
                         setModelAction('Service status changed successfully.');
                   } else {
@@ -176,7 +177,7 @@ const MasterServiceList = () => {
                         ServiceNameSort: newSortValue
                   });
                   setCurrentPage(1);
-                  MasterDesignationListData(1, searchKeyword, toDate, fromDate, newSortValue, StateSortType);
+                  GetServiceListData(1, searchKeyword, toDate, fromDate, newSortValue, StateSortType);
             } else if (StateSortType === 'ProfessionType') {
                   setSortingDirection(newSortValue);
                   setSortDirectionObj({
@@ -184,17 +185,11 @@ const MasterServiceList = () => {
                         ProfessionTypeSort: newSortValue
                   });
                   setCurrentPage(1);
-                  MasterDesignationListData(1, searchKeyword, toDate, fromDate, newSortValue, StateSortType);
+                  GetServiceListData(1, searchKeyword, toDate, fromDate, newSortValue, StateSortType);
             }
       };
 
-      const designationData = [
-            { designation: 'MTS' },
-            { designation: 'Teaching' },
-            {
-                  designation: 'Nursing'
-            },
-      ]
+
       return (
             <>
                   <div className="card w-full max-w-[50vh] mx-auto h-auto">
@@ -236,8 +231,8 @@ const MasterServiceList = () => {
 
                               {/* Table */}
                               <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
-                                    <table className="table table-bordered table-striped">
-                                          <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1 }}>
+                                    <table className="table table-bordered table-striped table-hover">
+                                          <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff' }}>
                                                 <tr>
                                                       <th className="text-center">Sr No</th>
                                                       <th className="text-center">
@@ -262,14 +257,14 @@ const MasterServiceList = () => {
                                                 </tr>
                                           </thead>
                                           <tbody>
-                                                {designationData?.map((row, idx) => (
+                                                {designationListData?.map((row, idx) => (
                                                       <tr key={idx}>
                                                             <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
-                                                            <td className="text-center">{row.designation}</td>
+                                                            <td className="text-center">{row.serviceName}</td>
                                                             <td className="text-center">
-                                                                  <Tooltip title={row.status === true ? 'Active' : 'Deactive'}>
-                                                                        {row.status === true ? 'Active' : 'Deactive'}
-                                                                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === true} />
+                                                                  <Tooltip title={row.status === true ? 'Active' : 'In Active'}>
+                                                                        {row.status === 'Active' ? 'Active' : 'In Active'}
+                                                                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === "Active"} />
                                                                   </Tooltip>
                                                             </td>
                                                             {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
@@ -319,7 +314,7 @@ const MasterServiceList = () => {
                   <StatusChangeModal
                         open={showStatusChangeModal}
                         onClose={() => setShowStatusChangeModal(false)}
-                        onConfirm={() => confirmStatusChange(stateChangeStatus, user)} // Pass the required arguments
+                        onConfirm={() => confirmStatusChange(stateChangeStatus)} // Pass the required arguments
                   />
 
                   {showSuccessModal && (

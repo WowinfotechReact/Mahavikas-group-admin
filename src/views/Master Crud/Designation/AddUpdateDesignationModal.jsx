@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import SuccessPopupModal from 'component/SuccessPopupModal';
-import { GetStateModel } from 'services/Master Crud/MasterStateApi';
 import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { AddUpdateDesignation, GetDesignationModel } from 'services/Master Crud/Designationapi';
+import Select from 'react-select';
+import { GetServiceLookupList } from 'services/Services/ServicesApi';
 
 const AddUpdateDesignationModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
   const [modelAction, setModelAction] = useState('');
@@ -12,9 +13,11 @@ const AddUpdateDesignationModal = ({ show, onHide, setIsAddUpdateActionDone, mod
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
   const { setLoader, user } = useContext(ConfigContext);
+  const [designationOption, setDesignationOption] = useState([])
   const [masterDesignationObj, setMasterDesignationObj] = useState({
     userKeyID: null,
     designationKeyID: null,
+    serviceID: null,
     designationName: null
   });
 
@@ -28,7 +31,10 @@ const AddUpdateDesignationModal = ({ show, onHide, setIsAddUpdateActionDone, mod
 
   const AddStateBtnClick = () => {
     let isValid = false;
-    if (masterDesignationObj.designationName === null || masterDesignationObj.designationName === undefined || masterDesignationObj.designationName.trim() === '') {
+    if (
+      masterDesignationObj.designationName === null || masterDesignationObj.designationName === undefined || masterDesignationObj.designationName.trim() === '' ||
+      masterDesignationObj.serviceID === null || masterDesignationObj.serviceID === undefined || masterDesignationObj.serviceID === ''
+    ) {
       setErrors(true);
       isValid = true;
     } else {
@@ -39,6 +45,7 @@ const AddUpdateDesignationModal = ({ show, onHide, setIsAddUpdateActionDone, mod
     const apiParam = {
       userKeyID: user.userKeyID,
       designationName: masterDesignationObj.designationName,
+      serviceID: masterDesignationObj.serviceID,
       designationKeyID: modelRequestData?.designationKeyID
     };
 
@@ -76,6 +83,34 @@ const AddUpdateDesignationModal = ({ show, onHide, setIsAddUpdateActionDone, mod
     }
   };
 
+
+  useEffect(() => {
+    GetServiceLookupListData()
+  }, [])
+
+  const GetServiceLookupListData = async () => {
+
+
+
+    try {
+
+      let response = await GetServiceLookupList();
+
+      if (response?.data?.statusCode === 200) {
+        const list = response?.data?.responseData?.data || [];
+
+        const formatted = list.map((d) => ({
+          value: d.serviceID,
+          label: d.serviceName,
+        }));
+
+        setDesignationOption(formatted);
+      }
+    } catch (err) {
+      console.error("Error fetching districts:", err);
+    }
+  };
+
   const closeAllModal = () => {
     onHide();
     setShowSuccessModal(false);
@@ -97,6 +132,7 @@ const AddUpdateDesignationModal = ({ show, onHide, setIsAddUpdateActionDone, mod
           ...masterDesignationObj,
           userKeyID: ModelData.userKeyID,
           designationKeyID: ModelData.designationKeyID,
+          serviceID: ModelData.serviceID,
           designationName: ModelData.designationName
         });
       } else {
@@ -111,7 +147,12 @@ const AddUpdateDesignationModal = ({ show, onHide, setIsAddUpdateActionDone, mod
       console.error('Error in state: ', error);
     }
   };
-
+  const handleEmployeeChange = (selectedOption) => {
+    setMasterDesignationObj((prev) => ({
+      ...prev,
+      serviceID: selectedOption ? selectedOption.value : null
+    }));
+  };
   return (
     <>
       <Modal size="md" show={show} style={{ zIndex: 1300 }} onHide={onHide} backdrop="static" keyboard={false} centered>
@@ -125,6 +166,29 @@ const AddUpdateDesignationModal = ({ show, onHide, setIsAddUpdateActionDone, mod
         <Modal.Body style={{ maxHeight: '55vh', overflow: 'overlay' }}>
           <div className="container">
             <div className="row">
+              <div>
+                <label htmlFor="StateName" className="form-label">
+                  Select Service
+                  <span style={{ color: 'red' }}>*</span>
+                </label>
+                <Select
+                  options={designationOption}
+
+                  placeholder="Select  Service"
+                  value={designationOption.find((item) => item.value === masterDesignationObj.serviceID) || null}
+                  onChange={handleEmployeeChange}
+                  menuPosition="fixed"
+
+                />
+
+                {error &&
+                  (masterDesignationObj.serviceID === null || masterDesignationObj.serviceID === undefined || masterDesignationObj.serviceID === '') ? (
+                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                ) : (
+                  ''
+                )}
+                {errorMessage && <span style={{ color: 'red' }}>{errorMessage}</span>}
+              </div>
               <div>
                 <label htmlFor="StateName" className="form-label">
                   Designation Name

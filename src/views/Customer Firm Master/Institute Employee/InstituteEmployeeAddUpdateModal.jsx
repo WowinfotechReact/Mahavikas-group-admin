@@ -12,6 +12,7 @@ import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { useLocation } from 'react-router-dom';
 import { AddUpdateAppUser, GetAppUserModel } from 'services/Employee Staff/EmployeeApi';
 import { GetDesignationLookupList } from 'services/Master Crud/Designationapi';
+import { GetServiceLookupList } from 'services/Services/ServicesApi';
 
 const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData, }) => {
 
@@ -22,6 +23,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
       const [errorMessage, setErrorMessage] = useState();
       const [showPassword, setShowPassword] = useState(false);
       const [designationOption, setDesignationOption] = useState([])
+      const [serviceOption, setServiceOption] = useState([])
       const [employeeObj, setEmployeeObj] = useState({
             attendanceTypeID: null,
             designationID: null,
@@ -195,13 +197,38 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
       useEffect(() => {
             GetDesignationLookupListData()
       }, [])
-      const GetDesignationLookupListData = async () => {
+
+
+
+      useEffect(() => {
+            GetServiceLookupListData()
+      }, [])
+      const GetServiceLookupListData = async () => {
+            try {
+
+                  let response = await GetServiceLookupList();
+
+                  if (response?.data?.statusCode === 200) {
+                        const list = response?.data?.responseData?.data || [];
+
+                        const formatted = list.map((d) => ({
+                              value: d.serviceID,
+                              label: d.serviceName,
+                        }));
+
+                        setServiceOption(formatted);
+                  }
+            } catch (err) {
+                  console.error("Error fetching districts:", err);
+            }
+      };
+      const GetDesignationLookupListData = async (serviceID) => {
 
 
 
             try {
 
-                  let response = await GetDesignationLookupList();
+                  let response = await GetDesignationLookupList(serviceID);
 
                   if (response?.data?.statusCode === 200) {
                         const list = response?.data?.responseData?.data || [];
@@ -216,6 +243,19 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
             } catch (err) {
                   console.error("Error fetching districts:", err);
             }
+      };
+
+      const handleServiceChange = async (selectedOption) => {
+            const serviceID = selectedOption ? selectedOption.value : null;
+
+            // 1️⃣ Update state
+            setEmployeeObj(prev => ({
+                  ...prev,
+                  serviceID: serviceID,
+            }));
+
+            // 2️⃣ Call designation API based on new serviceID
+            await GetDesignationLookupListData(serviceID);
       };
 
       const handleDesignationChange = (selectedOption) => {
@@ -445,26 +485,8 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                       )}
                                                 </div>
                                           </div>
-                                          <div className="col-12 col-md-6 mb-2">
-                                                <div>
-                                                      <label htmlFor="Password" className="form-label">
-                                                            Select Designation
-                                                            <span style={{ color: 'red' }}>*</span>
-                                                      </label>
-                                                      <Select
-                                                            placeholder="Select Designation"
-                                                            options={designationOption}
-                                                            value={designationOption.find(item => item.value === employeeObj?.designationID)}
-                                                            onChange={handleDesignationChange}
-                                                            menuPosition="fixed"
-                                                      />
-
-                                                      {error && !employeeObj.designationID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
 
 
-
-                                                </div>
-                                          </div>
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="Password" className="form-label">
@@ -487,6 +509,50 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                           </div>
 
 
+                                    </div>
+                                    <div className="row">
+
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <div>
+                                                      <label htmlFor="Password" className="form-label">
+                                                            Select Service
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <Select
+                                                            placeholder="Select Designation"
+                                                            options={serviceOption}
+                                                            value={serviceOption.find(item => item.value === employeeObj?.serviceID)}
+                                                            onChange={handleServiceChange}
+                                                            menuPosition="fixed"
+                                                      />
+
+                                                      {error && !employeeObj.ser && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
+
+
+
+                                                </div>
+
+                                          </div>
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <div>
+                                                      <label htmlFor="Password" className="form-label">
+                                                            Select Designation
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <Select
+                                                            placeholder="Select Designation"
+                                                            options={designationOption}
+                                                            value={designationOption.find(item => item.value === employeeObj?.designationID)}
+                                                            onChange={handleDesignationChange}
+                                                            menuPosition="fixed"
+                                                      />
+
+                                                      {error && !employeeObj.designationID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
+
+
+
+                                                </div>
+                                          </div>
 
                                     </div>
                                     <span style={{ color: 'red' }}>{errorMessage}</span>

@@ -308,13 +308,14 @@ export default {
               url: '/master-taluka'
             },
 
+
             {
-              id: 'Master',
-              title: 'Village',
-              moduleName: 'Customer',
+              id: 'bloodGroup',
+              title: 'Services',
+              moduleName: 'Blood Group',
               type: 'item',
-              icon: icons['StoreIcon'],
-              url: '/master-village'
+              url: '/master-service',
+              icon: icons['HomeRepairServiceIcon']
             },
             {
               id: 'bloodGroup',
@@ -324,14 +325,7 @@ export default {
               url: '/designation',
               icon: icons['DesignServicesIcon']
             },
-            {
-              id: 'bloodGroup',
-              title: 'Services',
-              moduleName: 'Blood Group',
-              type: 'item',
-              url: '/master-service',
-              icon: icons['HomeRepairServiceIcon']
-            },
+
             {
               id: 'bloodGroup',
               title: 'Permission',

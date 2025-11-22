@@ -6,6 +6,7 @@ import SuccessPopupModal from 'component/SuccessPopupModal';
 import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { AddUpdateDesignation, GetDesignationModel } from 'services/Master Crud/Designationapi';
+import { AddUpdateService, GetServiceModel } from 'services/Services/ServicesApi';
 
 const MasterServiceModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
       const [modelAction, setModelAction] = useState('');
@@ -13,23 +14,23 @@ const MasterServiceModal = ({ show, onHide, setIsAddUpdateActionDone, modelReque
       const [showSuccessModal, setShowSuccessModal] = useState(false);
       const [errorMessage, setErrorMessage] = useState();
       const { setLoader, user } = useContext(ConfigContext);
-      const [masterDesignationObj, setMasterDesignationObj] = useState({
+      const [serviceObj, setServiceObj] = useState({
             userKeyID: null,
             designationKeyID: null,
-            designationName: null
+            serviceName: null
       });
 
       useEffect(() => {
             if (modelRequestData?.Action === 'Update') {
-                  if (modelRequestData?.designationKeyID !== null) {
-                        GetMasterDesignationModalData(modelRequestData.designationKeyID);
+                  if (modelRequestData?.serviceKeyID !== null) {
+                        GetServiceModelData(modelRequestData.serviceKeyID);
                   }
             }
       }, [modelRequestData?.Action]);
 
       const AddStateBtnClick = () => {
             let isValid = false;
-            if (masterDesignationObj.designationName === null || masterDesignationObj.designationName === undefined || masterDesignationObj.designationName.trim() === '') {
+            if (serviceObj.serviceName === null || serviceObj.serviceName === undefined || serviceObj.serviceName.trim() === '') {
                   setErrors(true);
                   isValid = true;
             } else {
@@ -39,31 +40,28 @@ const MasterServiceModal = ({ show, onHide, setIsAddUpdateActionDone, modelReque
 
             const apiParam = {
                   userKeyID: user.userKeyID,
-                  designationName: masterDesignationObj.designationName,
-                  designationKeyID: modelRequestData?.designationKeyID
+                  serviceName: serviceObj.serviceName,
+                  serviceKeyID: modelRequestData?.serviceKeyID
             };
 
             console.log(JSON.stringify(apiParam, null, 2));
             if (!isValid) {
-                  AddUpdateDesignationData(apiParam);
+                  AddUpdateServiceData(apiParam);
             }
       };
 
-      const AddUpdateDesignationData = async (apiParam) => {
+      const AddUpdateServiceData = async (apiParam) => {
             setLoader(true);
             try {
-                  let url = '/AddUpdateDesignation'; // Default URL for Adding Data
+                  // let url = '/AddUpdateZone'; // Default URL for Adding Data
 
-                  const response = await AddUpdateDesignation(url, apiParam);
+                  const response = await AddUpdateService(apiParam);
                   if (response) {
                         if (response?.data?.statusCode === 200) {
                               setLoader(false);
                               setShowSuccessModal(true);
                               setModelAction(
-                                    modelRequestData.Action === null || modelRequestData.Action === undefined
-                                          ? 'Service Added Successfully!'
-                                          : 'Service Updated Successfully!'
-                              ); //Do not change this naming convention
+                                    modelRequestData.Action === 'Add' ? 'Service Added Successfully!' : 'Service Updated Successfully!'); //Do not change this naming convention
 
                               setIsAddUpdateActionDone(true);
                         } else {
@@ -82,23 +80,24 @@ const MasterServiceModal = ({ show, onHide, setIsAddUpdateActionDone, modelReque
             setShowSuccessModal(false);
       };
 
-      const GetMasterDesignationModalData = async (id) => {
+      const GetServiceModelData = async (id) => {
+
             if (id === undefined) {
                   return;
             }
             setLoader(true);
 
             try {
-                  const data = await GetDesignationModel(id);
+                  const data = await GetServiceModel(id);
                   if (data?.data?.statusCode === 200) {
                         setLoader(false);
                         const ModelData = data.data.responseData.data; // Assuming data is an array
 
-                        setMasterDesignationObj({
-                              ...masterDesignationObj,
+                        setServiceObj({
+                              ...serviceObj,
                               userKeyID: ModelData.userKeyID,
-                              designationKeyID: ModelData.designationKeyID,
-                              designationName: ModelData.designationName
+                              serviceKeyID: ModelData.serviceKeyID,
+                              serviceName: ModelData.serviceName
                         });
                   } else {
                         setLoader(false);
@@ -138,7 +137,7 @@ const MasterServiceModal = ({ show, onHide, setIsAddUpdateActionDone, modelReque
                                                       id="StateName"
                                                       placeholder="Enter Service Name"
                                                       aria-describedby="Employee"
-                                                      value={masterDesignationObj.designationName}
+                                                      value={serviceObj.serviceName}
                                                       onChange={(e) => {
                                                             setErrorMessage(false);
                                                             let inputValue = e.target.value;
@@ -160,15 +159,15 @@ const MasterServiceModal = ({ show, onHide, setIsAddUpdateActionDone, modelReque
                                                                   .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                                                                   .join(' ');
 
-                                                            setMasterDesignationObj((prev) => ({
+                                                            setServiceObj((prev) => ({
                                                                   ...prev,
-                                                                  designationName: updatedValue
+                                                                  serviceName: updatedValue
                                                             }));
                                                       }}
                                                 />
 
                                                 {error &&
-                                                      (masterDesignationObj.designationName === null || masterDesignationObj.designationName === undefined || masterDesignationObj.designationName === '') ? (
+                                                      (serviceObj.serviceName === null || serviceObj.serviceName === undefined || serviceObj.serviceName === '') ? (
                                                       <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
                                                 ) : (
                                                       ''

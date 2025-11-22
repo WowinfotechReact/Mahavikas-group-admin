@@ -548,7 +548,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
               <div className="col-12 col-md-6 mb-2">
                 <div>
                   <label htmlFor="mobileNo" className="form-label">
-                    Mobile Number
+                    Contact Number
                     <span style={{ color: 'red' }}>*</span>
                   </label>
                   <input
