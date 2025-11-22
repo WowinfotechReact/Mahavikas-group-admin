@@ -113,6 +113,8 @@ const InstituteEmployeeList = () => {
             setModelRequestData({
                   ...modelRequestData,
                   instituteKeyID: location?.state?.instituteKeyID,
+                  serviceID: location?.state?.serviceID,
+
                   Action: null
             });
             setShowVehicleModal(true);
@@ -124,6 +126,8 @@ const InstituteEmployeeList = () => {
                   instituteKeyID: location?.state?.instituteKeyID,
                   userKeyIDForUpdate: row?.userKeyIDForUpdate,
                   userDetailsKeyID: row?.userDetailsKeyID,
+                  serviceID: location?.state?.serviceID,
+
                   Action: 'Update'
             });
             setShowVehicleModal(true);
@@ -185,6 +189,7 @@ const InstituteEmployeeList = () => {
                   ...modelRequestData,
                   userKeyIDForUpdate: row?.userKeyIDForUpdate,
                   userDetailsKeyID: row?.userDetailsKeyID,
+                  serviceID: location.state.serviceID,
                   Action: 'Update'
             })
             setShowPasswordModal(true)

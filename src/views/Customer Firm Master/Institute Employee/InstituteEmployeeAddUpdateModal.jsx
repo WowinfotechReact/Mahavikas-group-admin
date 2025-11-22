@@ -89,7 +89,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                               attendanceTypeID: ModelData.attendanceTypeID,
                               serviceID: ModelData.serviceID,
                         });
-                        await GetDesignationLookupListData(ModelData.serviceID)
                         // rc book
                   } else {
                         // Handle non-200 status codes if necessary
@@ -198,35 +197,13 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
 
 
 
-      useEffect(() => {
-            GetServiceLookupListData()
-      }, [])
-      const GetServiceLookupListData = async () => {
-            try {
-
-                  let response = await GetServiceLookupList();
-
-                  if (response?.data?.statusCode === 200) {
-                        const list = response?.data?.responseData?.data || [];
-
-                        const formatted = list.map((d) => ({
-                              value: d.serviceID,
-                              label: d.serviceName,
-                        }));
-
-                        setServiceOption(formatted);
-                  }
-            } catch (err) {
-                  console.error("Error fetching districts:", err);
-            }
-      };
-      const GetDesignationLookupListData = async (serviceID) => {
+      const GetDesignationLookupListData = async () => {
 
 
 
             try {
 
-                  let response = await GetDesignationLookupList(serviceID);
+                  let response = await GetDesignationLookupList(modelRequestData?.serviceID);
 
                   if (response?.data?.statusCode === 200) {
                         const list = response?.data?.responseData?.data || [];
@@ -500,27 +477,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                           </div>
                                     </div>
                                     <div className="row">
-                                          <div className="col-12 col-md-6 mb-2">
-                                                <div>
-                                                      <label htmlFor="Password" className="form-label">
-                                                            Select Service
-                                                            <span style={{ color: 'red' }}>*</span>
-                                                      </label>
-                                                      <Select
-                                                            placeholder="Select Designation"
-                                                            options={serviceOption}
-                                                            value={serviceOption.find(item => item.value === employeeObj?.serviceID)}
-                                                            onChange={handleServiceChange}
-                                                            menuPosition="fixed"
-                                                      />
 
-                                                      {error && !employeeObj.serviceID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
-
-
-
-                                                </div>
-
-                                          </div>
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="Password" className="form-label">

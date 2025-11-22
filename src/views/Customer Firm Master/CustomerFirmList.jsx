@@ -153,7 +153,7 @@ const CustomerFirmList = () => {
   };
 
   const instituteUserBtnClick = (row) => {
-    navigate('/institute-employee', { state: { instituteKeyID: row.instituteID, instituteName: row.instituteName } })
+    navigate('/institute-employee', { state: { instituteKeyID: row.instituteID, instituteName: row.instituteName, serviceID: row.serviceID } })
   }
 
   const handlePageChange = (pageNumber) => {
