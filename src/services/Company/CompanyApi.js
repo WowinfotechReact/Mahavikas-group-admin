@@ -24,7 +24,7 @@ export const GetCompanyLookupListWithoutAuth = async () => {
   }
 };
 export const GetRoleLookupList = async () => {
-  const url = `${GetCompanyBaseURI}/GetRoleLookupList`;
+  const url = `${GetCompanyBaseURI}/GetRoleLookupList?RoleCategoryID=${1}`;
 
   const res = await getListWithAuthenticated(url);
   return res;

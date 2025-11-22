@@ -108,7 +108,7 @@ const Default = () => {
         fromDate: StartDate,
         toDate: EndDate,
         userKeyID: user.userKeyID,
-        companyKeyID: companyID
+        companyID: Number(companyID)
       });
 
       if (response) {
