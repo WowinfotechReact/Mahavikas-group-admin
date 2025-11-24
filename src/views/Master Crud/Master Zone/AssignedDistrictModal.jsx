@@ -137,7 +137,7 @@ const AssignedDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
             try {
                   const ZoneIDsParam = zoneIds.join(",");
 
-                  let response = await GetDistrictLookupList(null, null, stateID);
+                  let response = await GetDistrictLookupList(null, null, null, null, stateID);
 
                   if (response?.data?.statusCode === 200) {
                         const list = response?.data?.responseData?.data || [];
