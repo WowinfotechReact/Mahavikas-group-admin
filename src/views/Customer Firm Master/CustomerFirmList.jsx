@@ -388,7 +388,12 @@ const CustomerFirmList = () => {
                       >
                         <span style={{ fontSize: "18px" }}>🎓</span>
                         <span style={{ fontWeight: 600, fontSize: "14px", color: "#222" }}>
-                          {row.instituteName}
+
+                          {row.instituteName?.length > 30 ? (
+                            <Tooltip title={row.instituteName}>{`${row.instituteName?.substring(0, 30)}...`}</Tooltip>
+                          ) : (
+                            <>{row.instituteName}</>
+                          )}
                         </span>
                       </div>
                     </td>
@@ -398,7 +403,13 @@ const CustomerFirmList = () => {
                     <td className="text-center" style={{ minWidth: "150px" }}>
                       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", animation: "fadeSlide 0.7s ease" }}>
                         <span style={{ fontSize: "18px" }}>🏗️</span>
-                        <span>{row.projectName}</span>
+                        <span>
+                          {row.projectName?.length > 30 ? (
+                            <Tooltip title={row.projectName}>{`${row.projectName?.substring(0, 30)}...`}</Tooltip>
+                          ) : (
+                            <>{row.projectName}</>
+                          )}
+                        </span>
                       </div>
                     </td>
                     <td className="text-center" style={{ minWidth: "150px" }}>

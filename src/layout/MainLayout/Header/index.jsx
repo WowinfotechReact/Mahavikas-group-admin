@@ -150,12 +150,8 @@ const Header = ({ drawerToggle, drawerWidth }) => {
                   display: { xs: 'none', md: 'block' }
                 }}
               >
-                {/* {user.roleTypeID === 1 && "Super Admin"}
-                {user.roleTypeID === 2 && "Admin"}
-                {user.roleTypeID === 3 && "CRM"}
-                {user.roleTypeID === 4 && "Store"}
-                {user.roleTypeID === 5 && "Accountant"} */}
-                Admin
+                {user.roleID === 1 ? "Super Admin" : 'Admin'}
+
               </Typography>
 
             </Box>

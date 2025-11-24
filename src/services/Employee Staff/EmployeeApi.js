@@ -11,6 +11,13 @@ export const GetAppUserList = async (params) => {
 };
 
 
+export const UpdateWebAppUserPassword = async (url = '', params) => {
+  
+
+  const res = await postApiWithAuthenticated(`${EmployeeBaseUrl}${url}`, params);
+  return res;
+};
+
 export const AssignWebAppUserAndSetPassword = async (url = '', params) => {
   
 

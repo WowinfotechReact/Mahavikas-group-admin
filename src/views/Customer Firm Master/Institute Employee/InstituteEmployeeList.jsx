@@ -17,10 +17,12 @@ import InstituteEmployeeAddUpdateModal from './InstituteEmployeeAddUpdateModal';
 import { GetInstituteList } from 'services/Institute/InstituteApi';
 import { GetAppUserList } from 'services/Employee Staff/EmployeeApi';
 import SetPasswordModal from './SetPasswordModal';
+import ChangePasswordModal from './ChangePasswordModal';
 
 const InstituteEmployeeList = () => {
       const [stateChangeStatus, setStateChangeStatus] = useState('');
       const [showPasswordModal, setShowPasswordModal] = useState(false);
+      const [changePasswordModal, setChangePasswordModal] = useState(false);
       const [showInstituteUserModal, setShowInstituteUserModal
       ] = useState(false);
       const [showVehicleViewModal, setShowVehicleViewModal] = useState(false);
@@ -57,8 +59,8 @@ const InstituteEmployeeList = () => {
       });
 
       useEffect(() => {
-            // debugger
             if (isAddUpdateActionDone) {
+
                   GetInstituteListData(1, null, toDate, fromDate);
                   setSearchKeyword('');
             }
@@ -67,7 +69,7 @@ const InstituteEmployeeList = () => {
 
       useEffect(() => {
             GetInstituteListData(1, null, toDate, fromDate);
-      }, [setIsAddUpdateActionDone]);
+      }, []);
       const location = useLocation()
       const GetInstituteListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
             // debugger
@@ -197,6 +199,14 @@ const InstituteEmployeeList = () => {
             })
             setShowPasswordModal(true)
       }
+      const changePassBtn = (row) => {
+            setModelRequestData({
+                  ...modelRequestData,
+                  userID: row?.userID,
+
+            })
+            setChangePasswordModal(true)
+      }
 
 
       const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
@@ -216,6 +226,9 @@ const InstituteEmployeeList = () => {
 
             return () => clearInterval(interval);
       }, []);
+
+      const [visiblePasswordIndex, setVisiblePasswordIndex] = useState(null);
+
       return (
             <>
                   {/* <Sidebar drawerOpen={true} drawerToggle={() => {}} modalOpen={show} /> */}
@@ -289,7 +302,9 @@ const InstituteEmployeeList = () => {
                                                       <th className="text-center"> Employee Name</th>
 
                                                       <th className="text-center">Address</th>
+                                                      <th className="text-center">Project</th>
                                                       <th className="text-center">Designation </th>
+                                                      <th className="text-center">Password </th>
                                                       <th className="text-center">Attendance Type </th>
                                                       <th className="text-center actionSticky">Action</th>
                                                 </tr>
@@ -325,7 +340,22 @@ const InstituteEmployeeList = () => {
 
                                                             <td className="text-center" style={{ minWidth: "150px" }}>
                                                                   <div >
-                                                                        <>{row.address}</>
+                                                                        {row.address?.length > 30 ? (
+                                                                              <Tooltip title={row.address}>{`${row.address?.substring(0, 30)}...`}</Tooltip>
+                                                                        ) : (
+                                                                              <>{row.address}</>
+                                                                        )}
+                                                                  </div>
+                                                            </td>
+
+
+                                                            <td className="text-center" style={{ minWidth: "150px" }}>
+                                                                  <div >
+                                                                        {row.projectNames?.length > 30 ? (
+                                                                              <Tooltip title={row.projectNames}>{`${row.projectNames?.substring(0, 30)}...`}</Tooltip>
+                                                                        ) : (
+                                                                              <>{row.projectNames || '-'}</>
+                                                                        )}
                                                                   </div>
                                                             </td>
                                                             <td className="text-center" style={{ minWidth: "150px" }}>
@@ -333,6 +363,33 @@ const InstituteEmployeeList = () => {
                                                                         <>{row.designationName}</>
                                                                   </div>
                                                             </td>
+                                                            <td className="text-center" style={{ minWidth: "150px" }}>
+                                                                  {row.password !== null &&
+                                                                        <div className="d-flex justify-content-center align-items-center gap-2">
+
+                                                                              {/* Masked or Full Password */}
+                                                                              <span>
+                                                                                    {visiblePasswordIndex === idx ? row.password : "****"}
+                                                                              </span>
+
+                                                                              {/* Eye / Eye Slash */}
+                                                                              <i
+                                                                                    className={`fa-solid ${visiblePasswordIndex === idx ? "fa-eye-slash" : "fa-eye"
+                                                                                          }`}
+                                                                                    style={{ cursor: "pointer" }}
+                                                                                    onClick={() =>
+                                                                                          setVisiblePasswordIndex(
+                                                                                                visiblePasswordIndex === idx ? null : idx
+                                                                                          )
+                                                                                    }
+                                                                              ></i>
+
+                                                                        </div>
+                                                                  }
+                                                            </td>
+
+
+
                                                             <td className="text-center" style={{ minWidth: "150px" }}>
                                                                   <div >
                                                                         <>{row.attendanceTypeName}</>
@@ -375,6 +432,23 @@ const InstituteEmployeeList = () => {
                                                                                           className="btn-sm btn "
                                                                                     >
                                                                                           Set App User
+                                                                                    </button>
+                                                                              </Tooltip>
+                                                                        }
+                                                                        {row?.isWebAppUser == 1 &&
+                                                                              <Tooltip title={`Change Password`}>
+                                                                                    <button
+                                                                                          style={{
+                                                                                                padding: '4px 8px',
+                                                                                                fontSize: '12px',
+                                                                                                height: '28px',
+                                                                                                background: '#ffaa33', color: 'white'
+                                                                                          }}
+                                                                                          onClick={() => changePassBtn(row)}
+                                                                                          type="button"
+                                                                                          className="btn-sm btn "
+                                                                                    >
+                                                                                          Change Password
                                                                                     </button>
                                                                               </Tooltip>
                                                                         }
@@ -447,6 +521,17 @@ const InstituteEmployeeList = () => {
                                     show={showPasswordModal}
                                     onHide={() => setShowPasswordModal(false)}
                                     modelRequestData={modelRequestData}
+                              />
+                        )
+                  }
+                  {
+                        changePasswordModal && (
+                              <ChangePasswordModal
+                                    show={changePasswordModal}
+                                    onHide={() => setChangePasswordModal(false)}
+                                    modelRequestData={modelRequestData}
+                                    setIsAddUpdateActionDone={setIsAddUpdateActionDone}
+                                    isAddUpdateActionDone={isAddUpdateActionDone}
                               />
                         )
                   }

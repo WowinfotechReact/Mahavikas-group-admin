@@ -441,7 +441,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                                   setErrorMessage(false);
                                                                   let InputValue = e.target.value;
                                                                   // Updated regex to allow common special characters for addresses
-                                                                  const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s,.-/#&()]/g, '');
+                                                                  const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s,.-/#&@#$%^&*><;'"}\|{~()]/g, '');
                                                                   setEmployeeObj((prev) => ({
                                                                         ...prev,
                                                                         address: updatedValue
