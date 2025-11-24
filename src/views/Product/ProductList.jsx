@@ -49,7 +49,7 @@ const ProductList = () => {
         fromDate: fromDateParam ? dayjs(fromDateParam).format('YYYY-MM-DD') : null,
         sortingDirection: sortValue ?? sortingDirection,
         sortingColumnName: sortType || ProductSortType || null,
-        userKeyID: user.userKeyID,
+        // userKeyID: user.userKeyID,  told by shubha
         companyID: Number(companyID)
 
       });
