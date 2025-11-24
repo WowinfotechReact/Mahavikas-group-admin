@@ -141,6 +141,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   userKeyID: user.userKeyID,
                   userDetailsKeyID: modelRequestData?.userDetailsKeyID,
                   userKeyIDForUpdate: modelRequestData?.userKeyIDForUpdate,
+                  ProjectIDs: [modelRequestData?.projectID],
                   firstName: employeeObj.firstName,
                   lastName: employeeObj.lastName,
                   mobileNo: employeeObj.mobileNo,
@@ -155,7 +156,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   zoneIDs: [],
                   districtIDs: [],
                   talukaIDs: [],
-                  projectIDs: []
             };
             if (!isValid) {
                   AddUpdateAppUserData(apiParam);

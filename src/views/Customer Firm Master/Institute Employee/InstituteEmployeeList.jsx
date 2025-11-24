@@ -114,6 +114,7 @@ const InstituteEmployeeList = () => {
                   ...modelRequestData,
                   instituteKeyID: location?.state?.instituteKeyID,
                   serviceID: location?.state?.serviceID,
+                  projectID: location?.state?.projectID,
 
                   Action: null
             });
@@ -127,6 +128,8 @@ const InstituteEmployeeList = () => {
                   userKeyIDForUpdate: row?.userKeyIDForUpdate,
                   userDetailsKeyID: row?.userDetailsKeyID,
                   serviceID: location?.state?.serviceID,
+                  projectID: location?.state?.projectID,
+
 
                   Action: 'Update'
             });
@@ -229,7 +232,7 @@ const InstituteEmployeeList = () => {
 
                                     </button>
                                     <div className="flex-grow-1">
-                                          <h5 className="mb-0">Employee Institute : {location.state.instituteName} </h5>
+                                          <h5 className="mb-0">Employee Institute : {location?.state?.instituteName} </h5>
                                     </div>
                                     <div className="position-absolute end-0 me-2">
                                           <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn btn-sm d-inline d-sm-none">
@@ -259,7 +262,7 @@ const InstituteEmployeeList = () => {
             </div> */}
 
                                     <div className="d-flex align-items-center ms-2 gap-2 mt-2 mt-sm-0">
-                                          <Tooltip title={`Add Employee Against ${location.state.instituteName}`} >
+                                          <Tooltip title={`Add Employee Against ${location?.state?.instituteName}`} >
                                                 <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
                                                       <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
                                                       <span className="d-none d-sm-inline">Add</span>
