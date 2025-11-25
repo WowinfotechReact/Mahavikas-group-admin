@@ -51,6 +51,7 @@ const AdminEmployeeList = () => {
       const [show, setShow] = useState(false);
       const handleShow = () => setShow(true);
       const handleClose = () => setShow(false);
+      const [visiblePasswordIndex, setVisiblePasswordIndex] = useState(null);
       const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
 
       const [showSuccessModal, setShowSuccessModal] = useState();
@@ -164,9 +165,7 @@ const AdminEmployeeList = () => {
             GetAppUserListData(1, capitalizedValue, toDate, fromDate);
       };
 
-      const instituteUserBtnClick = (row) => {
-            navigate('/institute-employee', { state: { userKeyIDForUpdate: row.userKeyIDForUpdate, instituteName: row.instituteName } })
-      }
+      
 
       const handlePageChange = (pageNumber) => {
             setCurrentPage(pageNumber);
@@ -265,6 +264,16 @@ const AdminEmployeeList = () => {
                               {/* Top controls */}
 
                               <div className="d-flex justify-content-between align-items-center mb-1">
+                                      <button
+              // className="btn btn-light p-1 me-2"
+              className="btn btn-outline-secondary btn-sm me-2" 
+
+              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+              onClick={() => navigate(-1)}
+            >
+              <i className="fa-solid fa-arrow-left"></i>
+
+            </button>
                                     <div className="flex-grow-1">
                                           <h5 className="mb-0">Admin Employee</h5>
                                     </div>
@@ -324,7 +333,8 @@ const AdminEmployeeList = () => {
 
                                                       <th className="text-center">Address </th>
                                                       <th className="text-center">Role  </th>
-                                                      <th className="text-center ">Action</th>
+                                                      <th className="text-center">Password  </th>
+                                                      <th className="text-center actionSticky ">Action</th>
                                                 </tr>
                                           </thead>
                                           <tbody>
@@ -394,6 +404,34 @@ const AdminEmployeeList = () => {
                                                                         {row.roleName}
                                                                   </span>
                                                             </td>
+                                                          
+                                                                  <td className="text-center" style={{ minWidth: "150px" }}>
+                                                                  {row.passWord !== null &&
+                                                                        <div className="d-flex justify-content-center align-items-center gap-2">
+
+                                                                              {/* Masked or Full Password */}
+                                                                              <span>
+                                                                                    {visiblePasswordIndex === idx ? row.passWord : "****"}
+                                                                              </span>
+
+                                                                              {/* Eye / Eye Slash */}
+                                                                              <i
+                                                                                    className={`fa-solid ${visiblePasswordIndex === idx ? "fa-eye-slash" : "fa-eye"
+                                                                                          }`}
+                                                                                    style={{ cursor: "pointer" }}
+                                                                                    onClick={() =>
+                                                                                          setVisiblePasswordIndex(
+                                                                                                visiblePasswordIndex === idx ? null : idx
+                                                                                          )
+                                                                                    }
+                                                                              ></i>
+
+                                                                        </div>
+                                                                  }
+                                                            </td>
+
+
+                                                         
 
 
 
@@ -402,7 +440,8 @@ const AdminEmployeeList = () => {
 
 
                                                             {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
-                                                            <td className="text-center relative"  >
+                                                                                      <td className="text-center relative  actionColSticky " style={{ zIndex: 4 }}>
+
 
                                                                   <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
                                                                         <Tooltip title="Update Admin Employee">

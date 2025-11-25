@@ -173,6 +173,9 @@ const ProductList = () => {
       setModelAction('An error occurred while changing the product status.');
     }
   };
+  const instituteUserBtnClick = (row) => {
+            navigate('/Dashboard', { state: { userKeyIDForUpdate: row.userKeyIDForUpdate, instituteName: row.instituteName } })
+      }
 
 
   const closeAllModal = () => {
@@ -185,6 +188,16 @@ const ProductList = () => {
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           <div className="d-flex justify-content-between align-items-center mb-1">
+                             <button
+              // className="btn btn-light p-1 me-2"
+              className="btn btn-outline-secondary btn-sm me-2"
+
+              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+              onClick={() => navigate(-1)}
+            >
+              <i className="fa-solid fa-arrow-left"></i>
+
+            </button>
             <div className="flex-grow-1">
               <h5 className="m-0">Project List</h5>
             </div>
