@@ -10,7 +10,6 @@ dayjs.extend(customParseFormat);
 import SuccessPopupModal from 'component/SuccessPopupModal';
 import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
-import { GetInstituteLookupList } from 'services/Institute/InstituteApi';
 import { GetDistrictLookupList } from 'services/Master Crud/MasterDistrictApi';
 import { GetTalukaLookupList } from 'services/Master Crud/MasterTalukaApi';
 import { GetProjectLookupList } from 'services/Project/ProjectApi';

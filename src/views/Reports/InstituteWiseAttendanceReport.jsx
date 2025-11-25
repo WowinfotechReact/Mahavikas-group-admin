@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Table, Form, Button, Row, Col } from "react-bootstrap";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import dayjs from "dayjs";
-const InstituteWiseAttendanceReport = () => {
+import Select from 'react-select';
 
+import dayjs from "dayjs";
+import { GetInstituteLookupList } from "services/Institute/InstituteApi";
+import { GetProjectLookupList } from "services/Project/ProjectApi";
+import { ConfigContext } from "context/ConfigContext";
+import { AddUpdateAttendanceSheet, GetAttendanceReportList } from "services/Attendance/AttendanceApi";
+import { Link } from "react-router-dom";
+const InstituteWiseAttendanceReport = () => {
+      const [projectOption, setProjectOption] = useState([]);
+      const { setLoader, companyID, user } = useContext(ConfigContext);
+      const [instituteOption, setInstituteOption] = useState([]);
+      const [productListData, setProductListData] = useState([])
+
+
+
+      const [instituteObj, setInstituteObj] = useState({
+            projectIDs: null,
+            instituteID: null,
+            year: null,
+            month: null,
+      })
       const exportAttendanceJournal = (month = 0, year = 2025) => {
             // month: 0 for January, 1 for February, etc.
 
@@ -46,14 +65,257 @@ const InstituteWiseAttendanceReport = () => {
             const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
             saveAs(blob, `Attendance_Journal_${startDate.format("MMMM_YYYY")}.xlsx`);
       };
+
+      const [monthDateState, setMonthDateState] = useState(null);
+
+      const monthOptions = [
+            { value: 1, label: "January" },
+            { value: 2, label: "February" },
+            { value: 3, label: "March" },
+            { value: 4, label: "April" },
+            { value: 5, label: "May" },
+            { value: 6, label: "June" },
+            { value: 7, label: "July" },
+            { value: 8, label: "August" },
+            { value: 9, label: "September" },
+            { value: 10, label: "October" },
+            { value: 11, label: "November" },
+            { value: 12, label: "December" }
+      ];
+
+
+      useEffect(() => {
+            GetInstituteLookupListData()
+      }, [])
+
+
+
+      useEffect(() => {
+            const { projectIDs, instituteID, year, month } = instituteObj;
+            const monthDate = buildMonthDate(year, month);
+
+            setMonthDateState(monthDate); // store globally
+
+            if (projectIDs && instituteID && year && month) {
+                  GetAttendanceReportListData({
+                        projectID: projectIDs,
+                        instituteID,
+                        monthDate
+                  });
+            }
+      }, [instituteObj]);
+
+
+      useEffect(() => {
+            GetProjectLookupListData(companyID)
+      }, [])
+      const yearOptions = Array.from({ length: 11 }, (_, i) => {
+            const year = 2020 + i;
+            return { value: year, label: year.toString() };
+      });
+
+      const GetProjectLookupListData = async (companyID) => {
+
+            try {
+                  const response = await GetProjectLookupList(null, companyID);
+
+                  if (response?.data?.statusCode === 200) {
+                        const list = response?.data?.responseData?.data || [];
+
+                        // 🔥 Remove duplicate projectID
+                        const unique = [
+                              ...new Map(list.map(item => [item.projectID, item])).values()
+                        ];
+
+                        const formatted = unique.map((p) => ({
+                              value: p.projectID,
+                              label: p.projectName
+                        }));
+
+                        setProjectOption(formatted);
+                  } else {
+                        console.error("Failed to fetch project list");
+                  }
+            } catch (error) {
+                  console.error("Error fetching project lookup list:", error);
+            }
+      };
+      const GetInstituteLookupListData = async (projectID) => {
+            setLoader(true);
+
+            try {
+                  let url = '/GetInstituteLookupList';
+
+                  const response = await GetInstituteLookupList(url, {
+                        projectID: projectID
+                  });
+
+                  if (response?.data?.statusCode === 200) {
+                        setLoader(false);
+
+                        const list = response.data.responseData.data;
+
+                        const formatted = list.map(item => ({
+                              value: item.instituteID,
+                              label: item.instituteName
+                        }));
+
+                        setInstituteOption(formatted);
+
+                  } else {
+                        setLoader(false);
+                        setErrorMessage(response?.response?.data?.errorMessage);
+                  }
+            } catch (error) {
+                  setLoader(false);
+                  console.error(error);
+            }
+      };
+
+
+
+      const handleProjectChange = (selectedOption) => {
+            const projectID = selectedOption ? selectedOption.value : "";
+
+            setInstituteObj((prev) => ({
+                  ...prev,
+                  projectIDs: projectID,
+            }));
+
+            // Call API here if needed
+            if (projectID) {
+                  GetInstituteLookupListData(projectID);
+            }
+      };
+
+
+
+      const GetAttendanceReportListData = async ({ projectID, instituteID, monthDate }) => {
+            setLoader(true);
+
+            try {
+                  const data = await GetAttendanceReportList({
+                        projectID,
+                        instituteID,
+                        monthDate
+                  });
+
+                  if (data?.data?.statusCode === 200) {
+                        setLoader(false);
+
+                        const ProductData = data.data.responseData.data;
+
+                        setProductListData(ProductData);
+
+
+                  } else {
+                        setLoader(false);
+                        console.error(data?.data?.errorMessage);
+                  }
+            } catch (error) {
+                  setLoader(false);
+                  console.error(error);
+            }
+      };
+
+
+
+      const buildMonthDate = (year, month) => {
+            if (!year || !month) return null;
+
+            const mm = month.toString().padStart(2, "0");
+            return `${year}-${mm}-01`;
+      };
+
+
+      useEffect(() => {
+            const { projectIDs, instituteID, year, month } = instituteObj;
+
+            // If all values selected
+            if (projectIDs && instituteID && year && month) {
+                  const monthDate = buildMonthDate(year, month);
+
+                  GetAttendanceReportListData({
+                        projectID: projectIDs,
+                        instituteID: instituteID,
+                        monthDate: monthDate
+                  });
+            }
+      }, [instituteObj.projectIDs, instituteObj.instituteID, instituteObj.year, instituteObj.month]);
+
+      const clearBtn = () => {
+            // Clear dropdown values
+            setInstituteObj({
+                  projectIDs: null,
+                  instituteID: null,
+                  year: null,
+                  month: null,
+            });
+
+            // Clear dropdown options
+            setProjectOption([]);
+            setInstituteOption([]);
+
+            // Clear table data
+            setProductListData([]);
+            setTotalCount(0);
+            setTotalPage(0);
+
+            console.log("All filters cleared!");
+      };
+
+
+      const downloadBtn = async (row) => {
+            debugger
+            const apiParam = {
+                  empUserID: row.empUserID,
+                  projectID: row.projectID,
+                  instituteID: row.instituteID,
+                  monthDate: monthDateState,
+                  uploadURL: row.uploadURL,
+                  actionType: 'Download',
+                  userKeyID: user.userKeyID
+            }
+
+            AddUpdateAppUserData(apiParam)
+
+      }
+
+
+      const AddUpdateAppUserData = async (apiParam) => {
+            setLoader(true);
+            try {
+                  let url = '/AddUpdateAttendanceSheet ';
+                  const response = await AddUpdateAttendanceSheet(url, apiParam);
+
+                  if (response?.data?.statusCode === 200) {
+                        setLoader(false);
+
+                        const downloadURL = response.data.responseData.downloadURL;
+                        console.log(downloadURL, "PDF URL");
+
+                        // OPEN ONLY IN NEW TAB
+                        if (downloadURL) {
+                              window.open(downloadURL, '_blank', 'noopener,noreferrer');
+                        }
+
+                        setIsAddUpdateActionDone(true);
+                  } else {
+                        setLoader(false);
+                        setErrorMessage(response?.response?.data?.errorMessage);
+                  }
+            } catch (error) {
+                  setLoader(false);
+                  console.error(error);
+            }
+      };
+
       return (
             <div className="container-fluid py-4">
                   {/* ---------- PAGE HEADER ---------- */}
                   <div className="d-flex justify-content-between align-items-center mb-3">
                         <h5 className="fw-bold text-primary mb-0">Institute-wise Attendance Report</h5>
-                        <Button variant="success" size="sm">
-                              <i className="bi bi-file-earmark-excel me-1"></i>Export Excel
-                        </Button>
+
                   </div>
 
                   {/* ---------- FILTER SECTION ---------- */}
@@ -62,53 +324,76 @@ const InstituteWiseAttendanceReport = () => {
                               <Row className="g-3 align-items-end">
                                     <Col md={3}>
                                           <Form.Group>
-                                                <Form.Label className="fw-semibold small mb-1">Project Name</Form.Label>
-                                                <Form.Select size="sm">
-                                                      <option>Select Project</option>
-                                                      <option>Techno </option>
-                                                      <option>SkillUp </option>
-                                                      <option> Engineering </option>
-                                                </Form.Select>
+                                                <Select
+                                                      options={projectOption}
+                                                      value={projectOption.find(item =>
+                                                            instituteObj.projectIDs === item.value
+                                                      )}
+                                                      placeholder="Select Project"
+                                                      onChange={handleProjectChange}
+                                                      menuPosition="fixed"
+                                                />
+
                                           </Form.Group>
                                     </Col>
                                     <Col md={3}>
                                           <Form.Group>
-                                                <Form.Label className="fw-semibold small mb-1">Institute Name</Form.Label>
-                                                <Form.Select size="sm">
-                                                      <option>Select Institute</option>
-                                                      <option>Techno Institute</option>
-                                                      <option>SkillUp Academy</option>
-                                                      <option>Global Engineering College</option>
-                                                </Form.Select>
+                                                <Select
+                                                      options={instituteOption}
+                                                      value={instituteOption.find(
+                                                            (x) => x.value === instituteObj.instituteID
+                                                      )}
+                                                      placeholder="Select Institute"
+                                                      onChange={(selected) =>
+                                                            setInstituteObj(prev => ({
+                                                                  ...prev,
+                                                                  instituteID: selected ? selected.value : ""
+                                                            }))
+                                                      }
+                                                      menuPosition="fixed"
+                                                />
                                           </Form.Group>
                                     </Col>
                                     <Col md={3}>
                                           <Form.Group>
                                                 <Form.Label className="fw-semibold small mb-1">Select Year</Form.Label>
-                                                <Form.Select size="sm">
-                                                      <option>Select Year</option>
-                                                      <option>2021 </option>
-                                                      <option>2022 </option>
-                                                      <option> 2025 </option>
-                                                </Form.Select>
+                                                <Select
+                                                      options={yearOptions}
+                                                      value={yearOptions.find(item => item.value === instituteObj.year)}
+                                                      placeholder="Select Year"
+                                                      onChange={(selected) =>
+                                                            setInstituteObj(prev => ({
+                                                                  ...prev,
+                                                                  year: selected ? selected.value : null
+                                                            }))
+                                                      }
+                                                      menuPosition="fixed"
+                                                />
                                           </Form.Group>
                                     </Col>
                                     <Col md={3}>
                                           <Form.Group>
                                                 <Form.Label className="fw-semibold small mb-1">Select Month</Form.Label>
-                                                <Form.Select size="sm">
-                                                      <option>Select Month</option>
-                                                      <option>March </option>
-                                                      <option>April</option>
-                                                      <option> May </option>
-                                                </Form.Select>
+                                                <Select
+                                                      options={monthOptions}
+                                                      value={monthOptions.find(item => item.value === instituteObj.month)}
+                                                      placeholder="Select Month"
+                                                      onChange={(selected) =>
+                                                            setInstituteObj(prev => ({
+                                                                  ...prev,
+                                                                  month: selected ? selected.value : null
+                                                            }))
+                                                      }
+                                                      menuPosition="fixed"
+                                                />
+
                                           </Form.Group>
                                     </Col>
-                                    <Col md={2}>
-                                          <Button size="sm" variant="primary" className="w-100">
+                                    {/* <Col md={2}>
+                                          <Button onClick={clearBtn} size="sm" variant="primary" className="w-100">
                                                 <i className="bi bi-search me-1"></i>Search
                                           </Button>
-                                    </Col>
+                                    </Col> */}
                               </Row>
                         </Form>
                   </div>
@@ -120,50 +405,62 @@ const InstituteWiseAttendanceReport = () => {
                   <div className="border rounded p-3">
                         <div className="d-flex justify-content-between align-items-center mb-2">
                               <h6 className="fw-semibold mb-0">
-                                    Institute: <span className="text-dark">Techno Institute</span>
+                                    {/* Institute: <span className="text-dark"></span> */}
                               </h6>
-                              <small className="text-muted">06 Nov 2025</small>
+                              {/* <small className="text-muted">06 Nov 2025</small> */}
                         </div>
 
                         <div className="table-responsive">
                               <Table bordered hover size="sm" className="align-middle text-center mb-0">
-                                    <thead className="table-light">
+                                    <thead>
                                           <tr className="text-center">
-                                                <th className="text-center">#</th>
-                                                <th className="text-center">Employee Name</th>
-                                                <th className="text-center">Employee ID</th>
-                                                <th className="text-center">Role</th>
-
-                                                <th className="text-center">Present</th>
-                                                <th className="text-center">Absent</th>
-                                                <th className="text-center">Weekly Off</th>
-                                                <th className="text-center">Action</th>
+                                                <th>Sr No.</th>
+                                                <th>Date</th>
+                                                <th>Employee Name</th>
+                                                <th>Designation</th>
+                                                <th>Working Hours</th>
+                                                <th>Action</th>
                                           </tr>
                                     </thead>
+
                                     <tbody>
-                                          <tr className="text-center">
-                                                <td className="text-center">1</td>
-                                                <td className="text-center">Omkar Sharma</td>
-                                                <td className="text-center">EMP001</td>
-                                                <td className="text-center">PT Professor</td>
-                                                <td className="text-center">26</td>
-                                                <td className="text-center">0</td>
-                                                <td className="text-center">4</td>
-                                                <td className="text-center" style={{ cursor: 'pointer', color: 'blue' }} onClick={() => exportAttendanceJournal(0, 2025)}>Download</td>
+                                          {productListData && productListData.length > 0 ? (
+                                                productListData.map((row, index) => (
+                                                      <tr key={index}>
+                                                            <td className="text-center">{index + 1}</td>
 
-                                          </tr>
-                                          <tr className="text-center">
-                                                <td className="text-center">2</td>
-                                                <td className="text-center">Shubham Shewale</td>
-                                                <td className="text-center">EMP002</td>
-                                                <td className="text-center">Dot Net</td>
-                                                <td className="text-center">19</td>
-                                                <td className="text-center">8</td>
-                                                <td className="text-center">4</td>
-                                                <td className="text-center" style={{ cursor: 'pointer', color: 'blue' }} onClick={() => exportAttendanceJournal(0, 2025)}>Download</td>
+                                                            {/* Format date */}
+                                                            <td className="text-center">
+                                                                  {dayjs(row.attendanceDate).format("DD-MM-YYYY")}
+                                                            </td>
 
-                                          </tr>
+                                                            {/* Name */}
+                                                            <td>
+                                                                  {row.firstName} {row.lastName}
+                                                            </td>
 
+                                                            {/* Designation */}
+                                                            <td>{row.designationName || "-"}</td>
+
+                                                            {/* Status */}
+
+
+                                                            {/* Working Hours */}
+                                                            <td className="text-center">
+                                                                  {row.workingHours || "-"}
+                                                            </td>
+                                                            <td className="text-center">
+                                                                  <Link onClick={() => downloadBtn(row)}>Download</Link>
+                                                            </td>
+                                                      </tr>
+                                                ))
+                                          ) : (
+                                                <tr>
+                                                      <td colSpan="6" className="text-center text-muted">
+                                                            No Attendance Found
+                                                      </td>
+                                                </tr>
+                                          )}
                                     </tbody>
                               </Table>
                         </div>

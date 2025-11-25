@@ -19,15 +19,18 @@ export const AddUpdateInstitute = async (url = '', params) => {
   const res = await postApiWithAuthenticated(`${InstituteBaseURI}${url}`, params);
   return res;
 };
+export const GetInstituteLookupList = async (url = '', params) => {
+  if (params.employeeKeyID === null || params.employeeKeyID === undefined) {
+    delete params.employeeKeyID;
+  }
 
-
-
-export const GetInstituteLookupList = async () => {
-  const url = `${InstituteBaseURI}/GetInstituteLookupList`;
-
-  const res = await getListWithAuthenticated(url);
+  const res = await postApiWithAuthenticated(`${InstituteBaseURI}${url}`, params);
   return res;
 };
+
+
+
+
 
 export const GetInstituteModel = async (id) => {
   let url = `${InstituteBaseURI}/GetInstituteModel?InstituteKeyID=${id}`;
