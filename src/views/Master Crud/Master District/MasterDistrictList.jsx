@@ -30,26 +30,97 @@ const MasterDistrictList = () => {
   const [isAddUpdateActionDone, setIsAddUpdateActionDone] = useState(false);
   const [showMachineModal, setShowMachineModal] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [changeStatusKey, setChangeStatusKey] = useState('');
   const [fromDate, setFromDate] = useState(null); // Initialize as null
   const [toDate, setToDate] = useState(null);
+  const [tableRow,setTableRow]=useState([])
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [stateListData, setStateListData] = useState([]);
   const [openMasterDistrictModal, setOpenMasterDistrictModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState();
   const [modelRequestData, setModelRequestData] = useState({
+    districtKeyID: null,
+    districtName: null,
     stateID: null,
-    stateName: null,
     Action: null
   });
+
+  const [appliedFilter, setAppliedFilter] = useState({
+          pageSize: pageSize,
+          pageNo: 0,
+          searchKeyword: null,
+          fromDate: null,
+          toDate: null
+      })
 
   const addMasterDistrictBtnClick = () => {
     setOpenMasterDistrictModal(true)
   }
 
-  const empData = [
-    { stateName: 'MH', districtName: 'Nashik' },
-    { stateName: 'Himchal Pradesh', districtName: 'Gharwal' },
-  ]
+   useEffect(()=>{
+    GetDistrictListData()
+    },[isAddUpdateActionDone,appliedFilter])
+  
+    
+      const GetDistrictListData = async () => {
+  
+          try {
+              
+              let response = null;
+                  response = await GetDistrictList({
+                      ...appliedFilter,
+                  });
+                    
+                  if (response?.data?.statusCode === 200) {
+                    console.log("enter")  
+                    const { data, totalRecords } = response.data.responseData;
+  
+                      setTableRow(data || []);
+                      setTotalRecords(totalRecords || data?.length || 0);
+                    
+                      
+                      
+                  } else {
+                      console.warn("Unexpected API response", response);
+                      setTableRow([]);
+                  }
+                  } catch (error) {
+              console.error("Error fetching category list:", error);
+          } finally {
+              
+          }
+            
+      };
+
+       const confirmStatusChange=()=>{
+    setShowStatusChangeModal(true)
+  }
+
+      const handleStatusChange = async()=>{
+          try {
+            let res=null;
+                      res = await ChangeDistrictStatus(changeStatusKey);
+                      if (res?.data?.statusCode === 200) {
+                        setShowStatusChangeModal(false)
+                        setIsAddUpdateActionDone(!isAddUpdateActionDone)
+                        setShowSuccessModal(true)
+                      }
+                  } catch (error) {
+                      console.log("error ==>>", error)
+                  }
+        }
+        const closeAllModal=()=>{
+    setShowSuccessModal(false);
+  }
+
+  const handleSearch=(searchValue) => {
+    setAppliedFilter({ ...appliedFilter, searchKeyword: searchValue })
+  }
+
+  // const empData = [
+  //   { stateName: 'MH', districtName: 'Nashik' },
+  //   { stateName: 'Himchal Pradesh', districtName: 'Gharwal' },
+  // ]
 
   return (
     <>
@@ -72,14 +143,19 @@ const MasterDistrictList = () => {
               className="form-control "
               placeholder="Search District"
               style={{ maxWidth: "350px" }}
-              value={searchKeyword}
+              // value={searchKeyword}
               onChange={(e) => {
-                handleSearch(e);
+                handleSearch(e.target.value);
               }}
             />
             <Tooltip title="Add District">
               <button
-                onClick={() => addMasterDistrictBtnClick()}
+                onClick={() =>{
+                  setModelRequestData({
+                    Action:"Add",
+                    districtKeyID:null
+                  })
+                  addMasterDistrictBtnClick()}}
                 style={{ background: '#ffaa33' }} className="btn text-white  btn-sm d-none d-sm-inline"
 
 
@@ -93,7 +169,7 @@ const MasterDistrictList = () => {
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '61vh', overflowY: 'auto', position: 'relative' }}>
             <table className="table table-bordered table-striped">
-              <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1 }}>
+              <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1, backgroundColor:'white'}}>
                 <tr>
                   <th className="text-center">Sr No</th>
                   <th className="text-center">District Name</th>
@@ -104,22 +180,28 @@ const MasterDistrictList = () => {
                 </tr>
               </thead>
               <tbody>
-                {empData?.map((row, idx) => (
-                  <tr key={idx}>
-                    <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
+                {tableRow.length > 0 &&
+                   tableRow.map((row,index) => (
+                  <tr key={row.id}>
+                    <td className="text-center">{(currentPage - 1) * pageSize + index + 1}</td>
                     <td className="text-center">{row.districtName}</td>
                     <td className="text-center">{row.stateName}</td>
                     <td className="text-center">
-                      <Tooltip title={row.status === true ? 'Enable' : 'Disable'}>
-                        {row.status === true ? 'Enable' : 'Disable'}
-                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === true} />
+                      <Tooltip title={row.status === 'Active' ? 'Inactive' : 'Active'}>
+                        {row.status === 'Active' ? 'Active' : 'Inactive'}
+                        <Android12Switch style={{ padding: '8px' }} onClick={() =>{ confirmStatusChange(); setChangeStatusKey(row.districtKeyID); setModelAction("Status Updated Successfully!")}}  checked={row.status === 'Active'} />
                       </Tooltip>{' '}
                     </td>
                     {/* <td className="text-center">{row.status===true?'True':'false'}</td> */}
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                     <td className="text-center">
                       <Tooltip title="Update District">
-                        <button disabled onClick={() => EditMasterStateBtnClick(row)} type="button" className="btn-sm btn btn-primary">
+                        <button style={{ background: '#ffaa33',border:'#ffaa33'}}  onClick={() =>{ 
+                          setModelRequestData({
+                            Action:"Update",
+                            districtKeyID:row.districtKeyID
+                          })  
+                          addMasterDistrictBtnClick(row)}} type="button" className="btn-sm btn btn-primary">
                           <i className="fa-solid fa-pen-to-square"></i>
                         </button>
                       </Tooltip>
@@ -128,6 +210,10 @@ const MasterDistrictList = () => {
                 ))}
               </tbody>
             </table>
+
+            { tableRow.length === 0 &&(
+                          <NoResultFoundModel
+                           />) }
           </div>
 
           {/* Pagination */}
@@ -144,12 +230,15 @@ const MasterDistrictList = () => {
           modelRequestData={modelRequestData}
           setModelRequestData={setModelRequestData}
           setIsAddUpdateActionDone={setIsAddUpdateActionDone}
+          setShowSuccessModal={setShowSuccessModal}
+          isAddUpdateActionDone={isAddUpdateActionDone}
+          setModelAction={setModelAction}
         />
       )}
       <StatusChangeModal
         open={showStatusChangeModal}
         onClose={() => setShowStatusChangeModal(false)}
-        onConfirm={() => confirmStatusChange(stateChangeStatus, user)} // Pass the required arguments
+        onConfirm={() => handleStatusChange()} // Pass the required arguments
       />
       {showSuccessModal && (
         <SuccessPopupModal

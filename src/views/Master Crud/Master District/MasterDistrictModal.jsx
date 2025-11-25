@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import SuccessPopupModal from 'component/SuccessPopupModal';
-import { GetStateLookupList, GetStateModel } from 'services/Master Crud/MasterStateApi';
+import { GetStateLookupList} from 'services/Master Crud/MasterStateApi';
 import { ConfigContext } from 'context/ConfigContext';
 import Select from 'react-select';
 import { AddUpdateDistrict, GetDistrictModel } from 'services/Master Crud/MasterDistrictApi';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
-const AddUpdateMasterDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
-  const [modelAction, setModelAction] = useState('');
+const AddUpdateMasterDistrictModal = ({ show, onHide,setModelAction, setIsAddUpdateActionDone,isAddUpdateActionDone, modelRequestData,setShowSuccessModal }) => {
+  
   const [error, setErrors] = useState(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
   const [stateOption, setStateOption] = useState([]);
   const { setLoader, user } = useContext(ConfigContext);
@@ -23,10 +22,11 @@ const AddUpdateMasterDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, 
 
   useEffect(() => {
     if (modelRequestData?.Action === 'Update') {
-      if (modelRequestData?.districtID !== null) {
-        GetMasterDistrictModalData(modelRequestData.districtID);
+      if (modelRequestData?.districtKeyID !== null) {
+        GetMasterDistrictModalData(modelRequestData.districtKeyID);
       }
     }
+    
   }, [modelRequestData?.Action]);
 
   // useEffect(() => {
@@ -55,7 +55,7 @@ const AddUpdateMasterDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, 
       userKeyID: user.userKeyID,
       stateID: masterDistrictObj?.stateID,
       districtName: masterDistrictObj?.districtName,
-      districtID: modelRequestData?.districtID
+      districtKeyID: modelRequestData?.districtKeyID
     };
 
     if (!isValid) {
@@ -72,14 +72,15 @@ const AddUpdateMasterDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, 
       if (response) {
         if (response?.data?.statusCode === 200) {
           setLoader(false);
+          onHide();
           setShowSuccessModal(true);
           setModelAction(
-            modelRequestData.Action === null || modelRequestData.Action === undefined
+            modelRequestData.Action === 'Add' 
               ? 'District Added Successfully!'
               : 'District Updated Successfully!'
           ); //Do not change this naming convention
 
-          setIsAddUpdateActionDone(true);
+          setIsAddUpdateActionDone(!isAddUpdateActionDone);
         } else {
           setLoader(false);
           setErrorMessage(response?.response?.data?.errorMessage);
@@ -91,40 +92,67 @@ const AddUpdateMasterDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, 
     }
   };
 
-  const GetStateLookupListData = async () => {
-    try {
-      const response = await GetStateLookupList(); // Ensure this function is imported correctly
-
-      if (response?.data?.statusCode === 200) {
-        const stateLookupList = response?.data?.responseData?.data || [];
-
-        const formattedIvrList = stateLookupList.map((ivrItem) => ({
-          value: ivrItem.stateID,
-          label: ivrItem.stateName
-        }));
-
-        setStateOption(formattedIvrList); // Make sure you have a state setter function for IVR list
-      } else {
-        console.error('Failed to fetch IVR lookup list:', response?.data?.statusMessage || 'Unknown error');
+  useEffect(() => {
+      GetDistrictLookupListData()
+    }, [])
+  
+    const GetDistrictLookupListData = async () => {
+  
+  
+  
+      try {
+  
+        let response = await GetStateLookupList();
+  
+        if (response?.data?.statusCode === 200) {
+          const list = response?.data?.responseData?.data || [];
+  
+          const formatted = list.map((s) => ({
+            value: s.stateID,
+            label: s.stateName,
+          }));
+  
+          setStateOption(formatted);
+        }
+      } catch (err) {
+        console.error("Error fetching districts:", err);
       }
-    } catch (error) {
-      console.error('Error fetching IVR lookup list:', error);
-    }
-  };
+    };
+
+  // const GetStateLookupListData = async () => {
+  //   try {
+  //     const response = await GetStateLookupList(); // Ensure this function is imported correctly
+
+  //     if (response?.data?.statusCode === 200) {
+  //       const stateLookupList = response?.data?.responseData?.data || [];
+
+  //       const formattedIvrList = stateLookupList.map((ivrItem) => ({
+  //         value: ivrItem.stateID,
+  //         label: ivrItem.stateName
+  //       }));
+
+  //       setStateOption(formattedIvrList); // Make sure you have a state setter function for IVR list
+  //     } else {
+  //       console.error('Failed to fetch IVR lookup list:', response?.data?.statusMessage || 'Unknown error');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching IVR lookup list:', error);
+  //   }
+  // };
 
   const closeAllModal = () => {
     onHide();
     setShowSuccessModal(false);
   };
 
-  const GetMasterDistrictModalData = async (id) => {
-    if (id === undefined) {
+  const GetMasterDistrictModalData = async (DistrictKeyID) => {
+    if (DistrictKeyID === undefined) {
       return;
     }
 
     setLoader(true);
     try {
-      const data = await GetDistrictModel(id);
+      const data = await GetDistrictModel(DistrictKeyID);
       if (data?.data?.statusCode === 200) {
         setLoader(false);
         const ModelData = data.data.responseData.data; // Assuming data is an array
@@ -148,7 +176,7 @@ const AddUpdateMasterDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, 
     }
   };
 
-  const handleDistrictChange = (selectedOption) => {
+  const handleStateChange = (selectedOption) => {
     setMasterDistrictObj((prev) => ({
       ...prev,
       stateID: selectedOption ? selectedOption.value : null,
@@ -163,7 +191,7 @@ const AddUpdateMasterDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, 
         <Modal.Header closeButton>
           <Modal.Title>
             <h3 className="text-center">
-              {modelRequestData?.Action !== null ? 'Update District' : modelRequestData?.Action === null ? 'Add District' : ''}
+              {modelRequestData?.Action === "Update" ? 'Update District' :  'Add District'}
             </h3>
           </Modal.Title>
         </Modal.Header>
@@ -176,8 +204,8 @@ const AddUpdateMasterDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, 
               </label>
               <Select
                 options={stateOption}
-                value={stateOption.filter((item) => item.value === masterDistrictObj.stateID)}
-                onChange={handleDistrictChange}
+                value={stateOption.filter((item) => item.value === masterDistrictObj.stateID || null)}
+                onChange={handleStateChange}
                 menuPosition="fixed"
               />
               {error &&
@@ -246,14 +274,7 @@ const AddUpdateMasterDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, 
           </button>
         </Modal.Footer>
       </Modal>
-      {showSuccessModal && (
-        <SuccessPopupModal
-          show={showSuccessModal}
-          onHide={() => closeAllModal()}
-          setShowSuccessModal={setShowSuccessModal}
-          modelAction={modelAction}
-        />
-      )}
+    
 
       {/* <CusModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} vehicleObj={vehicleObj} /> */}
     </>

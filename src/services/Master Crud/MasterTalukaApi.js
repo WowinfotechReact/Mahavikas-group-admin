@@ -19,7 +19,7 @@ export const AddUpdateTaluka = async (url = '', params) => {
 };
 
 export const GetTalukaModel = async (id) => {
-  let url = `${MasterTalukaBaseUrl}/GetTalukaModel?TalukaID=${id}`;
+  let url = `${MasterTalukaBaseUrl}/GetTalukaModel?TalukaKeyID=${id}`;
 
   const res = await getListWithAuthenticated(url);
   return res;
@@ -45,8 +45,8 @@ export const GetTalukaLookupList = async (DistrictIDs, CompanyID, ProjectID) => 
 
 
 
-export const ChangeTalukaStatus = async (id, UserKeyID) => {
-  let url = `${MasterTalukaBaseUrl}/ChangeTalukaStatus?TalukaID=${id}&UserKeyID=${UserKeyID}`;
+export const ChangeTalukaStatus = async (TalukaKeyID) => {
+  let url = `${MasterTalukaBaseUrl}/ChangeTalukaStatus?TalukaKeyID=${TalukaKeyID}`;
   const res = await getListWithAuthenticated(url);
   return res;
 };

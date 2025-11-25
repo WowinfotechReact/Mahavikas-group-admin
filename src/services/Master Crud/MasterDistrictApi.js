@@ -9,6 +9,7 @@ export const GetDistrictList = async (params) => {
   const res = await postApiWithAuthenticated(url, params);
   return res;
 };
+
 export const AddUpdateDistrict = async (url = '', params) => {
   if (params.stateID === null || params.stateID === undefined) {
     delete params.stateID;
@@ -19,35 +20,39 @@ export const AddUpdateDistrict = async (url = '', params) => {
 };
 
 export const GetDistrictModel = async (id) => {
-  let url = `${MasterDistrictBaseUrl}/GetDistrictModel?DistrictID=${id}`;
+  let url = `${MasterDistrictBaseUrl}/GetDistrictModel?DistrictKeyID=${id}`;
 
   const res = await getListWithAuthenticated(url);
   return res;
 };
 
-export const GetDistrictLookupList = async (ZoneIDs,companyID, projectID,userID, StateID) => {
-  let url = `${MasterDistrictBaseUrl}/GetDistrictLookupList`;
+// export const GetDistrictLookupList = async (ZoneIDs,companyID, projectID,userID, StateID) => {
+//   let url = `${MasterDistrictBaseUrl}/GetDistrictLookupList`;
 
-  let params = [];
+//   let params = [];
 
-  if (ZoneIDs) params.push(`ZoneIDs=${ZoneIDs}`);
-  if (companyID) params.push(`CompanyID=${companyID}`);
-  if (projectID) params.push(`ProjectID=${projectID}`);
-  if (userID) params.push(`userID=${userID}`);
-  if (StateID) params.push(`StateID=${StateID}`);
+//   if (ZoneIDs) params.push(`ZoneIDs=${ZoneIDs}`);
+//   if (companyID) params.push(`CompanyID=${companyID}`);
+//   if (projectID) params.push(`ProjectID=${projectID}`);
+//   if (userID) params.push(`userID=${userID}`);
+//   if (StateID) params.push(`StateID=${StateID}`);
 
-  if (params.length > 0) {
-    url += `?${params.join("&")}`;
-  }
+//   if (params.length > 0) {
+//     url += `?${params.join("&")}`;
+//   }
 
-  const res = await getListWithAuthenticated(url);
-  return res;
-};
+//   const res = await getListWithAuthenticated(url);
+//   return res;
+// };
+export const GetDistrictLookupList = async (stateID) => {
+    const url = `${MasterDistrictBaseUrl}/GetDistrictLookupList?stateID=${stateID}`;
+  
+    const res = await getListWithAuthenticated(url );
+    return res;
+  };
 
-
-
-export const ChangeDistrictStatus = async (id, UserKeyID) => {
-  let url = `${MasterDistrictBaseUrl}/ChangeDistrictStatus?DistrictID=${id}&UserKeyID=${UserKeyID}`;
+export const ChangeDistrictStatus = async (id) => {
+  let url = `${MasterDistrictBaseUrl}/ChangeDistrictStatus?DistrictKeyID=${id}`;
   const res = await getListWithAuthenticated(url);
   return res;
 };

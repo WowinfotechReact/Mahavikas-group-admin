@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import SuccessPopupModal from 'component/SuccessPopupModal';
 import { GetStateLookupList } from 'services/Master Crud/MasterStateApi';
 import { ConfigContext } from 'context/ConfigContext';
 import Select from 'react-select';
@@ -8,17 +7,17 @@ import { GetDistrictLookupList } from 'services/Master Crud/MasterDistrictApi';
 import { AddUpdateTaluka, GetTalukaModel } from 'services/Master Crud/MasterTalukaApi';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 
-const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
-  const [modelAction, setModelAction] = useState('');
+
+const AddUpdateMasterTalukaModal = ({ show, onHide,setModelAction,isAddUpdateActionDone, setIsAddUpdateActionDone,setShowSuccessModal, modelRequestData }) => {
+  
   const [error, setErrors] = useState(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
   const [stateOption, setStateOption] = useState([]);
   const [districtOption, setDistrictOption] = useState([]);
   const { setLoader, user } = useContext(ConfigContext);
   const [masterTalukaObj, setMasterTalukaObj] = useState({
     userKeyID: null,
-    talukaID: null,
+    talukaKeyID: null,
     stateID: null,
     districtID: null,
     talukaName: null
@@ -26,17 +25,17 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
 
   useEffect(() => {
     if (modelRequestData?.Action === 'Update') {
-      if (modelRequestData?.talukaID !== null) {
-        GetMasterDistrictModalData(modelRequestData.talukaID);
+      if (modelRequestData?.talukaKeyID !== null) {
+        GetMasterTalukaModalData(modelRequestData.talukaKeyID);
       }
     }
   }, [modelRequestData?.Action]);
 
-  useEffect(() => {
-    if (masterTalukaObj.stateID !== null && masterTalukaObj.stateID !== undefined) {
-      GetTalukaLookupListData();
-    }
-  }, [masterTalukaObj.stateID]);
+  // useEffect(() => {
+  //   if (masterTalukaObj.stateID !== null && masterTalukaObj.stateID !== undefined) {
+  //     GetTalukaLookupListData();
+  //   }
+  // }, [masterTalukaObj.stateID]);
 
   // useEffect(() => {
   //   GetStateLookupListData();
@@ -66,15 +65,15 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       districtName: masterTalukaObj?.districtName,
       districtID: masterTalukaObj?.districtID,
       talukaName: masterTalukaObj?.talukaName,
-      talukaID: masterTalukaObj.talukaID
+      talukaKeyID: modelRequestData.talukaKeyID
     };
 
     if (!isValid) {
-      AddUpdateDistrictData(apiParam);
+      AddUpdateTalukaData(apiParam);
     }
   };
 
-  const AddUpdateDistrictData = async (apiParam) => {
+  const AddUpdateTalukaData = async (apiParam) => {
     setLoader(true)
     try {
       let url = '/AddUpdateTaluka'; // Default URL for Adding Data
@@ -83,14 +82,15 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       if (response) {
         if (response?.data?.statusCode === 200) {
           setLoader(false)
+          onHide();
           setShowSuccessModal(true);
           setModelAction(
-            modelRequestData.Action === null || modelRequestData.Action === undefined
+            modelRequestData.Action === 'Add'
               ? 'Taluka Added Successfully!'
               : 'Taluka Updated Successfully!'
           ); //Do not change this naming convention
 
-          setIsAddUpdateActionDone(true);
+          setIsAddUpdateActionDone(!isAddUpdateActionDone);
         } else {
           setLoader(false)
           setErrorMessage(response?.response?.data?.errorMessage);
@@ -101,7 +101,19 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       console.error(error);
     }
   };
+ useEffect(() => {
+      GetStateLookupListData()
+      
+    }, [])
 
+    useEffect(() => {
+      if(masterTalukaObj.stateID)
+      {
+        GetDistrictLookupListData()
+      }
+      
+    }, [masterTalukaObj.stateID])
+  
   const GetStateLookupListData = async () => {
     try {
       const response = await GetStateLookupList(); // Ensure this function is imported correctly
@@ -122,10 +134,10 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       console.error('Error fetching IVR lookup list:', error);
     }
   };
+console.log("state id" + masterTalukaObj.stateID)
 
-  const GetTalukaLookupListData = async () => {
-    if (masterTalukaObj.stateID === null) return;
-
+  const GetDistrictLookupListData = async () => {
+    
     try {
       let response = await GetDistrictLookupList(masterTalukaObj?.stateID);
       if (response?.data?.statusCode === 200) {
@@ -149,7 +161,7 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
     setShowSuccessModal(false);
   };
 
-  const GetMasterDistrictModalData = async (id) => {
+  const GetMasterTalukaModalData = async (id) => {
     if (id === undefined) {
       return;
     }
@@ -164,7 +176,7 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
         setMasterTalukaObj({
           ...masterTalukaObj,
           userKeyID: ModelData.userKeyID,
-          stateID: ModelData.stateID,
+          stateID:ModelData.stateID,
           stateName: ModelData.stateName,
           districtName: ModelData.districtName,
           districtID: ModelData.districtID,
@@ -203,7 +215,7 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
         <Modal.Header closeButton>
           <Modal.Title>
             <h3 className="text-center">
-              {modelRequestData?.Action !== null ? 'Update Taluka' : modelRequestData?.Action === null ? 'Add Taluka' : ''}
+              {modelRequestData?.Action === 'Update' ? 'Update Taluka' :  'Add Taluka'}
             </h3>
           </Modal.Title>
         </Modal.Header>
@@ -216,7 +228,7 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
               </label>
               <Select
                 options={stateOption}
-                value={stateOption.filter((item) => item.value === masterTalukaObj.stateID)}
+                value={stateOption.filter((item) => item.value === masterTalukaObj.stateID || null)}
                 onChange={handleStateChange}
                 menuPosition="fixed"
               />
@@ -234,9 +246,10 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
               </label>
               <Select
                 options={districtOption}
-                value={districtOption.filter((item) => item.value === masterTalukaObj.districtID)}
+                value={districtOption.filter((item) => item.value === masterTalukaObj.districtID || null)}
                 onChange={handleDistrictChange}
                 menuPosition="fixed"
+                
               />
               {error &&
                 (masterTalukaObj.districtID === null || masterTalukaObj.districtID === undefined || masterTalukaObj.districtID === '') ? (
@@ -300,14 +313,7 @@ const AddUpdateMasterTalukaModal = ({ show, onHide, setIsAddUpdateActionDone, mo
           </button>
         </Modal.Footer>
       </Modal>
-      {showSuccessModal && (
-        <SuccessPopupModal
-          show={showSuccessModal}
-          onHide={() => closeAllModal()}
-          setShowSuccessModal={setShowSuccessModal}
-          modelAction={modelAction}
-        />
-      )}
+      
 
       {/* <CusModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} vehicleObj={vehicleObj} /> */}
     </>
