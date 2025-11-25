@@ -10,11 +10,11 @@ import 'react-calendar/dist/Calendar.css';
 import 'react-date-picker/dist/DatePicker.css';
 import { GetServiceLookupList } from 'services/Services/ServicesApi';
 import { AddUpdateProject, GetProjectModel } from 'services/Project/ProjectApi';
-import { GetCompanyLookupList } from 'services/Company/CompanyApi';
 import dayjs from 'dayjs';
 import { GetTalukaLookupList } from 'services/Master Crud/MasterTalukaApi';
 import { GetDistrictLookupList } from 'services/Master Crud/MasterDistrictApi';
 import { GetZoneLookupList } from 'services/Master Crud/MasterZoneApi';
+import { GetStateLookupList } from 'services/Master Crud/MasterStateApi';
 
 const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
   const [modelAction, setModelAction] = useState('');
@@ -25,6 +25,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
   const [servicesOption, setServicesOption] = useState([])
   const [companyOption, setCompanyOption] = useState([])
   const [zoneOption, setZoneOption] = useState([]);
+  const [stateOption, setStateOption] = useState([]);
   const [districtOption, setDistrictOption] = useState([]);
   const [talukaOption, setTalukaOption] = useState([]);
 
@@ -32,6 +33,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
   const [productObj, setProductObj] = useState({
     userKeyID: null,
     projectKeyID: null,
+    stateIDs: [],
     projectName: null,
     projectDescription: null,
     serviceID: null,
@@ -116,6 +118,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
       companyID: companyID,
       startDate: productObj?.startDate,
       endDate: productObj?.endDate,
+      stateIDs: Array.isArray(productObj.stateIDs) ? productObj.stateIDs : [],
       zoneIDs: Array.isArray(productObj.zoneIDs) ? productObj.zoneIDs : [],
       districtIDs: Array.isArray(productObj.districtIDs) ? productObj.districtIDs : [],
       talukaIDs: Array.isArray(productObj.talukaIDs) ? productObj.talukaIDs : [],
@@ -341,36 +344,87 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
 
   const handleDistrictChange = (selectedOptions) => {
-    const ids = selectedOptions ? selectedOptions.map(o => o.value) : [];
+    const districtIds = selectedOptions ? selectedOptions.map(o => o.value) : [];
 
     setProductObj(prev => ({
       ...prev,
-      districtIDs: ids,
-      talukaIDs: [] // clear talukas when district changes
+      districtIDs: districtIds,
+      talukaIDs: []
     }));
 
-    GetTalukaLookupListData(ids);
+    // Fetch TALUKAS based on district
+    GetTalukaLookupListData(districtIds);
   };
 
 
 
 
   const handleZoneChange = (selectedOptions) => {
-    const selectedZoneIds = selectedOptions
-      ? selectedOptions.map((item) => item.value)
-      : [];
+    const zoneIds = selectedOptions ? selectedOptions.map((item) => item.value) : [];
 
-    setProductObj((prev) => ({
+    setProductObj(prev => ({
       ...prev,
-      zoneIDs: selectedZoneIds,
-      districtIDs: [] // RESET district when zone changes
+      zoneIDs: zoneIds,
+      stateIDs: [],
+      districtIDs: [],
+      talukaIDs: []
     }));
 
-    // Fetch district list for selected zones
-    GetDistrictLookupListData(selectedZoneIds);
+    // Fetch STATES based on zone
+    GetStateLookupListData(zoneIds);
+  };
+  const handleStateChange = (selectedOptions) => {
+    const stateIds = selectedOptions ? selectedOptions.map((item) => item.value) : [];
+
+    setProductObj(prev => ({
+      ...prev,
+      stateIDs: stateIds,
+      districtIDs: [],
+      talukaIDs: []
+    }));
+
+    // Fetch DISTRICTS based on state
+    GetDistrictLookupListData(stateIds);
   };
 
 
+
+  // const GetDistrictLookupListData = async (zoneIds = []) => {
+  //   if (!zoneIds || zoneIds.length === 0) {
+  //     setDistrictOption([]);
+  //     return;
+  //   }
+
+  //   try {
+  //     const ZoneIDsParam = zoneIds.join(",");
+
+  //     let response = await GetDistrictLookupList(ZoneIDsParam, companyID);
+  const GetStateLookupListData = async (stateIDs = []) => {
+
+    if (!stateIDs || stateIDs.length === 0) {
+      setStateOption([]);
+      return
+    }
+
+    try {
+      const stateIDsParam = stateIDs.join(",")
+
+      let response = await GetStateLookupList(stateIDsParam);
+
+      if (response?.data?.statusCode === 200) {
+        const list = response?.data?.responseData?.data || [];
+
+        const formatted = list.map((s) => ({
+          value: s.stateID,
+          label: s.stateName,
+        }));
+
+        setStateOption(formatted);
+      }
+    } catch (err) {
+      console.error("Error fetching districts:", err);
+    }
+  };
   return (
     <>
       <Modal size="md" show={show} style={{ zIndex: 1300 }} onHide={onHide} backdrop="static" keyboard={false} centered>
@@ -464,6 +518,32 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                     isMulti
                     value={zoneOption.filter((item) => productObj.zoneIDs.includes(item.value))}
                     onChange={handleZoneChange}
+                    menuPosition="fixed"
+                  />
+
+                  {error &&
+                    (productObj.zoneIDs === null ||
+                      productObj.zoneIDs === undefined ||
+                      productObj.zoneIDs.length === 0) ? (
+                    <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                  ) : (
+                    ''
+                  )}
+                </div>
+                </div>
+                <div className="col-md-6 mb-3">                  <div>
+                  <label htmlFor="vehicleNumber" className="form-label">
+                    Select State
+                    <span style={{ color: 'red' }}>*</span>
+                  </label>
+
+
+                  <Select
+                    placeholder="Select Zone(s)"
+                    options={stateOption}
+                    isMulti
+                    value={stateOption.filter((item) => productObj.stateIDs.includes(item.value))}
+                    onChange={handleStateChange}
                     menuPosition="fixed"
                   />
 

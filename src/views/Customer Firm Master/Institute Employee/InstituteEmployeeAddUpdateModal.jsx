@@ -12,7 +12,6 @@ import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { useLocation } from 'react-router-dom';
 import { AddUpdateAppUser, GetAppUserModel } from 'services/Employee Staff/EmployeeApi';
 import { GetDesignationLookupList } from 'services/Master Crud/Designationapi';
-import { GetServiceLookupList } from 'services/Services/ServicesApi';
 
 const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData, }) => {
 

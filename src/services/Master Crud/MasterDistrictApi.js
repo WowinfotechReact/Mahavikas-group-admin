@@ -44,12 +44,42 @@ export const GetDistrictModel = async (id) => {
 //   const res = await getListWithAuthenticated(url);
 //   return res;
 // };
-export const GetDistrictLookupList = async (stateID) => {
-    const url = `${MasterDistrictBaseUrl}/GetDistrictLookupList?stateID=${stateID}`;
-  
-    const res = await getListWithAuthenticated(url );
-    return res;
-  };
+export const GetDistrictLookupList = async ({
+  stateID,
+  ZoneIDs,
+  userID,
+  StateID,
+  ProjectID,
+  ModuleName
+} = {}) => {
+
+  let url = `${MasterDistrictBaseUrl}/GetDistrictLookupList`;
+  const params = new URLSearchParams();
+
+  // ✅ Add only if value exists
+  if (stateID) params.append("stateID", stateID);
+
+  if (ZoneIDs) {
+    params.append(
+      "ZoneIDs",
+      Array.isArray(ZoneIDs) ? ZoneIDs.join(",") : ZoneIDs
+    );
+  }
+
+  if (userID) params.append("userID", userID);
+  if (StateID) params.append("StateID", StateID);
+  if (ProjectID) params.append("ProjectID", ProjectID);
+  if (ModuleName) params.append("ModuleName", ModuleName);
+
+  // ✅ Attach query params only if any exist
+  const finalUrl = params.toString()
+    ? `${url}?${params.toString()}`
+    : url;
+
+  const res = await getListWithAuthenticated(finalUrl);
+  return res;
+};
+
 
 export const ChangeDistrictStatus = async (id) => {
   let url = `${MasterDistrictBaseUrl}/ChangeDistrictStatus?DistrictKeyID=${id}`;

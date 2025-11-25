@@ -15,6 +15,8 @@ const InstituteWiseAttendanceReport = () => {
       const { setLoader, companyID, user } = useContext(ConfigContext);
       const [instituteOption, setInstituteOption] = useState([]);
       const [productListData, setProductListData] = useState([])
+      const [productListSummaryData, setProductListSummaryData] = useState([])
+      console.log(productListData, '32dddddddddd');
 
 
 
@@ -194,27 +196,26 @@ const InstituteWiseAttendanceReport = () => {
             setLoader(true);
 
             try {
-                  const data = await GetAttendanceReportList({
-                        projectID,
-                        instituteID,
-                        monthDate
-                  });
+                  const data = await GetAttendanceReportList({ projectID, instituteID, monthDate });
 
                   if (data?.data?.statusCode === 200) {
                         setLoader(false);
 
                         const ProductData = data.data.responseData.data;
+                        const ProductSummaryData = data.data.responseData.summary;
 
-                        setProductListData(ProductData);
+                        const transformed = transformAttendanceData(
+                              ProductSummaryData,
+                              ProductData,
+                              monthDate
+                        );
 
-
+                        setProductListData(transformed); // ✅ One row per employee
                   } else {
                         setLoader(false);
-                        console.error(data?.data?.errorMessage);
                   }
             } catch (error) {
                   setLoader(false);
-                  console.error(error);
             }
       };
 
@@ -309,6 +310,43 @@ const InstituteWiseAttendanceReport = () => {
                   console.error(error);
             }
       };
+
+      const transformAttendanceData = (summaryList, attendanceList, monthDate) => {
+            const daysInMonth = dayjs(monthDate).daysInMonth();
+            const grouped = {};
+
+            // STEP 1: Initialize each employee from SUMMARY
+            summaryList.forEach((emp) => {
+                  grouped[emp.empUserID] = {
+                        empUserID: emp.empUserID,
+                        name: `${emp.firstName} ${emp.lastName}`,
+                        designation: emp.designationName,
+                        days: Array(daysInMonth).fill("-"),
+                        presentCount: emp.presentCount,
+                        absentCount: emp.absentCount,
+                        weeklyOffCount: emp.weeklyOffCount,
+                        downloadURL: emp.downloadURL || null    // ✅ ADD THIS
+
+                  };
+            });
+
+            // STEP 2: Fill day-wise values using ProductData
+            attendanceList.forEach((item) => {
+                  const empID = item.empUserID;
+                  const day = dayjs(item.attendanceDate).date();
+
+                  if (grouped[empID]) {
+                        let status = "-";
+                        if (item.attendanceStatusID === 3) status = "P"; // Present
+                        if (item.attendanceStatusID === null) status = "A"; // Absent
+
+                        grouped[empID].days[day - 1] = status;
+                  }
+            });
+
+            return Object.values(grouped);
+      };
+
 
       return (
             <div className="container-fluid py-4">
@@ -411,58 +449,59 @@ const InstituteWiseAttendanceReport = () => {
                         </div>
 
                         <div className="table-responsive">
-                              <Table bordered hover size="sm" className="align-middle text-center mb-0">
+                              <Table bordered hover size="sm" className="text-center mb-0">
                                     <thead>
-                                          <tr className="text-center">
+                                          <tr>
                                                 <th>Sr No.</th>
-                                                <th>Date</th>
                                                 <th>Employee Name</th>
                                                 <th>Designation</th>
-                                                <th>Working Hours</th>
                                                 <th>Action</th>
+
+                                                {/* Dynamic Date Columns */}
+                                                {productListData?.length > 0 &&
+                                                      productListData[0].days.map((_, i) => (
+                                                            <th key={i}>{i + 1}</th>
+                                                      ))}
                                           </tr>
                                     </thead>
 
                                     <tbody>
                                           {productListData && productListData.length > 0 ? (
                                                 productListData.map((row, index) => (
-                                                      <tr key={index}>
-                                                            <td className="text-center">{index + 1}</td>
-
-                                                            {/* Format date */}
-                                                            <td className="text-center">
-                                                                  {dayjs(row.attendanceDate).format("DD-MM-YYYY")}
-                                                            </td>
+                                                      <tr key={row.empUserID}>
+                                                            <td>{index + 1}</td>
 
                                                             {/* Name */}
-                                                            <td>
-                                                                  {row.firstName} {row.lastName}
-                                                            </td>
+                                                            <td>{row.name}</td>
 
                                                             {/* Designation */}
-                                                            <td>{row.designationName || "-"}</td>
-
-                                                            {/* Status */}
-
-
-                                                            {/* Working Hours */}
-                                                            <td className="text-center">
-                                                                  {row.workingHours || "-"}
+                                                            <td>{row.designation}</td>
+                                                            <td>
+                                                                  {row.downloadURL ? (
+                                                                        <a href={row.downloadURL} target="_blank" rel="noopener noreferrer">
+                                                                              Download
+                                                                        </a>
+                                                                  ) : (
+                                                                        "-"
+                                                                  )}
                                                             </td>
-                                                            <td className="text-center">
-                                                                  <Link onClick={() => downloadBtn(row)}>Download</Link>
-                                                            </td>
+
+                                                            {/* Day-wise Attendance */}
+                                                            {row.days.map((status, i) => (
+                                                                  <td key={i}>{status}</td>
+                                                            ))}
                                                       </tr>
                                                 ))
                                           ) : (
                                                 <tr>
-                                                      <td colSpan="6" className="text-center text-muted">
+                                                      <td colSpan="40" className="text-center text-muted">
                                                             No Attendance Found
                                                       </td>
                                                 </tr>
                                           )}
                                     </tbody>
                               </Table>
+
                         </div>
                   </div>
             </div>

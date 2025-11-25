@@ -134,10 +134,18 @@ const AssignedDistrictModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
 
       const GetDistrictLookupListData = async (zoneIds = [], stateID) => {
+
             try {
                   const ZoneIDsParam = zoneIds.join(",");
 
-                  let response = await GetDistrictLookupList(null, null, null, null, stateID);
+                  let response = await GetDistrictLookupList({
+                        stateID: stateID,
+                        ZoneIDs: ZoneIDsParam,
+                        userID: null,
+                        StateID: null,
+                        ProjectID: null,
+                        ModuleName: "ZoneMapping",
+                  });
 
                   if (response?.data?.statusCode === 200) {
                         const list = response?.data?.responseData?.data || [];

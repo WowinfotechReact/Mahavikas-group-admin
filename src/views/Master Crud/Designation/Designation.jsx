@@ -17,7 +17,7 @@ import { hasPermission } from 'Middleware/permissionUtils';
 const Designation = () => {
   const [stateChangeStatus, setStateChangeStatus] = useState('');
   const [totalRecords, setTotalRecords] = useState(-1);
-  const { setLoader, user, permissions } = useContext(ConfigContext);
+  const { setLoader, user, permissions, companyID } = useContext(ConfigContext);
   const [modelAction, setModelAction] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
@@ -70,7 +70,8 @@ const Designation = () => {
         fromDate: fromDate ? dayjs(fromDate).format('YYYY-MM-DD') : null,
         sortingDirection: sortValue === undefined ? sortingDirection : sortValue,
         sortingColumnName: sortType == '' ? StateSortType : sortType || null,
-        userKeyID: user.userKeyID
+        // userKeyID: user.userKeyID
+        companyID: companyID
       });
 
       if (data) {

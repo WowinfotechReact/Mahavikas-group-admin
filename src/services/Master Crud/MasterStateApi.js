@@ -36,12 +36,18 @@ export const GetStateModel = async (stateKeyID) => {
   };
 
 
-export const GetStateLookupList = async () => {
-    const url = `${MasterStateBaseUrl}/GetStateLookupList`;
-  
-    const res = await getListWithAuthenticated(url );
-    return res;
-  };
+export const GetStateLookupList = async (ZoneIDs) => {
+  let url = `${MasterStateBaseUrl}/GetStateLookupList`;
+
+  // ✅ Only append query param if ZoneIDs has a valid value
+  if (ZoneIDs) {
+    url += `?ZoneIDs=${Array.isArray(ZoneIDs) ? ZoneIDs.join(',') : ZoneIDs}`;
+  }
+
+  const res = await getListWithAuthenticated(url);
+  return res;
+};
+
   
   export const ChangeStateStatus = async (StateKeyID) => {
     let url = `${MasterStateBaseUrl}/ChangeStateStatus?StateKeyID=${StateKeyID}`;
