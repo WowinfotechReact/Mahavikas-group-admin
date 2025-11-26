@@ -197,6 +197,10 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
           ? ModelData.projectIDs
           : ModelData.projectIDs ? [ModelData.projectIDs] : [];
 
+        const stateIDs = Array.isArray(ModelData.stateIDs)
+          ? ModelData.stateIDs
+          : ModelData.stateIDs ? [ModelData.stateIDs] : [];
+
         setProductObj({
           ...productObj,
           userKeyID: ModelData.userKeyID,
@@ -210,11 +214,13 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
           districtIDs,
           talukaIDs,
           projectIDs,
+          stateIDs
 
         });
 
-        await GetDistrictLookupListData(zoneIDs);
+        await GetDistrictLookupListData(stateIDs);
         await GetTalukaLookupListData(districtIDs);
+        await GetStateLookupListData(zoneIDs);
         await GetServiceLookupListData();
       } else {
         setLoader(false);
@@ -539,7 +545,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
 
                   <Select
-                    placeholder="Select Zone(s)"
+                    placeholder="Select State(s)"
                     options={stateOption}
                     isMulti
                     value={stateOption.filter((item) => productObj.stateIDs.includes(item.value))}
