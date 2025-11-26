@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Table, Form, Button, Row, Col } from "react-bootstrap";
-import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import Select from 'react-select';
+import * as XLSX from "xlsx";
 
 import dayjs from "dayjs";
 import { GetInstituteLookupList } from "services/Institute/InstituteApi";
@@ -107,7 +107,48 @@ const InstituteWiseAttendanceReport = () => {
             }
       }, [instituteObj]);
 
+      const exportAttendanceExcel = (productListData, monthDate) => {
+            debugger
+            if (!productListData || productListData.length === 0) {
+                  alert("No data to export");
+                  return;
+            }
 
+            const daysInMonth = dayjs(monthDate).daysInMonth();
+
+            // ✅ Build Headers
+            const headers = [
+                  "Sr No.",
+                  "Employee Name",
+                  "Designation",
+                  "Download URL",
+                  ...Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`),
+                  "Total P",
+                  "Total A",
+                  "Total W"
+            ];
+
+            // ✅ Build Rows
+            const rows = productListData.map((row, index) => [
+                  index + 1,
+                  row.name,
+                  row.designation,
+                  ...row.days,
+                  row.totalP,
+                  row.totalA,
+                  row.totalW
+            ]);
+
+            // ✅ Create Excel Sheet
+            const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
+
+            // ✅ File name: Attendance_MMM_YYYY.xlsx
+            const fileName = `Attendance_${dayjs(monthDate).format("MMM_YYYY")}.xlsx`;
+
+            XLSX.writeFile(workbook, fileName);
+      };
       useEffect(() => {
             GetProjectLookupListData(companyID)
       }, [])
@@ -268,33 +309,7 @@ const InstituteWiseAttendanceReport = () => {
 
 
 
-      const AddUpdateAppUserData = async (apiParam) => {
-            setLoader(true);
-            try {
-                  let url = '/AddUpdateAttendanceSheet ';
-                  const response = await AddUpdateAttendanceSheet(url, apiParam);
 
-                  if (response?.data?.statusCode === 200) {
-                        setLoader(false);
-
-                        const downloadURL = response.data.responseData.downloadURL;
-                        console.log(downloadURL, "PDF URL");
-
-                        // OPEN ONLY IN NEW TAB
-                        if (downloadURL) {
-                              window.open(downloadURL, '_blank', 'noopener,noreferrer');
-                        }
-
-                        setIsAddUpdateActionDone(true);
-                  } else {
-                        setLoader(false);
-                        setErrorMessage(response?.response?.data?.errorMessage);
-                  }
-            } catch (error) {
-                  setLoader(false);
-                  console.error(error);
-            }
-      };
 
       const transformAttendanceData = (summaryList, attendanceList, monthDate) => {
             const daysInMonth = dayjs(monthDate).daysInMonth();
@@ -307,35 +322,41 @@ const InstituteWiseAttendanceReport = () => {
                         name: `${emp.firstName} ${emp.lastName}`,
                         designation: emp.designationName,
                         days: Array(daysInMonth).fill("-"),
-                        presentCount: emp.presentCount,
-                        absentCount: emp.absentCount,
-                        weeklyOffCount: emp.weeklyOffCount,
-                        downloadURL: emp.downloadURL || null    // ✅ ADD THIS
+                        downloadURL: emp.downloadURL || null,
 
+                        // ✅ Init totals
+                        totalP: 0,
+                        totalA: 0,
+                        totalW: 0
                   };
             });
 
-            // STEP 2: Fill day-wise values using ProductData
             // STEP 2: Fill day-wise values using attendanceList
             attendanceList.forEach((item) => {
                   const empID = item.empUserID;
                   const day = dayjs(item.attendanceDate).date();
 
                   if (grouped[empID]) {
-                        let status = "-"; // default
+                        let status = "-";
 
                         if (item.attendanceStatusID === 1) status = "P"; // Present
                         if (item.attendanceStatusID === 2) status = "A"; // Absent
-                        if (item.attendanceStatusID === 3) status = "W"; // Week Off
-                        if (item.attendanceStatusID === null) status = "-"; // Dash
+                        if (item.attendanceStatusID === 3) status = "W"; // Weekly Off
 
                         grouped[empID].days[day - 1] = status;
                   }
             });
 
+            // ✅ STEP 3: Calculate totals
+            Object.values(grouped).forEach((emp) => {
+                  emp.totalP = emp.days.filter(d => d === "P").length;
+                  emp.totalA = emp.days.filter(d => d === "A").length;
+                  emp.totalW = emp.days.filter(d => d === "W").length;
+            });
 
             return Object.values(grouped);
       };
+
 
 
       return (
@@ -346,10 +367,12 @@ const InstituteWiseAttendanceReport = () => {
 
                   </div>
 
+
                   {/* ---------- FILTER SECTION ---------- */}
-                  <div className="border rounded p-3 bg-light mb-4">
+                  <div className="border rounded p-2 bg-light mb-4">
+
                         <Form>
-                              <Row className="g-3 align-items-end">
+                              <Row className="g-1 align-items-end">
                                     <Col md={3}>
                                           <Form.Group>
                                                 <Select
@@ -357,6 +380,9 @@ const InstituteWiseAttendanceReport = () => {
                                                       value={projectOption.find(item =>
                                                             instituteObj.projectIDs === item.value
                                                       )}
+                                                      styles={{
+                                                            menuPortal: base => ({ ...base, zIndex: 9999 }), // ensures it appears on top
+                                                      }}
                                                       placeholder="Select Project"
                                                       onChange={handleProjectChange}
                                                       menuPosition="fixed"
@@ -378,11 +404,14 @@ const InstituteWiseAttendanceReport = () => {
                                                                   instituteID: selected ? selected.value : ""
                                                             }))
                                                       }
+                                                      styles={{
+                                                            menuPortal: base => ({ ...base, zIndex: 9999 }), // ensures it appears on top
+                                                      }}
                                                       menuPosition="fixed"
                                                 />
                                           </Form.Group>
                                     </Col>
-                                    <Col md={3}>
+                                    <Col md={2}>
                                           <Form.Group>
                                                 <Form.Label className="fw-semibold small mb-1">Select Year</Form.Label>
                                                 <Select
@@ -395,11 +424,14 @@ const InstituteWiseAttendanceReport = () => {
                                                                   year: selected ? selected.value : null
                                                             }))
                                                       }
+                                                      styles={{
+                                                            menuPortal: base => ({ ...base, zIndex: 9999 }), // ensures it appears on top
+                                                      }}
                                                       menuPosition="fixed"
                                                 />
                                           </Form.Group>
                                     </Col>
-                                    <Col md={3}>
+                                    <Col md={2}>
                                           <Form.Group>
                                                 <Form.Label className="fw-semibold small mb-1">Select Month</Form.Label>
                                                 <Select
@@ -412,16 +444,22 @@ const InstituteWiseAttendanceReport = () => {
                                                                   month: selected ? selected.value : null
                                                             }))
                                                       }
+                                                      styles={{
+                                                            menuPortal: base => ({ ...base, zIndex: 9999 }), // ensures it appears on top
+                                                      }}
                                                       menuPosition="fixed"
                                                 />
 
                                           </Form.Group>
                                     </Col>
-                                    {/* <Col md={2}>
-                                          <Button onClick={clearBtn} size="sm" variant="primary" className="w-100">
-                                                <i className="bi bi-search me-1"></i>Search
+                                    <Col md={2}>
+                                          <Button onClick={() => exportAttendanceExcel(productListData, monthDateState)}
+                                                size="sm" variant="primary" className="w-100">
+                                                <i className="bi bi-download me-1"></i>Export
                                           </Button>
-                                    </Col> */}
+
+
+                                    </Col>
                               </Row>
                         </Form>
                   </div>
@@ -437,21 +475,28 @@ const InstituteWiseAttendanceReport = () => {
                               </h6>
                               {/* <small className="text-muted">06 Nov 2025</small> */}
                         </div>
+                        <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
+                              <table className="table table-bordered table-striped">
+                                    <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff', }}>
 
-                        <div className="table-responsive">
-                              <Table bordered hover size="sm" className="text-center mb-0">
-                                    <thead>
+
                                           <tr>
                                                 <th>Sr No.</th>
                                                 <th>Employee Name</th>
                                                 <th>Designation</th>
-                                                <th>Action</th>
 
-                                                {/* Dynamic Date Columns */}
+
+                                                {/* ✅ Dynamic Date Columns */}
                                                 {productListData?.length > 0 &&
                                                       productListData[0].days.map((_, i) => (
                                                             <th key={i}>{i + 1}</th>
                                                       ))}
+
+                                                {/* ✅ Totals at END with colors */}
+                                                <th className="text-center" style={{ backgroundColor: "#28a745", color: "white" }}>Total (P)</th>
+                                                <th className="text-center" style={{ backgroundColor: "#dc3545", color: "white" }}>Total (A)</th>
+                                                <th className="text-center" style={{ backgroundColor: "#ffc107", color: "white" }}>Total (W)</th>
+                                                <th>Action</th>
                                           </tr>
                                     </thead>
 
@@ -460,26 +505,38 @@ const InstituteWiseAttendanceReport = () => {
                                                 productListData.map((row, index) => (
                                                       <tr key={row.empUserID}>
                                                             <td>{index + 1}</td>
-
-                                                            {/* Name */}
                                                             <td>{row.name}</td>
-
-                                                            {/* Designation */}
                                                             <td>{row.designation}</td>
+
+                                                            {/* Action */}
+
+
+                                                            {/* ✅ Day-wise Attendance */}
+                                                            {row.days.map((status, i) => {
+                                                                  let bg = "";
+                                                                  if (status === "P") bg = "#023020";    // light green
+                                                                  if (status === "A") bg = "#cc3333";    // light red
+                                                                  if (status === "W") bg = "#422afb";    // light yellow
+
+                                                                  return (
+                                                                        <td key={i} style={{ color: bg }}>
+                                                                              {status}
+                                                                        </td>
+                                                                  );
+                                                            })}
+
+                                                            {/* ✅ Totals at END */}
+
+                                                            <td>{row.totalP}</td>
+                                                            <td>{row.totalA}</td>
+                                                            <td>{row.totalW}</td>
                                                             <td>
                                                                   {row.downloadURL ? (
                                                                         <a href={row.downloadURL} target="_blank" rel="noopener noreferrer">
                                                                               Download
                                                                         </a>
-                                                                  ) : (
-                                                                        "-"
-                                                                  )}
+                                                                  ) : "-"}
                                                             </td>
-
-                                                            {/* Day-wise Attendance */}
-                                                            {row.days.map((status, i) => (
-                                                                  <td key={i}>{status}</td>
-                                                            ))}
                                                       </tr>
                                                 ))
                                           ) : (
@@ -490,7 +547,9 @@ const InstituteWiseAttendanceReport = () => {
                                                 </tr>
                                           )}
                                     </tbody>
-                              </Table>
+                              </table>
+
+
 
                         </div>
                   </div>

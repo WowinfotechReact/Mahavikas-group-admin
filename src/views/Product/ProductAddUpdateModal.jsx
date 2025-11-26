@@ -263,14 +263,15 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
   };
 
   const GetDistrictLookupListData = async () => {
+
     const zoneIds = productObj.zoneIDs || [];
     const stateIds = productObj.stateIDs || [];
 
     // If nothing selected, clear
-    if (zoneIds.length === 0 && stateIds.length === 0) {
-      setDistrictOption([]);
-      return;
-    }
+    // if (zoneIds.length === 0 && stateIds.length === 0) {
+    //   setDistrictOption([]);
+    //   return;
+    // }
 
     try {
       let response = await GetDistrictLookupList({
