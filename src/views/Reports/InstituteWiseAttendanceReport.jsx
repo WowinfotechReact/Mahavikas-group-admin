@@ -266,21 +266,6 @@ const InstituteWiseAttendanceReport = () => {
       };
 
 
-      const downloadBtn = async (row) => {
-            debugger
-            const apiParam = {
-                  empUserID: row.empUserID,
-                  projectID: row.projectID,
-                  instituteID: row.instituteID,
-                  monthDate: monthDateState,
-                  uploadURL: row.uploadURL,
-                  actionType: 'Download',
-                  userKeyID: user.userKeyID
-            }
-
-            AddUpdateAppUserData(apiParam)
-
-      }
 
 
       const AddUpdateAppUserData = async (apiParam) => {
@@ -331,18 +316,23 @@ const InstituteWiseAttendanceReport = () => {
             });
 
             // STEP 2: Fill day-wise values using ProductData
+            // STEP 2: Fill day-wise values using attendanceList
             attendanceList.forEach((item) => {
                   const empID = item.empUserID;
                   const day = dayjs(item.attendanceDate).date();
 
                   if (grouped[empID]) {
-                        let status = "-";
-                        if (item.attendanceStatusID === 3) status = "P"; // Present
-                        if (item.attendanceStatusID === null) status = "A"; // Absent
+                        let status = "-"; // default
+
+                        if (item.attendanceStatusID === 1) status = "P"; // Present
+                        if (item.attendanceStatusID === 2) status = "A"; // Absent
+                        if (item.attendanceStatusID === 3) status = "W"; // Week Off
+                        if (item.attendanceStatusID === null) status = "-"; // Dash
 
                         grouped[empID].days[day - 1] = status;
                   }
             });
+
 
             return Object.values(grouped);
       };
