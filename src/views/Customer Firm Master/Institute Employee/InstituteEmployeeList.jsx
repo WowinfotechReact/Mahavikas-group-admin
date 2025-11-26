@@ -117,6 +117,9 @@ const InstituteEmployeeList = () => {
                   instituteKeyID: location?.state?.instituteKeyID,
                   serviceID: location?.state?.serviceID,
                   projectID: location?.state?.projectID,
+                  userKeyIDForUpdate: null,
+                  userDetailsKeyID: null,
+
 
                   Action: null
             });
@@ -521,6 +524,7 @@ const InstituteEmployeeList = () => {
                                     show={showPasswordModal}
                                     onHide={() => setShowPasswordModal(false)}
                                     modelRequestData={modelRequestData}
+                                    setIsAddUpdateActionDone={setIsAddUpdateActionDone}
                               />
                         )
                   }

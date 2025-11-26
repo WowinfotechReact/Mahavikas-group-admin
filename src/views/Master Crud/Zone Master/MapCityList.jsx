@@ -102,13 +102,19 @@ const MapCityList = () => {
 
                   const res = await DeleteMappedZoneDistrict(selectedMappingID);
 
+
+                  console.log(res?.data, '333333ssssssss');
+
                   // ✅ Check success
                   if (
-                        res?.statusCode === 200
+                        res?.data?.statusCode === 200
                   ) {
                         console.log("✅ Deleted:", res?.responseData?.data);
-                        debugger
+
+
+                        setModelAction('Mapped Zone Deleted')
                         setShowSuccessModal(true)
+                        setIsAddUpdateActionDone(true)
 
                         // ✅ Optional: Toast
                         // toast.success("Deleted Successfully");
@@ -124,7 +130,11 @@ const MapCityList = () => {
             }
       };
 
-
+      const closeAllModal = () => {
+            setShowDelete(false);
+            setShowSuccessModal(false);
+            setOpenSetDistrictModal(false);
+      }
 
       return (
             <>
@@ -193,20 +203,23 @@ const MapCityList = () => {
 
                                           <tbody>
                                                 {distList?.districtList?.map((item, index) => (
-                                                      <tr key={index}>
+                                                      <tr className="text-center" key={index}>
                                                             <td className="text-center">{index + 1}</td>
                                                             <td className="text-center">{item.districtName}</td>
                                                             <td className="text-center">{item.stateName}</td>
 
-                                                            <td className="text-center"  >
-
-                                                                  <button
-                                                                        className="btn btn-danger"
-                                                                        onClick={() => handleDeleteClick(item)}
-                                                                  >
-                                                                        Delete Item
-                                                                  </button>
+                                                            <td className="text-center">
+                                                                  <div className="d-flex justify-content-center">
+                                                                        <button
+                                                                              className="btn btn-outline-danger d-flex align-items-center gap-2 btn-sm"
+                                                                              onClick={() => handleDeleteClick(item)}
+                                                                        >
+                                                                              <i className="bi bi-trash-fill"></i>
+                                                                              Delete
+                                                                        </button>
+                                                                  </div>
                                                             </td>
+
                                                       </tr>
                                                 ))}
                                           </tbody>
@@ -250,7 +263,7 @@ const MapCityList = () => {
                         onClose={() => setShowDelete(false)}
                         onConfirm={handleConfirmDelete}
                         title="Delete Zone Mapped"
-                        message="Do you really want to delete this record?"
+                        message="Do you really want to delete?"
                   />
             </>
       );

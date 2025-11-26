@@ -14,7 +14,7 @@ import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { ConfigContext } from 'context/ConfigContext';
 import SuccessPopupModal from 'component/SuccessPopupModal';
 
-function SetPasswordModal({ show, onHide, modelRequestData }) {
+function SetPasswordModal({ show, onHide, modelRequestData, setIsAddUpdateActionDone }) {
       const [error, setErrors] = useState(null);
       const [errorMessage, setErrorMessage] = useState();
       const [showPassword, setShowPassword] = useState(false);
@@ -158,7 +158,7 @@ function SetPasswordModal({ show, onHide, modelRequestData }) {
                   <Modal.Footer>
 
                         <button onClick={() => Submit()} style={{ background: '#ffaa33', height: '40px', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
-                              <span className="d-none d-sm-inline">Create </span>
+                              <span className="d-none d-sm-inline">Set Password </span>
                         </button>
 
                   </Modal.Footer>
