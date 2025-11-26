@@ -61,6 +61,12 @@ export const GetAssignedZoneDistrictList = async (ZoneID) => {
     const res = await getListWithAuthenticated(url);
     return res;
   };
+export const DeleteMappedZoneDistrict = async (ZoneDistrictMappingID) => {
+    const url = `${MasterZoneBaseUrl}/DeleteMappedZoneDistrict?ZoneDistrictMappingID=${ZoneDistrictMappingID}`;
+  
+    const res = await getListWithAuthenticated(url);
+    return res;
+  };
   
   export const ChangeZoneStatus = async (id,UserKeyID) => {
     let url = `${MasterZoneBaseUrl}/ChangeZoneStatus?ZoneKeyID=${id}&UserKeyID=${UserKeyID}`;

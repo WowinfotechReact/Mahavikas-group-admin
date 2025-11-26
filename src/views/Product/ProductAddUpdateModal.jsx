@@ -218,7 +218,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
         });
 
-        await GetDistrictLookupListData(stateIDs);
+        await GetDistrictLookupListData(zoneIDs, stateIDs);
         await GetTalukaLookupListData(districtIDs);
         await GetStateLookupListData(zoneIDs);
         await GetServiceLookupListData();
@@ -262,18 +262,22 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
     }
   };
 
+  const GetDistrictLookupListData = async () => {
+    const zoneIds = productObj.zoneIDs || [];
+    const stateIds = productObj.stateIDs || [];
 
-
-  const GetDistrictLookupListData = async (zoneIds = []) => {
-    if (!zoneIds || zoneIds.length === 0) {
+    // If nothing selected, clear
+    if (zoneIds.length === 0 && stateIds.length === 0) {
       setDistrictOption([]);
       return;
     }
 
     try {
-      const ZoneIDsParam = zoneIds.join(",");
-
-      let response = await GetDistrictLookupList(ZoneIDsParam, companyID);
+      let response = await GetDistrictLookupList({
+        ZoneIDs: zoneIds.length > 0 ? zoneIds : null,
+        StateID: stateIds.length > 0 ? stateIds : null,
+        ModuleName: "Project"
+      });
 
       if (response?.data?.statusCode === 200) {
         const list = response?.data?.responseData?.data || [];
@@ -292,6 +296,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
       setDistrictOption([]);
     }
   };
+
 
 
 
@@ -364,21 +369,22 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
 
 
-
   const handleZoneChange = (selectedOptions) => {
     const zoneIds = selectedOptions ? selectedOptions.map((item) => item.value) : [];
 
     setProductObj(prev => ({
       ...prev,
       zoneIDs: zoneIds,
-      stateIDs: [],
       districtIDs: [],
       talukaIDs: []
     }));
 
-    // Fetch STATES based on zone
     GetStateLookupListData(zoneIds);
+
+    // ✅ Fetch districts using BOTH zone + state (if available)
+    setTimeout(() => GetDistrictLookupListData(), 0);
   };
+
   const handleStateChange = (selectedOptions) => {
     const stateIds = selectedOptions ? selectedOptions.map((item) => item.value) : [];
 
@@ -389,22 +395,13 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
       talukaIDs: []
     }));
 
-    // Fetch DISTRICTS based on state
-    GetDistrictLookupListData(stateIds);
+    // ✅ Fetch districts using BOTH zone + state
+    setTimeout(() => GetDistrictLookupListData(), 0);
   };
 
 
 
-  // const GetDistrictLookupListData = async (zoneIds = []) => {
-  //   if (!zoneIds || zoneIds.length === 0) {
-  //     setDistrictOption([]);
-  //     return;
-  //   }
 
-  //   try {
-  //     const ZoneIDsParam = zoneIds.join(",");
-
-  //     let response = await GetDistrictLookupList(ZoneIDsParam, companyID);
   const GetStateLookupListData = async (stateIDs = []) => {
 
     if (!stateIDs || stateIDs.length === 0) {

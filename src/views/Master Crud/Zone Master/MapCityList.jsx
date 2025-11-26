@@ -3,75 +3,34 @@
 
 
 import React, { useState, useEffect, useContext } from 'react';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Android12Switch from 'component/Android12Switch';
 import { useLocation, useNavigate } from 'react-router';
-
 import { ConfigContext } from 'context/ConfigContext';
-import { ChangeStateStatus } from 'services/Master Crud/MasterStateApi';
-
-import dayjs from 'dayjs';
-// import AddUpdateMasterStateModal from './MasterStateModal';
 import StatusChangeModal from 'component/StatusChangeModal ';
 import SuccessPopupModal from 'component/SuccessPopupModal';
-import NoResultFoundModel from 'component/NoResultFoundModal';
-import PaginationComponent from 'component/Pagination';
 import { Tooltip } from '@mui/material';
-// import MasterZoneModal from './MasterZoneModal';
-
-import CabinIcon from '@mui/icons-material/Cabin';
-import { ChangeZoneStatus, GetAssignedZoneDistrictList, GetZoneList } from 'services/Master Crud/MasterZoneApi';
-import MasterZoneModal from '../Master Zone/MasterZoneModal';
+import { DeleteMappedZoneDistrict, GetAssignedZoneDistrictList } from 'services/Master Crud/MasterZoneApi';
 import AssignedDistrictModal from '../Master Zone/AssignedDistrictModal';
-// import AssignedDistrictModal from './AssignedDistrictModal';
-// import ViewMappedDistrictModal from './ViewMappedDistrictModal';
+import DeleteModal from 'views/DeleteModal';
 
 const MapCityList = () => {
-      const [stateChangeStatus, setStateChangeStatus] = useState('');
-      const [totalRecords, setTotalRecords] = useState(-1);
       const [openSetDistrictModal, setOpenSetDistrictModal] = useState(false);
 
-      const { setLoader, user, companyID } = useContext(ConfigContext);
+      const { setLoader } = useContext(ConfigContext);
       const [modelAction, setModelAction] = useState();
       const navigate = useNavigate();
-      const [showDistrictModal, setShowDistrictModal] = useState(false)
-      const [currentPage, setCurrentPage] = useState(1);
-      const [totalPage, setTotalPage] = useState();
-      const [totalCount, setTotalCount] = useState(null);
-      const [pageSize, setPageSize] = useState(30);
+
       const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
       const [isAddUpdateActionDone, setIsAddUpdateActionDone] = useState(false);
       const [searchKeyword, setSearchKeyword] = useState('');
-      const [apiParams, setApiParams] = useState(null); // State to store API parameters
-      const [fromDate, setFromDate] = useState(null); // Initialize as null
-      const [toDate, setToDate] = useState(null);
-      const [stateListData, setStateListData] = useState([]);
-      const [openMasterStateModal, setOpenMasterStateModal] = useState(false);
-
       const [showSuccessModal, setShowSuccessModal] = useState();
-      const [sortingDirection, setSortingDirection] = useState(null);
-      const [sortDirectionObj, setSortDirectionObj] = useState({
-            ServiceNameSort: null
-      });
-      const [sortType, setSortType] = useState('');
-
+      const [showDelete, setShowDelete] = useState(false);
       const [modelRequestData, setModelRequestData] = useState({
             stateID: null,
             stateName: null,
             Action: null
       });
-
-
-
-
-
-
-
-
-
-
-
+      const [selectedMappingID, setSelectedMappingID] = useState(null);
       const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
 
       const fullText = "Search By Zone Namee";
@@ -99,8 +58,6 @@ const MapCityList = () => {
             }
       }, [location]);
 
-
-
       useEffect(() => {
             if (isAddUpdateActionDone) {
                   GetAssignedZoneDistrictListData();
@@ -108,9 +65,6 @@ const MapCityList = () => {
             }
             setIsAddUpdateActionDone(false)
       }, [isAddUpdateActionDone])
-
-
-
 
       const GetAssignedZoneDistrictListData = async () => {
             setLoader(true);
@@ -137,6 +91,41 @@ const MapCityList = () => {
             });
             setOpenSetDistrictModal(true);
       };
+      const handleDeleteClick = (item) => {
+            setSelectedMappingID(item.zoneDistrictMappingID); // ✅ Store ID
+            setShowDelete(true); // ✅ Open modal
+      };
+
+      const handleConfirmDelete = async () => {
+            try {
+                  if (!selectedMappingID) return;
+
+                  const res = await DeleteMappedZoneDistrict(selectedMappingID);
+
+                  // ✅ Check success
+                  if (
+                        res?.statusCode === 200
+                  ) {
+                        console.log("✅ Deleted:", res?.responseData?.data);
+                        debugger
+                        setShowSuccessModal(true)
+
+                        // ✅ Optional: Toast
+                        // toast.success("Deleted Successfully");
+                  } else {
+                        console.error("❌ Delete failed:", res);
+                        // toast.error("Delete failed");
+                  }
+
+            } catch (error) {
+                  console.error("❌ Delete error:", error);
+                  setShowDelete(false);
+                  // toast.error("Something went wrong");
+            }
+      };
+
+
+
       return (
             <>
                   <div className="card w-full max-w-[50vh] mx-auto h-auto">
@@ -167,9 +156,10 @@ const MapCityList = () => {
                               <div className="d-flex justify-content-between align-items-center mb-1">
                                     <input
                                           type="text"
+
                                           className="form-control "
                                           placeholder={animatedPlaceholder}
-                                          style={{ maxWidth: "350px" }}
+                                          style={{ maxWidth: "350px", visibility: 'hidden' }}
                                           value={searchKeyword}
                                           onChange={(e) => {
                                                 handleSearch(e);
@@ -197,6 +187,7 @@ const MapCityList = () => {
                                                       <th className="text-center">Sr No.</th>
                                                       <th className="text-center">District Name</th>
                                                       <th className="text-center">State Name</th>
+                                                      <th className="text-center">Action</th>
                                                 </tr>
                                           </thead>
 
@@ -206,6 +197,16 @@ const MapCityList = () => {
                                                             <td className="text-center">{index + 1}</td>
                                                             <td className="text-center">{item.districtName}</td>
                                                             <td className="text-center">{item.stateName}</td>
+
+                                                            <td className="text-center"  >
+
+                                                                  <button
+                                                                        className="btn btn-danger"
+                                                                        onClick={() => handleDeleteClick(item)}
+                                                                  >
+                                                                        Delete Item
+                                                                  </button>
+                                                            </td>
                                                       </tr>
                                                 ))}
                                           </tbody>
@@ -218,33 +219,7 @@ const MapCityList = () => {
                         </div>
                   </div>
 
-                  {/* {openMasterStateModal && (
-                        <MasterZoneModal
-                              show={openMasterStateModal}
-                              onHide={() => setOpenMasterStateModal(false)}
-                              modelRequestData={modelRequestData}
-                              setModelRequestData={setModelRequestData}
-                              setIsAddUpdateActionDone={setIsAddUpdateActionDone}
-                        />
-                  )} */}
-                  {/* {openSetDistrictModal && (
-                        <AssignedDistrictModal
-                              show={openSetDistrictModal}
-                              onHide={() => setOpenSetDistrictModal(false)}
-                              modelRequestData={modelRequestData}
-                              setModelRequestData={setModelRequestData}
-                              setIsAddUpdateActionDone={setIsAddUpdateActionDone}
-                        />
-                  )} */}
-                  {/* {showDistrictModal && (
-                        <ViewMappedDistrictModal
-                              show={showDistrictModal}
-                              onHide={() => setShowDistrictModal(false)}
-                              modelRequestData={modelRequestData}
-                              setModelRequestData={setModelRequestData}
-                              setIsAddUpdateActionDone={setIsAddUpdateActionDone}
-                        />
-                  )} */}
+
 
                   {openSetDistrictModal && (
                         <AssignedDistrictModal
@@ -269,6 +244,14 @@ const MapCityList = () => {
                               modelAction={modelAction}
                         />
                   )}
+
+                  <DeleteModal
+                        show={showDelete}
+                        onClose={() => setShowDelete(false)}
+                        onConfirm={handleConfirmDelete}
+                        title="Delete Zone Mapped"
+                        message="Do you really want to delete this record?"
+                  />
             </>
       );
 };
