@@ -152,8 +152,11 @@ const Default = () => {
   const stats = [
     { id: 1, title: 'Total Contractual Employee', value: dashboardCount.totalContractualEmployees, icon: <FaUsers size={28} />, colorClass: 'bg-warning' },
     { id: 2, title: 'Total Projects', value: dashboardCount.totalProjects, icon: <FaProjectDiagram size={28} />, colorClass: 'bg-danger', route: '/project' },
-    { id: 3, title: 'Total Institutes', value: dashboardCount.totalInstitutes, icon: <FaUniversity size={28} />, colorClass: 'bg-info', },
-    { id: 4, title: 'Total Employees', value: dashboardCount.totalEmployees, icon: <FaUserTie size={28} />, colorClass: 'bg-success', route: '/employee-list' }
+    { id: 3, title: 'Total Institutes', value: dashboardCount.totalInstitutes, icon: <FaUniversity size={28} />, colorClass: 'bg-warning', },
+    { id: 4, title: 'Total Employees', value: dashboardCount.totalEmployees, icon: <FaUserTie size={28} />, colorClass: 'bg-success', route: '/employee-list' },
+    { id: 5, title: 'Total Admin', value: dashboardCount.totalAdmin, icon: <FaUserTie size={28} />, colorClass: 'bg-danger ', route: '/admin-employee' },
+    { id: 6, title: 'Total Super Admin', value: dashboardCount.totalSuperAdmin, icon: <FaUserTie size={28} />, colorClass: 'bg-warning ', route: '/admin-employee' },
+    { id: 7, title: 'Total Site Engineers', value: dashboardCount.totalSiteEngineers, icon: <FaUserTie size={28} />, colorClass: 'bg-danger ', route: '/employee-list' }
   ];
   return (
     <div className="gov-dashboard container-fluid py-4">

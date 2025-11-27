@@ -43,6 +43,7 @@ const routeTitles = {
   '/field-service-report': 'Field Service Report - Alpha Tech System | Battery & Inverter Sales, Service & Maintenance',
   '/designation': 'Designation - Maha Vikas Group',
   '/mapped-city': 'Mapped City - Maha Vikas Group',
+  '/employee-wise-attendance-report': 'Employee Wise Attendance Report - Maha Vikas Group',
   '/master-service': 'Services - Maha Vikas Group',
   '/site-engineer-report': 'Site Engineer Report - Maha Vikas Group',
   '/zone-manager': 'Zone Manager - Maha Vikas Group',
