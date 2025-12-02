@@ -18,6 +18,7 @@ import { GetMvgEmployeeReportList } from "services/MVG Employee/MVGEmployeeApi";
 import { ConfigContext } from "context/ConfigContext";
 import { useNavigate } from "react-router";
 import PaginationComponent from "component/Pagination";
+import NoResultFoundModel from "component/NoResultFoundModal";
 
 const MvgEmployeeReportList = () => {
       const [searchKeyword, setSearchKeyword] = useState('');
@@ -365,6 +366,8 @@ const MvgEmployeeReportList = () => {
                                           })}
                                     </tbody>
                               </table>
+                              {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />}
+
                         </div>
                         <div className="d-flex justify-content-end ">
                               {totalCount > pageSize && (

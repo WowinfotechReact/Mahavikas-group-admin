@@ -38,6 +38,11 @@ const ProductList = () => {
   });
 
   // Main fetcher
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    GetProjectListData(pageNumber, null, null, null);
+  };
   const GetProjectListData = async (pageNumber, searchKeywordValue, toDateParam, fromDateParam, sortValue, ProductSortType) => {
     setLoader(true);
     try {
@@ -174,8 +179,8 @@ const ProductList = () => {
     }
   };
   const instituteUserBtnClick = (row) => {
-            navigate('/Dashboard', { state: { userKeyIDForUpdate: row.userKeyIDForUpdate, instituteName: row.instituteName } })
-      }
+    navigate('/Dashboard', { state: { userKeyIDForUpdate: row.userKeyIDForUpdate, instituteName: row.instituteName } })
+  }
 
 
   const closeAllModal = () => {
@@ -188,7 +193,7 @@ const ProductList = () => {
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           <div className="d-flex justify-content-between align-items-center mb-1">
-                             <button
+            <button
               // className="btn btn-light p-1 me-2"
               className="btn btn-outline-secondary btn-sm me-2"
 

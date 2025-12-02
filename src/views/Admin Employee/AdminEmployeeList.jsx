@@ -165,7 +165,7 @@ const AdminEmployeeList = () => {
             GetAppUserListData(1, capitalizedValue, toDate, fromDate);
       };
 
-      
+
 
       const handlePageChange = (pageNumber) => {
             setCurrentPage(pageNumber);
@@ -264,16 +264,16 @@ const AdminEmployeeList = () => {
                               {/* Top controls */}
 
                               <div className="d-flex justify-content-between align-items-center mb-1">
-                                      <button
-              // className="btn btn-light p-1 me-2"
-              className="btn btn-outline-secondary btn-sm me-2" 
+                                    <button
+                                          // className="btn btn-light p-1 me-2"
+                                          className="btn btn-outline-secondary btn-sm me-2"
 
-              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
-              onClick={() => navigate(-1)}
-            >
-              <i className="fa-solid fa-arrow-left"></i>
+                                          // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+                                          onClick={() => navigate(-1)}
+                                    >
+                                          <i className="fa-solid fa-arrow-left"></i>
 
-            </button>
+                                    </button>
                                     <div className="flex-grow-1">
                                           <h5 className="mb-0">Admin Employee</h5>
                                     </div>
@@ -404,8 +404,8 @@ const AdminEmployeeList = () => {
                                                                         {row.roleName}
                                                                   </span>
                                                             </td>
-                                                          
-                                                                  <td className="text-center" style={{ minWidth: "150px" }}>
+
+                                                            <td className="text-center" style={{ minWidth: "150px" }}>
                                                                   {row.passWord !== null &&
                                                                         <div className="d-flex justify-content-center align-items-center gap-2">
 
@@ -431,7 +431,7 @@ const AdminEmployeeList = () => {
                                                             </td>
 
 
-                                                         
+
 
 
 
@@ -440,7 +440,7 @@ const AdminEmployeeList = () => {
 
 
                                                             {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
-                                                                                      <td className="text-center relative  actionColSticky " style={{ zIndex: 4 }}>
+                                                            <td className="text-center relative  actionColSticky " style={{ zIndex: 4 }}>
 
 
                                                                   <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
@@ -470,14 +470,14 @@ const AdminEmployeeList = () => {
                                                 ))}
                                           </tbody>
                                     </table>
-                                    {/* {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />} */}
+                                    {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />}
                               </div>
 
                               {/* Pagination */}
                               <div className="d-flex justify-content-end ">
-                                    {/* {totalCount > pageSize && (
-              <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
-            )} */}
+                                    {totalCount > pageSize && (
+                                          <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
+                                    )}
                               </div>
                         </div>
                   </div >

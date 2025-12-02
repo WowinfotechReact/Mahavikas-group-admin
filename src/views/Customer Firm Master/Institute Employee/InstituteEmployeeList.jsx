@@ -232,7 +232,10 @@ const InstituteEmployeeList = () => {
       }, []);
 
       const [visiblePasswordIndex, setVisiblePasswordIndex] = useState(null);
-
+      const handlePageChange = (pageNumber) => {
+            setCurrentPage(pageNumber);
+            GetInstituteListData(pageNumber, null, toDate, fromDate);
+      };
       return (
             <>
                   {/* <Sidebar drawerOpen={true} drawerToggle={() => {}} modalOpen={show} /> */}
@@ -467,14 +470,14 @@ const InstituteEmployeeList = () => {
                                                 ))}
                                           </tbody>
                                     </table>
-                                    {/* {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />} */}
+                                    {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />}
                               </div>
 
                               {/* Pagination */}
                               <div className="d-flex justify-content-end ">
-                                    {/* {totalCount > pageSize && (
-              <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
-            )} */}
+                                    {totalCount > pageSize && (
+                                          <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
+                                    )}
                               </div>
                         </div>
                   </div >

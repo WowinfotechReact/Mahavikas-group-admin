@@ -161,21 +161,7 @@ const CustomerFirmList = () => {
     GetInstituteListData(pageNumber, null, toDate, fromDate);
   };
 
-  const closeAll = () => {
-    setShowSuccessModal(false);
-  };
 
-  const handleClearDates = () => {
-    setCurrentPage(1);
-    setToDate(null);
-    setFromDate(null);
-    GetInstituteListData(1, null, null, null);
-  };
-
-  const handleStatusChange = (row) => {
-    setStateChangeStatus(row); // You can set only relevant data if needed
-    setShowStatusChangeModal(true);
-  };
   const closeAllModal = () => {
     // onHide();
     setShowSuccessModal(false);
@@ -300,7 +286,7 @@ const CustomerFirmList = () => {
               <h5 className="mb-0">
                 Institute :
                 <span style={{ textDecoration: "underline", marginLeft: "6px" }}>
-                  {location.state.projectName}
+                  {location?.state?.projectName}
                 </span>
               </h5>
             </div>
@@ -404,10 +390,10 @@ const CustomerFirmList = () => {
                       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", animation: "fadeSlide 0.7s ease" }}>
                         <span style={{ fontSize: "18px" }}>🏗️</span>
                         <span>
-                          {row.projectName?.length > 30 ? (
-                            <Tooltip title={row.projectName}>{`${row.projectName?.substring(0, 30)}...`}</Tooltip>
+                          {row?.projectName?.length > 30 ? (
+                            <Tooltip title={row?.projectName}>{`${row?.projectName?.substring(0, 30)}...`}</Tooltip>
                           ) : (
-                            <>{row.projectName}</>
+                            <>{row?.projectName}</>
                           )}
                         </span>
                       </div>
@@ -482,14 +468,14 @@ const CustomerFirmList = () => {
                 ))}
               </tbody>
             </table>
-            {/* {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />} */}
+            {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />}
           </div>
 
           {/* Pagination */}
           <div className="d-flex justify-content-end ">
-            {/* {totalCount > pageSize && (
+            {totalCount > pageSize && (
               <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
-            )} */}
+            )}
           </div>
         </div>
       </div >
