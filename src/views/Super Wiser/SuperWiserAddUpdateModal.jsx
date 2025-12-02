@@ -13,6 +13,7 @@ import { useLocation } from 'react-router-dom';
 import { AddUpdateAppUser, GetAppUserModel } from 'services/Employee Staff/EmployeeApi';
 import { GetProjectLookupList } from 'services/Project/ProjectApi';
 import { GetInstituteLookupList } from 'services/Institute/InstituteApi';
+import { GetDesignationLookupList } from 'services/Master Crud/Designationapi';
 
 const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData, }) => {
 
@@ -117,6 +118,9 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                   employeeObj.lastName === null ||
                   employeeObj.lastName === undefined ||
                   employeeObj.lastName === '' ||
+                  employeeObj.password === null ||
+                  employeeObj.password === undefined ||
+                  employeeObj.password === '' ||
                   employeeObj.mobileNo === null ||
                   employeeObj.mobileNo === undefined ||
                   employeeObj.mobileNo === '' ||
@@ -153,14 +157,14 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                   emailID: employeeObj.emailID,
                   designationID: employeeObj.designationID,
                   attendanceTypeID: employeeObj.attendanceTypeID,
-                  // password: employeeObj.password,
+                  password: employeeObj.password,
                   address: employeeObj.address,
                   appUserTypeID: 2,
 
                   canUpdateAttendance: employeeObj.canUpdateAttendance,
                   roleKeyID: employeeObj.roleKeyID,
-                  companyID: companyID,
-                  instituteIDs: [employeeObj.instituteIDs],
+                  companyID: Number(companyID),
+                  instituteIDs: employeeObj.instituteIDs,
                   zoneIDs: [],
                   districtIDs: [],
                   talukaIDs: [],
@@ -224,6 +228,7 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                   console.error("Error fetching project lookup list:", error);
             }
       };
+
 
 
 
@@ -460,6 +465,47 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                                     <div className="row">
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
+                                                      <label htmlFor="customerLName" className="form-label">
+                                                            Password
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <input
+                                                            maxLength={50}
+                                                            type="text"
+                                                            className="form-control"
+                                                            id="Password"
+                                                            placeholder="Enter Password"
+                                                            aria-describedby="Employee"
+                                                            value={employeeObj.password}
+                                                            onChange={(e) => {
+                                                                  setErrorMessage(false);
+                                                                  let inputValue = e.target.value;
+
+                                                                  // Remove leading spaces
+                                                                  inputValue = inputValue.replace(/^\s+/, '');
+
+
+
+                                                                  // Auto-capitalize the first letter
+                                                                  if (inputValue.length > 0) {
+                                                                        inputValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+                                                                  }
+
+                                                                  setEmployeeObj((prev) => ({
+                                                                        ...prev,
+                                                                        password: inputValue
+                                                                  }));
+                                                            }}
+                                                      />
+                                                      {error && (employeeObj.password === null || employeeObj.password === undefined || employeeObj.password === '') ? (
+                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                      ) : (
+                                                            ''
+                                                      )}
+                                                </div>
+                                          </div>
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <div>
                                                       <label htmlFor="vehicleNumber" className="form-label">
                                                             Address
                                                             <span style={{ color: 'red' }}>*</span>
@@ -487,6 +533,9 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                                                       )}
                                                 </div>
                                           </div>
+
+                                    </div>
+                                    <div className="row">
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="Password" className="form-label">
@@ -515,9 +564,6 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
 
                                                 </div>
                                           </div>
-                                    </div>
-                                    <div className="row">
-
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="Password" className="form-label">
@@ -554,9 +600,12 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
 
                                                 </div>
                                           </div>
-                                          <div className="col-12 col-md-6 mb-2">
-                                                <style>
-                                                      {`
+
+
+                                          <div className="row">
+                                                <div className="col-12 col-md-6 mb-2">
+                                                      <style>
+                                                            {`
 .custom-radio-group {
   display: flex;
   gap: 12px;
@@ -588,53 +637,54 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
   border-color: #ff7d34;
 }
 `}
-                                                </style>
+                                                      </style>
 
-                                                <div className="mb-3">
-                                                      <label className="mb-1">Can Update Attendance?</label>
+                                                      <div className="mb-3">
+                                                            <label className="mb-1">Can Update Attendance?</label>
 
-                                                      <div className="custom-radio-group">
+                                                            <div className="custom-radio-group">
 
-                                                            {/* YES OPTION */}
-                                                            <label
-                                                                  className={`custom-radio ${employeeObj.canUpdateAttendance === true ? "active" : ""}`}
-                                                            >
-                                                                  <input
-                                                                        type="radio"
-                                                                        name="canUpdateAttendance"
-                                                                        checked={employeeObj.canUpdateAttendance === true}
-                                                                        onChange={() =>
-                                                                              setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: true }))
-                                                                        }
-                                                                  />
-                                                                  Yes
-                                                            </label>
+                                                                  {/* YES OPTION */}
+                                                                  <label
+                                                                        className={`custom-radio ${employeeObj.canUpdateAttendance === true ? "active" : ""}`}
+                                                                  >
+                                                                        <input
+                                                                              type="radio"
+                                                                              name="canUpdateAttendance"
+                                                                              checked={employeeObj.canUpdateAttendance === true}
+                                                                              onChange={() =>
+                                                                                    setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: true }))
+                                                                              }
+                                                                        />
+                                                                        Yes
+                                                                  </label>
 
-                                                            {/* NO OPTION */}
-                                                            <label
-                                                                  className={`custom-radio ${employeeObj.canUpdateAttendance === false ? "active" : ""}`}
-                                                            >
-                                                                  <input
-                                                                        type="radio"
-                                                                        name="canUpdateAttendance"
-                                                                        checked={employeeObj.canUpdateAttendance === false}
-                                                                        onChange={() =>
-                                                                              setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: false }))
-                                                                        }
-                                                                  />
-                                                                  No
-                                                            </label>
+                                                                  {/* NO OPTION */}
+                                                                  <label
+                                                                        className={`custom-radio ${employeeObj.canUpdateAttendance === false ? "active" : ""}`}
+                                                                  >
+                                                                        <input
+                                                                              type="radio"
+                                                                              name="canUpdateAttendance"
+                                                                              checked={employeeObj.canUpdateAttendance === false}
+                                                                              onChange={() =>
+                                                                                    setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: false }))
+                                                                              }
+                                                                        />
+                                                                        No
+                                                                  </label>
+
+                                                            </div>
+
+                                                            {(error && employeeObj.canUpdateAttendance === undefined || employeeObj.canUpdateAttendance === null || employeeObj.canUpdateAttendance === ''
+
+                                                            ) && (
+                                                                        <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                                  )}
 
                                                       </div>
 
-                                                      {(error && employeeObj.canUpdateAttendance === undefined || employeeObj.canUpdateAttendance === null || employeeObj.canUpdateAttendance === ''
-
-                                                      ) && (
-                                                                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                            )}
-
                                                 </div>
-
                                           </div>
                                     </div>
                                     <span style={{ color: 'red' }}>{errorMessage}</span>

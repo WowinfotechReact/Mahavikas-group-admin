@@ -76,7 +76,8 @@ const MasterServiceList = () => {
                         fromDate: fromDate ? dayjs(fromDate).format('YYYY-MM-DD') : null,
                         sortingDirection: sortValue === undefined ? sortingDirection : sortValue,
                         sortingColumnName: sortType == '' ? StateSortType : sortType || null,
-                        userKeyID: user.userKeyID
+                        userKeyID: null
+                        // userKeyID: user.userKeyID
                   });
 
                   if (data) {

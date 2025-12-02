@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Android12Switch from 'component/Android12Switch';
 import { ConfigContext } from 'context/ConfigContext';
-import { ChangeStateStatus, GetStateList} from 'services/Master Crud/MasterStateApi';
+import { ChangeStateStatus, GetStateList } from 'services/Master Crud/MasterStateApi';
 import dayjs from 'dayjs';
 import AddUpdateMasterStateModal from './MasterStateModal';
 import { useNavigate } from 'react-router';
@@ -22,7 +22,7 @@ const MasterStateList = () => {
   const [totalPage, setTotalPage] = useState();
   const navigate = useNavigate();
   const [totalCount, setTotalCount] = useState(null);
-  const [pageSize, setPageSize] = useState(30);
+  const [pageSize, setPageSize] = useState(10);
   const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
   const [isAddUpdateActionDone, setIsAddUpdateActionDone] = useState(false);
   // const [searchKeyword, setSearchKeyword] = useState('');
@@ -32,64 +32,64 @@ const MasterStateList = () => {
   const [openMasterStateModal, setOpenMasterStateModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState();
   const [sortingDirection, setSortingDirection] = useState(null);
-  const [tableRow,setTableRow]=useState([])
+  const [tableRow, setTableRow] = useState([])
   const [sortDirectionObj, setSortDirectionObj] = useState({
     ServiceNameSort: null
   });
-   const [modelRequestData, setModelRequestData] = useState({
+  const [modelRequestData, setModelRequestData] = useState({
     stateID: null,
-    stateKeyID:null,
+    stateKeyID: null,
     stateName: "",
     Action: ""
   });
   const [sortType, setSortType] = useState('');
-   const [appliedFilter, setAppliedFilter] = useState({
-        pageSize: pageSize,
-        pageNo: 0,
-        searchKeyword: null,
-        fromDate: null,
-        toDate: null
-    })
+  const [appliedFilter, setAppliedFilter] = useState({
+    pageSize: pageSize,
+    pageNo: 0,
+    searchKeyword: null,
+    fromDate: null,
+    toDate: null
+  })
 
 
 
- 
-  useEffect(()=>{
-  GetStateListData()
-  },[isAddUpdateActionDone,appliedFilter])
 
-  
-    const GetStateListData = async () => {
+  useEffect(() => {
+    GetStateListData()
+  }, [isAddUpdateActionDone, appliedFilter])
 
-        try {
-            
-            let response = null;
-                response = await GetStateList({
-                    ...appliedFilter,
-                });
-                  
-                if (response?.data?.statusCode === 200) {
-                  console.log("enter")  
-                  const { data, totalRecords } = response.data.responseData;
 
-                    setTableRow(data || []);
-                    setTotalRecords(totalRecords || data?.length || 0);
-                  
-                    
-                    
-                } else {
-                    console.warn("Unexpected API response", response);
-                    setTableRow([]);
-                }
-                } catch (error) {
-            console.error("Error fetching category list:", error);
-        } finally {
-            
-        }
-          
-    };
-console.log(tableRow)
- 
+  const GetStateListData = async () => {
+
+    try {
+
+      let response = null;
+      response = await GetStateList({
+        ...appliedFilter,
+      });
+
+      if (response?.data?.statusCode === 200) {
+        console.log("enter")
+        const { data, totalRecords } = response.data.responseData;
+
+        setTableRow(data || []);
+        setTotalRecords(totalRecords || data?.length || 0);
+
+
+
+      } else {
+        console.warn("Unexpected API response", response);
+        setTableRow([]);
+      }
+    } catch (error) {
+      console.error("Error fetching category list:", error);
+    } finally {
+
+    }
+
+  };
+  console.log(tableRow)
+
   const addMasterStateBtnClick = () => {
     setModelRequestData({
       stateID: null,
@@ -99,33 +99,33 @@ console.log(tableRow)
     setOpenMasterStateModal(true);
   }
 
-  const handleSearch=(searchValue) => {
+  const handleSearch = (searchValue) => {
     setAppliedFilter({ ...appliedFilter, searchKeyword: searchValue })
   }
 
-  const confirmStatusChange=()=>{
+  const confirmStatusChange = () => {
     setShowStatusChangeModal(true)
   }
-  
-  const handleStatusChange = async()=>{
+
+  const handleStatusChange = async () => {
     try {
-      let res=null;
-                res = await ChangeStateStatus(stateChangeStatusKey);
-                if (res?.data?.statusCode === 200) {
-                  console.log("enter")
-                  setShowStatusChangeModal(false)
-                  setIsAddUpdateActionDone(!isAddUpdateActionDone)
-                  setShowSuccessModal(true)
-                }
-            } catch (error) {
-                console.log("error ==>>", error)
-            }
+      let res = null;
+      res = await ChangeStateStatus(stateChangeStatusKey);
+      if (res?.data?.statusCode === 200) {
+        console.log("enter")
+        setShowStatusChangeModal(false)
+        setIsAddUpdateActionDone(!isAddUpdateActionDone)
+        setShowSuccessModal(true)
+      }
+    } catch (error) {
+      console.log("error ==>>", error)
+    }
   }
 
-  const closeAllModal=()=>{
+  const closeAllModal = () => {
     setShowSuccessModal(false);
   }
-  
+
   return (
     <>
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
@@ -160,7 +160,7 @@ console.log(tableRow)
               placeholder="Search State"
               style={{ maxWidth: "350px" }}
               // value={searchKeyword}
-               onChange={(e) => handleSearch(e.target.value)}
+              onChange={(e) => handleSearch(e.target.value)}
             />
             <Tooltip title="Add State">
               <button
@@ -177,7 +177,7 @@ console.log(tableRow)
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
             <table className="table table-bordered table-striped">
-              <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1, backgroundColor:'white' }}>
+              <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1, backgroundColor: 'white' }}>
                 <tr>
                   <th className="text-center">Sr No</th>
                   <th className="text-center">
@@ -202,59 +202,59 @@ console.log(tableRow)
                 </tr>
               </thead>
               <tbody>
-                 {tableRow.length > 0 &&
-                   tableRow.map((obj,index) => ( 
-                  <tr className='text-nowrap'  key={obj.id}>
-              
-                    <td className="text-center">
-                       {(currentPage - 1) * pageSize + index + 1}   
-                      </td>
-                    
-                    <td className="text-center">
-                       {obj.stateName}  
-                      </td>
-                    
-                    <td className="text-center">
-                      <Tooltip  title={obj.status === "Active" ? 'Inactive' : 'Active'} >
-                         { obj.status === "Active" ? 'Active' : 'Inactive' } 
-                        <Android12Switch style={{ padding: '8px' }}  onClick={() =>  {confirmStatusChange(); setStateChangeStatusKey(obj.stateKeyID); setModelAction("Status Updated Successfully!")}} checked={obj.status === "Active"}  />
-                      </Tooltip>
-                    </td>
-                     {/* <td className="text-center">{obj.createdOnDate ? dayjs(obj.createdOnDate).format('DD/MM/YYYY') : '-'}</td>  */}
-                    <td className="text-center">
-                      <Tooltip title="Update State">
-                        <button
-                          
-                          style={{
-                            padding: '4px 8px', // Adjust padding for smaller size
-                            fontSize: '12px', // Optional: smaller font size
-                            height: '28px', // Set height
-                            width: '28px', // Set width
-                            background: '#ffaa33',
-                            border:'#ffaa33'
-                          }}
-                          onClick={() => {
-                            setModelRequestData({
-                              Action:"Update",
-                              stateKeyID:obj.stateKeyID
+                {tableRow.length > 0 &&
+                  tableRow.map((obj, index) => (
+                    <tr className='text-nowrap' key={obj.id}>
 
-                            })
-                            setOpenMasterStateModal(true)
-                          }}
-                          type="button"
-                          className="btn-sm btn btn-primary"
-                        >
-                          <i className="fa-solid fa-pen-to-square"></i>
-                        </button>
-                      </Tooltip>
-                    </td>
-                  </tr>
-                 ))} 
+                      <td className="text-center">
+                        {(currentPage - 1) * pageSize + index + 1}
+                      </td>
+
+                      <td className="text-center">
+                        {obj.stateName}
+                      </td>
+
+                      <td className="text-center">
+                        <Tooltip title={obj.status === "Active" ? 'Inactive' : 'Active'} >
+                          {obj.status === "Active" ? 'Active' : 'Inactive'}
+                          <Android12Switch style={{ padding: '8px' }} onClick={() => { confirmStatusChange(); setStateChangeStatusKey(obj.stateKeyID); setModelAction("Status Updated Successfully!") }} checked={obj.status === "Active"} />
+                        </Tooltip>
+                      </td>
+                      {/* <td className="text-center">{obj.createdOnDate ? dayjs(obj.createdOnDate).format('DD/MM/YYYY') : '-'}</td>  */}
+                      <td className="text-center">
+                        <Tooltip title="Update State">
+                          <button
+
+                            style={{
+                              padding: '4px 8px', // Adjust padding for smaller size
+                              fontSize: '12px', // Optional: smaller font size
+                              height: '28px', // Set height
+                              width: '28px', // Set width
+                              background: '#ffaa33',
+                              border: '#ffaa33'
+                            }}
+                            onClick={() => {
+                              setModelRequestData({
+                                Action: "Update",
+                                stateKeyID: obj.stateKeyID
+
+                              })
+                              setOpenMasterStateModal(true)
+                            }}
+                            type="button"
+                            className="btn-sm btn btn-primary"
+                          >
+                            <i className="fa-solid fa-pen-to-square"></i>
+                          </button>
+                        </Tooltip>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
-             { tableRow.length === 0 &&(
+            {tableRow.length === 0 && (
               <NoResultFoundModel
-               />) }
+              />)}
           </div>
           <div className="d-flex justify-content-end ">
 

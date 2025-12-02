@@ -91,7 +91,8 @@ const MasterZoneList = () => {
 
         sortingColumnName: sortType == '' ? StateSortType : sortType || null,
 
-        userKeyID: user.userKeyID,
+        userKeyID: null,
+        // userKeyID: user.userKeyID,
         // userKeyID: null,
         companyID: Number(companyID)
       });
