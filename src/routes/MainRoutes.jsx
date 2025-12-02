@@ -30,6 +30,7 @@ import AttandanceFormat from 'views/Attandance Format/AttandanceFormat';
 import MasterZoneList from 'views/Master Crud/Master Zone/MasterZoneList';
 import MapCityList from 'views/Master Crud/Zone Master/MapCityList';
 import MvgEmployeeReportList from 'views/Reports/MvgEmployeeReportList';
+import SuperWiserList from 'views/Super Wiser/SuperWiserList';
 const Profile = Loadable(lazy(() => import('Profile')));
 const EmployeeList = Loadable(lazy(() => import('views/Employee/EmployeeList')));
 const CustomerFirmList = Loadable(lazy(() => import('views/Customer Firm Master/CustomerFirmList')));
@@ -202,6 +203,14 @@ const MainRoutes = {
       element: (
         <Suspense fallback={<Loader />}>
           <MvgEmployeeReportList />
+        </Suspense>
+      )
+    },
+    {
+      path: '/super-wiser',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <SuperWiserList />
         </Suspense>
       )
     },

@@ -114,7 +114,8 @@ const EmployeeList = () => {
         searchKeyword: searchKeywordValue === undefined ? searchKeyword : searchKeywordValue,
         toDate: toDate ? dayjs(toDate).format('YYYY-MM-DD') : null,
         fromDate: fromDate ? dayjs(fromDate).format('YYYY-MM-DD') : null,
-        companyID: Number(companyID)
+        companyID: Number(companyID),
+        appUserTypeID: 1
       });
 
       if (data) {
@@ -159,14 +160,7 @@ const EmployeeList = () => {
     });
     setShowEmployeeModal(true);
   };
-  const VehicleEditBtnClicked = (value) => {
-    setModelRequestData({
-      ...modelRequestData,
-      userKeyIDForUpdate: value.userKeyIDForUpdate,
-      Action: 'Update'
-    });
-    setShowEmployeeModal(true);
-  };
+
 
   const handleSearch = (e) => {
     let searchKeywordValue = e.target.value;
@@ -267,13 +261,6 @@ const EmployeeList = () => {
     return parts.filter((part) => part).join(' ');
   };
 
-  const VehicleViewBtnClicked = async (row) => {
-    setModelRequestData({
-      ...modelRequestData,
-      userKeyIDForUpdate: row.userKeyIDForUpdate
-    });
-    setShowVehicleViewModal(true);
-  };
 
   const [showPassword, setShowPassword] = useState({});
 
@@ -382,7 +369,7 @@ const EmployeeList = () => {
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           {/* Top controls */}
           <div className="d-flex justify-content-between align-items-center mb-1">
-                    <button
+            <button
               // className="btn btn-light p-1 me-2"
               className="btn btn-outline-secondary btn-sm me-2"
 

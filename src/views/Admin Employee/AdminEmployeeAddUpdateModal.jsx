@@ -32,6 +32,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
 
       const [adminObj, setAdminObj] = useState({
             userKeyID: null,
+            companyIDs: [],
             userKeyIDForUpdate: null,
             firstName: null,
             lastName: null,
@@ -43,11 +44,8 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
       });
 
 
-      const [selectedRole, setSelectedRole] = useState(null);
-      const [designationOption, setDesignationOption] = useState([]);
       const [companyOption, setCompanyOption] = useState([]);
       const [roleOption, setRoleOption] = useState([]);
-      const [employeeTypeOption, setEmployeeTypeOption] = useState([]);
 
 
 
@@ -91,7 +89,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                   if (response?.data?.statusCode === 200) {
                         const designationList = response?.data?.responseData?.data || [];
                         const formattedDesignationList = designationList.map((comp) => ({
-                              value: comp.roleKeyID,
+                              value: comp.companyID,
                               label: comp.companyName
                         }));
                         setCompanyOption(formattedDesignationList);
@@ -131,6 +129,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                               mobileNo: ModelData.mobileNo,
                               password: ModelData.password,
                               address: ModelData.address,
+                              companyIDs: ModelData.companyIDs,
                         });
                         // rc book
                   } else {
@@ -166,6 +165,10 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                   adminObj.emailID === '' ||
                   adminObj.emailID === null ||
 
+                  adminObj.companyIDs === undefined ||
+                  adminObj.companyIDs === '' ||
+                  adminObj.companyIDs === null ||
+
                   adminObj.password === null ||
                   adminObj.password === undefined ||
                   adminObj.password === '' ||
@@ -190,6 +193,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                   emailID: adminObj.emailID,
                   password: adminObj.password,
                   address: adminObj.address,
+                  companyIDs: adminObj.companyIDs,
                   roleKeyID: adminObj.roleKeyID,
                   instituteKeyID: modelRequestData.instituteKeyID,
             };
@@ -237,14 +241,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
 
 
 
-      function convertDateStringToDate(date) {
-            if (typeof date !== 'string' || !date.includes('/')) {
-                  return null;
-            }
-            const [day, month, year] = date.split('/');
-            // month is 0-based in JS Date
-            return new Date(Number(year), Number(month) - 1, Number(day));
-      }
+
 
 
 
@@ -580,6 +577,39 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                             ''
                                                       )}
 
+                                                </div>
+                                          </div>
+
+
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <div>
+                                                      <label className="form-label">
+                                                            Select Company
+                                                            <span style={{ color: 'red' }}>*</span>
+                                                      </label>
+                                                      <div>
+                                                            <Select
+                                                                  isMulti
+                                                                  value={companyOption.filter((option) =>
+                                                                        adminObj.companyIDs?.includes(option.value)
+                                                                  )}
+                                                                  onChange={(selectedOptions) =>
+                                                                        setAdminObj((prev) => ({
+                                                                              ...prev,
+                                                                              companyIDs: selectedOptions ? selectedOptions.map((o) => o.value) : [],
+                                                                        }))
+                                                                  }
+                                                                  options={companyOption}
+                                                                  placeholder="Select Company"
+                                                            />
+
+                                                            {error &&
+                                                                  (adminObj.roleKeyID === null || adminObj.roleKeyID === undefined || adminObj.roleKeyID === '') ? (
+                                                                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                            ) : (
+                                                                  ''
+                                                            )}
+                                                      </div>
                                                 </div>
                                           </div>
                                     </div>

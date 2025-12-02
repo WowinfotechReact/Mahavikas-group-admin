@@ -100,7 +100,7 @@ const InstituteWiseAttendanceReport = () => {
 
             if (projectIDs && instituteID && year && month) {
                   GetAttendanceReportListData({
-                        projectID: projectIDs,
+                        projectIDs: projectIDs,
                         instituteID,
                         monthDate
                   });
@@ -190,7 +190,7 @@ const InstituteWiseAttendanceReport = () => {
                   let url = '/GetInstituteLookupList';
 
                   const response = await GetInstituteLookupList(url, {
-                        projectID: projectID
+                        projectIDs: projectID
                   });
 
                   if (response?.data?.statusCode === 200) {

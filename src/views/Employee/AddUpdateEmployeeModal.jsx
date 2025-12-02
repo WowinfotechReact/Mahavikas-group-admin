@@ -108,6 +108,9 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
         ...prev,
         userKeyIDForUpdate: ModelData.userKeyIDForUpdate ?? null,
         userDetailsKeyID: ModelData.userDetailsKeyID ?? null,
+        canUpdateAttendance: ModelData.canUpdateAttendance ?? null,
+
+
         firstName: ModelData.firstName ?? "",
         lastName: ModelData.lastName ?? "",
         companyKeyID: ModelData.companyKeyID ?? "",
@@ -147,7 +150,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
   const Submit = async () => {
 
     let isValid = false;
-
+    debugger
     if (
       employeeObj.firstName === null ||
       employeeObj.firstName === undefined ||
@@ -155,6 +158,11 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       employeeObj.lastName === null ||
       employeeObj.lastName === undefined ||
       employeeObj.lastName === '' ||
+
+      employeeObj.canUpdateAttendance === null ||
+      employeeObj.canUpdateAttendance === undefined ||
+      employeeObj.canUpdateAttendance === '' ||
+
 
 
 
@@ -165,6 +173,8 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       employeeObj.emailID === undefined ||
       employeeObj.emailID === '' ||
       employeeObj.emailID === null ||
+
+
 
       employeeObj.zoneIDs === null ||
       employeeObj.zoneIDs === undefined ||
@@ -205,7 +215,9 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       password: employeeObj.password,
       address: employeeObj.address,
       companyID: companyID,
-      instituteID: null,
+      appUserTypeID: 1,
+      canUpdateAttendance: employeeObj.canUpdateAttendance,
+      instituteIDs: [],
       zoneIDs: Array.isArray(employeeObj.zoneIDs) ? employeeObj.zoneIDs : [],
       districtIDs: Array.isArray(employeeObj.districtIDs) ? employeeObj.districtIDs : [],
       talukaIDs: Array.isArray(employeeObj.talukaIDs) ? employeeObj.talukaIDs : [],
@@ -281,13 +293,6 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
     GetDistrictLookupListData(selectedZoneIds);
   };
 
-
-
-
-  console.log(user.userID, '3333333333dddddddd');
-
-
-
   useEffect(() => {
     GetProjectLookupListData(companyID)
   }, [])
@@ -295,7 +300,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
   const GetProjectLookupListData = async (companyID) => {
 
     try {
-      const response = await GetProjectLookupList(user?.userID, companyID);
+      const response = await GetProjectLookupList(null, companyID);
 
       if (response?.data?.statusCode === 200) {
         const list = response?.data?.responseData?.data || [];
@@ -817,6 +822,92 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   )}
                 </div>
               </div></div>
+            <div className="row">
+              <div className="col-12 col-md-6 mb-2">
+                <style>
+                  {`
+.custom-radio-group {
+  display: flex;
+  gap: 12px;
+}
+
+.custom-radio {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 00;
+  user-select: none;
+}
+
+.custom-radio input {
+  display: none;
+}
+
+.custom-radio.active {
+  background-color: #ff7d34;
+  border-color: #ff7d34;
+  color: #fff;
+}
+
+.custom-radio:hover {
+  border-color: #ff7d34;
+}
+`}
+                </style>
+
+                <div className="mb-3">
+                  <label className="mb-1">Can Update Attendance?</label>
+                  <span style={{ color: 'red' }}>*</span>
+
+                  <div className="custom-radio-group">
+
+                    {/* YES OPTION */}
+                    <label
+                      className={`custom-radio ${employeeObj.canUpdateAttendance === true ? "active" : ""}`}
+                    >
+                      <input
+                        type="radio"
+                        name="canUpdateAttendance"
+                        checked={employeeObj.canUpdateAttendance === true}
+                        onChange={() =>
+                          setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: true }))
+                        }
+                      />
+                      Yes
+                    </label>
+
+                    {/* NO OPTION */}
+                    <label
+                      className={`custom-radio ${employeeObj.canUpdateAttendance === false ? "active" : ""}`}
+                    >
+                      <input
+                        type="radio"
+                        name="canUpdateAttendance"
+                        checked={employeeObj.canUpdateAttendance === false}
+                        onChange={() =>
+                          setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: false }))
+                        }
+                      />
+                      No
+                    </label>
+
+                  </div>
+
+
+                  {(error && employeeObj.canUpdateAttendance === undefined || employeeObj.canUpdateAttendance === null || employeeObj.canUpdateAttendance === ''
+
+                  ) && (
+                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                    )}
+
+                </div>
+
+              </div>
+            </div>
 
 
 

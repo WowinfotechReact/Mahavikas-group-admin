@@ -75,7 +75,7 @@ const Login = () => {
   // 2] This function validate email id & password is in valid format
   const LoginBtnClicked = () => {
     setErrorMessage('');
-    if (!LoginObj.mobileNo || !LoginObj.password || !LoginObj.companyID) {
+    if (!LoginObj.mobileNo || !LoginObj.password) {
       setRequireErrorMessage("This fields are required");
       return false;
     } else if (LoginObj.mobileNo.length !== 10) {
@@ -91,7 +91,7 @@ const Login = () => {
       mobileNo: LoginObj.mobileNo,
       password: LoginObj.password,
       roleID: LoginObj.roleID,
-      companyIDs: LoginObj.companyID
+      // companyIDs: LoginObj.companyID
 
 
 
@@ -182,52 +182,7 @@ const Login = () => {
               Admin Login
             </span>
 
-            <div className="wrap-input100 validate-input" data-validate="Company selection is required">
-              <Select
-                placeholder="Select Company"
-                options={companyOption}
-                menuPortalTarget={document.body}
-                menuPosition="fixed"
-                styles={{
-                  menuPortal: base => ({ ...base, zIndex: 9999 }), // ensures it appears on top
-                }}
 
-                isMulti
-                value={companyOption?.filter(option =>
-                  LoginObj?.companyID?.includes(option.value)
-                )}
-                onChange={(selectedOptions) => {
-                  if (!selectedOptions || selectedOptions.length === 0) {
-                    // None selected
-                    setLoginObj(prev => ({ ...prev, companyID: [] }));
-                    return;
-                  }
-
-                  const isAllSelected = selectedOptions.some(opt => opt.value === "ALL");
-
-                  if (isAllSelected) {
-                    // Select all actual company IDs
-                    const allIds = companyOption
-                      .filter(opt => opt.value !== "ALL")
-                      .map(opt => opt.value);
-
-                    setLoginObj(prev => ({ ...prev, companyID: allIds }));
-                  } else {
-                    // Normal multi-select behavior
-                    const ids = selectedOptions.map(opt => opt.value);
-
-                    setLoginObj(prev => ({ ...prev, companyID: ids }));
-                  }
-                }}
-              />
-
-
-              {requireErrorMessage && (!LoginObj.companyID || LoginObj.companyID === "") && (
-                <label className="validation mt-1" style={{ color: "red" }}>
-                  {ERROR_MESSAGES}
-                </label>
-              )}
-            </div>
             <div className="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
               <input className="input100" type="text" name="email"
                 value={LoginObj.mobileNo}

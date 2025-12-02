@@ -11,21 +11,23 @@ import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { useLocation } from 'react-router-dom';
 import { AddUpdateAppUser, GetAppUserModel } from 'services/Employee Staff/EmployeeApi';
-import { GetDesignationLookupList } from 'services/Master Crud/Designationapi';
+import { GetProjectLookupList } from 'services/Project/ProjectApi';
+import { GetInstituteLookupList } from 'services/Institute/InstituteApi';
 
-const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData, }) => {
+const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData, }) => {
 
       const { user, setLoader, companyID } = useContext(ConfigContext);
       const [modelAction, setModelAction] = useState('');
       const [error, setErrors] = useState(null);
+      const [projectOption, setProjectOption] = useState([]);
       const [showSuccessModal, setShowSuccessModal] = useState(false);
       const [errorMessage, setErrorMessage] = useState();
-      const [showPassword, setShowPassword] = useState(false);
-      const [designationOption, setDesignationOption] = useState([])
-      const [serviceOption, setServiceOption] = useState([])
+      const [instituteOption, setInstituteOption] = useState([])
       const [employeeObj, setEmployeeObj] = useState({
+            canUpdateAttendance: null,
             attendanceTypeID: null,
             designationID: null,
+            instituteIDs: [],
             password: null,
             lastName: null,
             roleKeyID: null,
@@ -57,11 +59,6 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
             }
       }, [modelRequestData?.Action]);
 
-
-      const AttendanceOption = [
-            { label: 'Daily', value: 1 },
-            { label: 'Hourly', value: 2 }
-      ]
       const GetAdminUserModelData = async (id, userDetailsKeyID) => {
 
             if (id === undefined) {
@@ -84,10 +81,18 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                               mobileNo: ModelData.mobileNo,
                               password: ModelData.password,
                               address: ModelData.address,
-                              designationID: ModelData.designationID,
                               attendanceTypeID: ModelData.attendanceTypeID,
-                              serviceID: ModelData.serviceID,
+                              canUpdateAttendance: ModelData.canUpdateAttendance,
+                              // projectIDs: ModelData.projectIDs,
+                              instituteIDs: Array.isArray(ModelData.instituteIDs)
+                                    ? ModelData.instituteIDs
+                                    : ModelData.instituteIDs ? [ModelData.instituteIDs] : [],
+                              projectIDs: Array.isArray(ModelData.projectIDs)
+                                    ? ModelData.projectIDs
+                                    : ModelData.projectIDs ? [ModelData.projectIDs] : [],
+
                         });
+                        await GetInstituteLookupListData(ModelData.projectIDs)
                         // rc book
                   } else {
                         // Handle non-200 status codes if necessary
@@ -102,7 +107,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
       const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
       const Submit = async () => {
-
+            debugger
             let isValid = false;
 
             if (
@@ -119,12 +124,13 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   employeeObj.emailID === undefined ||
                   employeeObj.emailID === '' ||
                   employeeObj.emailID === null ||
-                  employeeObj.designationID === null ||
-                  employeeObj.designationID === undefined ||
-                  employeeObj.designationID === '' ||
-                  employeeObj.attendanceTypeID === null ||
-                  employeeObj.attendanceTypeID === undefined ||
-                  employeeObj.attendanceTypeID === '' ||
+                  employeeObj.instituteIDs === null ||
+                  employeeObj.instituteIDs === undefined ||
+                  employeeObj.instituteIDs === '' ||
+
+                  employeeObj.canUpdateAttendance === null ||
+                  employeeObj.canUpdateAttendance === undefined ||
+                  employeeObj.canUpdateAttendance === '' ||
                   employeeObj.address === null ||
                   employeeObj.address === undefined ||
                   employeeObj.address === ''
@@ -140,7 +146,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   userKeyID: user.userKeyID,
                   userDetailsKeyID: modelRequestData?.userDetailsKeyID,
                   userKeyIDForUpdate: modelRequestData?.userKeyIDForUpdate,
-                  ProjectIDs: [modelRequestData?.projectID],
+                  ProjectIDs: employeeObj?.projectIDs,
                   firstName: employeeObj.firstName,
                   lastName: employeeObj.lastName,
                   mobileNo: employeeObj.mobileNo,
@@ -149,11 +155,12 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   attendanceTypeID: employeeObj.attendanceTypeID,
                   // password: employeeObj.password,
                   address: employeeObj.address,
+                  appUserTypeID: 2,
+
+                  canUpdateAttendance: employeeObj.canUpdateAttendance,
                   roleKeyID: employeeObj.roleKeyID,
-                  appUserTypeID: 3,
-                  canUpdateAttendance: false,
                   companyID: companyID,
-                  instituteIDs: [location.state.instituteKeyID],
+                  instituteIDs: [employeeObj.instituteIDs],
                   zoneIDs: [],
                   districtIDs: [],
                   talukaIDs: [],
@@ -187,69 +194,93 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                   console.error(error);
             }
       };
+      useEffect(() => {
+            GetProjectLookupListData(companyID)
+      }, [])
+
+      const GetProjectLookupListData = async (companyID) => {
+
+            try {
+                  const response = await GetProjectLookupList(null, companyID);
+
+                  if (response?.data?.statusCode === 200) {
+                        const list = response?.data?.responseData?.data || [];
+
+                        // 🔥 Remove duplicate projectID
+                        const unique = [
+                              ...new Map(list.map(item => [item.projectID, item])).values()
+                        ];
+
+                        const formatted = unique.map((p) => ({
+                              value: p.projectID,
+                              label: p.projectName
+                        }));
+
+                        setProjectOption(formatted);
+                  } else {
+                        console.error("Failed to fetch project list");
+                  }
+            } catch (error) {
+                  console.error("Error fetching project lookup list:", error);
+            }
+      };
+
+
+
 
       const closeAllModal = () => {
             onHide();
             setShowSuccessModal(false);
       };
-      useEffect(() => {
-            GetDesignationLookupListData()
-      }, [])
 
 
 
-      const GetDesignationLookupListData = async () => {
 
 
+      const handleProjectChange = (selectedOptions) => {
+            const values = selectedOptions ? selectedOptions.map(opt => opt.value) : [];
+
+            setEmployeeObj((prev) => ({
+                  ...prev,
+                  projectIDs: values,
+            }));
+
+            // 🔥 Trigger institute lookup immediately
+            GetInstituteLookupListData(values);
+      };
+
+
+
+      const GetInstituteLookupListData = async (projectIDs) => {
+            setLoader(true);
 
             try {
-
-                  let response = await GetDesignationLookupList(modelRequestData?.serviceID);
+                  const response = await GetInstituteLookupList('/GetInstituteLookupList', {
+                        projectIDs: projectIDs   // 🔥 Sending array
+                  });
 
                   if (response?.data?.statusCode === 200) {
-                        const list = response?.data?.responseData?.data || [];
+                        setLoader(false);
 
-                        const formatted = list.map((d) => ({
-                              value: d.designationID,
-                              label: d.designationName,
+                        const list = response.data.responseData.data || [];
+
+                        const formatted = list.map(item => ({
+                              value: item.instituteID,
+                              label: item.instituteName
                         }));
 
-                        setDesignationOption(formatted);
+                        setInstituteOption(formatted);
+                  } else {
+                        setLoader(false);
+                        setErrorMessage(response?.response?.data?.errorMessage);
                   }
             } catch (err) {
-                  console.error("Error fetching districts:", err);
+                  setLoader(false);
+                  console.error(err);
             }
       };
 
-      const handleServiceChange = async (selectedOption) => {
-            const serviceID = selectedOption ? selectedOption.value : null;
 
-            // 1️⃣ Update state
-            setEmployeeObj(prev => ({
-                  ...prev,
-                  serviceID: serviceID,
-            }));
-
-            // 2️⃣ Call designation API based on new serviceID
-            await GetDesignationLookupListData(serviceID);
-      };
-
-      const handleDesignationChange = (selectedOption) => {
-            setEmployeeObj(prev => ({
-                  ...prev,
-                  designationID: selectedOption ? selectedOption.value : null,
-
-            }));
-
-      };
-      const handleAttendanceTypeChange = (selectedOption) => {
-            setEmployeeObj(prev => ({
-                  ...prev,
-                  attendanceTypeID: selectedOption ? selectedOption.value : null,
-
-            }));
-
-      };
 
       return (
             <>
@@ -257,7 +288,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                         <Modal.Header closeButton>
                               <Modal.Title>
                                     <h3 className="text-center">
-                                          {modelRequestData?.Action !== null ? 'Update Employee Of Institute' : modelRequestData?.Action === null ? 'Add Employee For Institute' : ''}
+                                          {modelRequestData?.Action !== null ? 'Update Supervisor' : modelRequestData?.Action === null ? 'Add Supervisor ' : ''}
                                     </h3>
                               </Modal.Title>
                         </Modal.Header>
@@ -459,19 +490,27 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="Password" className="form-label">
-                                                            Select Attendance Type
+                                                            Select Project
                                                             <span style={{ color: 'red' }}>*</span>
                                                       </label>
                                                       <Select
-                                                            placeholder="Select Attendance Type"
-                                                            options={AttendanceOption}
-                                                            value={AttendanceOption.find(item => item.value === employeeObj?.attendanceTypeID)}
-                                                            onChange={handleAttendanceTypeChange}
+                                                            options={projectOption}
+                                                            isMulti
+                                                            value={projectOption.filter(item =>
+                                                                  employeeObj.projectIDs?.includes(item.value)
+                                                            )}
+                                                            placeholder="Select Project(s)"
+                                                            onChange={handleProjectChange}
                                                             menuPosition="fixed"
                                                       />
-                                                      {error && !employeeObj.attendanceTypeID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
-
-
+                                                      {error &&
+                                                            (employeeObj.projectIDs === null ||
+                                                                  employeeObj.projectIDs === undefined ||
+                                                                  employeeObj.projectIDs.length === 0) ? (
+                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                      ) : (
+                                                            ''
+                                                      )}
 
 
                                                 </div>
@@ -482,22 +521,120 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="Password" className="form-label">
-                                                            Select Designation
+                                                            Select Institute
                                                             <span style={{ color: 'red' }}>*</span>
                                                       </label>
                                                       <Select
-                                                            placeholder="Select Designation"
-                                                            options={designationOption}
-                                                            value={designationOption.find(item => item.value === employeeObj?.designationID)}
-                                                            onChange={handleDesignationChange}
+                                                            isMulti
+                                                            options={instituteOption}
+                                                            value={
+                                                                  instituteOption.filter(opt =>
+                                                                        Array.isArray(employeeObj.instituteIDs)
+                                                                              ? employeeObj.instituteIDs.includes(opt.value)
+                                                                              : employeeObj.instituteIDs === opt.value
+                                                                  )
+                                                            }
+                                                            placeholder="Select Institute(s)"
+                                                            onChange={(selected) =>
+                                                                  setEmployeeObj(prev => ({
+                                                                        ...prev,
+                                                                        instituteIDs: selected ? selected.map(x => x.value) : []
+                                                                  }))
+                                                            }
+                                                            styles={{
+                                                                  menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                                            }}
                                                             menuPosition="fixed"
                                                       />
 
-                                                      {error && !employeeObj.designationID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
+
+                                                      {error && !employeeObj.instituteIDs && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
 
 
 
                                                 </div>
+                                          </div>
+                                          <div className="col-12 col-md-6 mb-2">
+                                                <style>
+                                                      {`
+.custom-radio-group {
+  display: flex;
+  gap: 12px;
+}
+
+.custom-radio {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 00;
+  user-select: none;
+}
+
+.custom-radio input {
+  display: none;
+}
+
+.custom-radio.active {
+  background-color: #ff7d34;
+  border-color: #ff7d34;
+  color: #fff;
+}
+
+.custom-radio:hover {
+  border-color: #ff7d34;
+}
+`}
+                                                </style>
+
+                                                <div className="mb-3">
+                                                      <label className="mb-1">Can Update Attendance?</label>
+
+                                                      <div className="custom-radio-group">
+
+                                                            {/* YES OPTION */}
+                                                            <label
+                                                                  className={`custom-radio ${employeeObj.canUpdateAttendance === true ? "active" : ""}`}
+                                                            >
+                                                                  <input
+                                                                        type="radio"
+                                                                        name="canUpdateAttendance"
+                                                                        checked={employeeObj.canUpdateAttendance === true}
+                                                                        onChange={() =>
+                                                                              setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: true }))
+                                                                        }
+                                                                  />
+                                                                  Yes
+                                                            </label>
+
+                                                            {/* NO OPTION */}
+                                                            <label
+                                                                  className={`custom-radio ${employeeObj.canUpdateAttendance === false ? "active" : ""}`}
+                                                            >
+                                                                  <input
+                                                                        type="radio"
+                                                                        name="canUpdateAttendance"
+                                                                        checked={employeeObj.canUpdateAttendance === false}
+                                                                        onChange={() =>
+                                                                              setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: false }))
+                                                                        }
+                                                                  />
+                                                                  No
+                                                            </label>
+
+                                                      </div>
+
+                                                      {(error && employeeObj.canUpdateAttendance === undefined || employeeObj.canUpdateAttendance === null || employeeObj.canUpdateAttendance === ''
+
+                                                      ) && (
+                                                                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                            )}
+
+                                                </div>
+
                                           </div>
                                     </div>
                                     <span style={{ color: 'red' }}>{errorMessage}</span>
@@ -524,4 +661,5 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
       );
 };
 
-export default InstituteEmployeeAddUpdateModal;
+export default SuperWiserAddUpdateModal;
+

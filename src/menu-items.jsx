@@ -91,6 +91,7 @@ const icons = {
   EngineeringIcon: EngineeringIcon,
   ScheduleSendIcon: ScheduleSendIcon,
   HomeOutlinedIcon: HomeOutlinedIcon,
+  VerifiedIcon: VerifiedIcon,
   ChromeReaderModeOutlinedIcon: ChromeReaderModeOutlinedIcon,
   HelpOutlineOutlinedIcon: HelpOutlineOutlinedIcon,
   AdminPanelSettingsIcon: AdminPanelSettingsIcon,
@@ -197,7 +198,14 @@ export default {
           icon: icons['SupervisedUserCircleIcon'],
           url: '/employee-list'
         },
-
+        {
+          id: 'superW',
+          moduleName: 'Employee',
+          title: 'Super Wiser',
+          type: 'item',
+          icon: icons['VerifiedIcon'],
+          url: '/super-wiser'
+        },
         // {
         //   id: 'customer/firm ',
         //   moduleName: 'Customer',
