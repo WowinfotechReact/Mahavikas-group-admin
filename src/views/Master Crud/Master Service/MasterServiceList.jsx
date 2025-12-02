@@ -200,27 +200,27 @@ const MasterServiceList = () => {
                               {/* Top controls */}
 
                               <div className="d-flex justify-content-between align-items-center mb-1">
-                                            <button
-              // className="btn btn-light p-1 me-2"
-              className="btn btn-outline-secondary btn-sm me-2"
+                                    <button
+                                          // className="btn btn-light p-1 me-2"
+                                          className="btn btn-outline-secondary btn-sm me-2"
 
-              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
-              onClick={() => navigate(-1)}
-            >
-              <i className="fa-solid fa-arrow-left"></i>
+                                          // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+                                          onClick={() => navigate(-1)}
+                                    >
+                                          <i className="fa-solid fa-arrow-left"></i>
 
-            </button>
+                                    </button>
                                     <div className="flex-grow-1 ">
                                           <h5 className="mb-0">Service</h5>
                                     </div>
-                                    <div className="position-absolute end-0 me-2">
+                                    {/* <div className="position-absolute end-0 me-2">
 
                                           <button onClick={() => addMasterStateBtnClick()} style={{ background: '#ffaa33' }} className="btn text-white btn-sm d-inline d-sm-none">
                                                 <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
                                                 <span className="d-inline d-sm-none"> Add</span>
                                           </button>
 
-                                    </div>
+                                    </div> */}
                               </div>
 
                               <div className="d-flex justify-content-between align-items-center mb-2">
@@ -234,12 +234,12 @@ const MasterServiceList = () => {
                                                 handleSearch(e);
                                           }}
                                     />
-                                    <Tooltip title="Add Service">
+                                    {/* <Tooltip title="Add Service">
                                           <button onClick={() => addMasterStateBtnClick()} style={{ background: '#ffaa33' }} className="btn text-white btn-sm d-none d-sm-inline">
                                                 <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
                                                 <span className="d-none d-sm-inline"> Add</span>
                                           </button>
-                                    </Tooltip>
+                                    </Tooltip> */}
                               </div>
 
                               {/* Table */}
@@ -266,7 +266,7 @@ const MasterServiceList = () => {
                                                       </th>
                                                       <th className="text-center">Status</th>
                                                       {/* <th className="text-center">Created On</th> */}
-                                                      <th className="text-center">Action</th>
+                                                      {/* <th className="text-center">Action</th> */}
                                                 </tr>
                                           </thead>
                                           <tbody>
@@ -277,11 +277,11 @@ const MasterServiceList = () => {
                                                             <td className="text-center">
                                                                   <Tooltip title={row.status === true ? 'Active' : 'In Active'}>
                                                                         {row.status === 'Active' ? 'Active' : 'In Active'}
-                                                                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === "Active"} />
+                                                                        <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} disabled checked={row.status === "Active"} />
                                                                   </Tooltip>
                                                             </td>
                                                             {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
-                                                            <td className="text-center">
+                                                            {/* <td className="text-center">
                                                                   <Tooltip title="Update Service">
                                                                         <button
                                                                               style={{
@@ -299,7 +299,7 @@ const MasterServiceList = () => {
                                                                         </button>
                                                                   </Tooltip>
 
-                                                            </td>
+                                                            </td> */}
                                                       </tr>
                                                 ))}
                                           </tbody>
