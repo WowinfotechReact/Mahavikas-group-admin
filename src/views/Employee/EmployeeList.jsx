@@ -3,7 +3,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router';
 import { BsPerson, BsEnvelope, BsTelephone } from "react-icons/bs";
-
+import { FaMapMarkerAlt, FaCity, FaRoute } from "react-icons/fa";
+import { FaProjectDiagram } from "react-icons/fa"
 import PaginationComponent from 'component/Pagination';
 import { ConfigContext } from 'context/ConfigContext';
 import * as XLSX from 'xlsx';
@@ -57,8 +58,6 @@ const EmployeeList = () => {
   const [toDate, setToDate] = useState(null);
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [show, setShow] = useState(false);
-  const handleShow = () => setShow(true);
-  const handleClose = () => setShow(false);
   const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
   const [showEmployeeInstituteModal, setShowEmployeeInstituteModal] = useState(false)
   const [showEmployeeViewModal, setShowEmployeeViewModal] = useState(false)
@@ -175,26 +174,6 @@ const EmployeeList = () => {
     GetAppUserListData(1, capitalizedValue, toDate, fromDate);
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    GetAppUserListData(pageNumber, null, toDate, fromDate);
-  };
-
-  const closeAll = () => {
-    setShowSuccessModal(false);
-  };
-
-  const handleClearDates = () => {
-    setCurrentPage(1);
-    setToDate(null);
-    setFromDate(null);
-    GetAppUserListData(1, null, null, null);
-  };
-
-  const handleStatusChange = (row) => {
-    setStateChangeStatus(row); // You can set only relevant data if needed
-    setShowStatusChangeModal(true);
-  };
   const closeAllModal = () => {
     // onHide();
     setShowResetIMEIModal(false)
@@ -242,127 +221,7 @@ const EmployeeList = () => {
     }
   };
 
-  // Utility function to format the vehicle number
-  const formatVehicleNumber = (vehicleNumber) => {
-    if (!vehicleNumber) return ''; // Handle empty or undefined values
 
-    // Remove invalid characters and ensure uppercase
-    const sanitizedInput = vehicleNumber.toUpperCase().replace(/[^A-Z0-9]/g, '');
-
-    // Split into parts and format
-    const parts = [
-      sanitizedInput.slice(0, 2), // State code (2 letters)
-      sanitizedInput.slice(2, 4), // RTO code (2 digits)
-      sanitizedInput.slice(4, 6), // Series code (2 letters)
-      sanitizedInput.slice(6, 10) // Employee number (4 digits)
-    ];
-
-    // Join parts with spaces
-    return parts.filter((part) => part).join(' ');
-  };
-
-
-  const [showPassword, setShowPassword] = useState({});
-
-  const togglePassword = (index) => {
-    setShowPassword((prev) => ({ ...prev, [index]: !prev[index] }));
-  };
-  const exportToExcel = () => {
-    if (!vehicleListData || vehicleListData.length === 0) {
-      alert('No data to export');
-      return;
-    }
-
-    // 1. Define key-to-label mapping
-    const labelMapping = {
-      firstName: 'First Name',
-      lastName: 'Last Name',
-      designation: 'Designation',
-      empCode: 'Employee Code',
-      dateOfJoining: 'Date of Joining',
-      dateOfBirth: 'Date of Birth',
-      mobileNumber: 'Mobile Number',
-      alternativeNumber: 'Alternative Number',
-      emailID: 'Email ID',
-      bloodGroup: 'Blood Group',
-      aadhaarNumber: 'Aadhaar Number',
-      panNumber: 'PAN Number',
-      employeeType: 'Employee Type',
-      password: 'Password',
-      address: 'Address'
-    };
-
-    // 2. Transform data: remove unwanted keys & rename headers
-    const transformedData = vehicleListData.map((item) => {
-      const newItem = {};
-      Object.keys(labelMapping).forEach((key) => {
-        newItem[labelMapping[key]] = item[key]; // Set new label as key
-      });
-      return newItem;
-    });
-
-    // 3. Convert to worksheet
-    const worksheet = XLSX.utils.json_to_sheet(transformedData);
-
-    // 4. Auto column width
-    const columnWidths = Object.values(labelMapping).map((label) => {
-      const maxWidth = Math.max(
-        label.length,
-        ...transformedData.map((row) => (row[label] ? row[label].toString().length : 0))
-      );
-      return { wch: maxWidth + 2 }; // +2 padding
-    });
-    worksheet['!cols'] = columnWidths;
-
-    // 5. Create workbook & export
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Employee List');
-    XLSX.writeFile(workbook, 'EmployeeList.xlsx');
-  };
-
-
-  const togglePasswordVisibility = (idx) => {
-    setVisiblePasswords((prevState) => ({
-      ...prevState,
-      [idx]: !prevState[idx] // Toggle the visibility for this specific idx
-    }));
-  };
-  const ResetIMEIBtnClick = (value) => {
-    setModelRequestData((prev) => ({
-      ...prev,
-      userKeyIDForUpdate: value.userKeyIDForUpdate,
-      resetType: 'MACAddress',
-      userKeyID: user.userKeyID
-    }));
-    const apiParam = {
-      userKeyIDForUpdate: value.userKeyIDForUpdate,
-      resetType: 'MACAddress',
-      userKeyID: user.userKeyID
-    }
-
-    setShowResetIMEIModal(true); // Show modal after setting state
-  };
-
-
-
-  const addInstitute = (row) => {
-    navigate('/', { state: { instituteKeyID: row.instituteKeyID, instituteName: row.instituteName } })
-  }
-
-
-
-
-  const [expandedLead, setExpandedLead] = useState(null);
-  const toggleExpand = (userKeyIDForUpdate) => {
-    setExpandedLead((prev) => (prev === userKeyIDForUpdate ? null : userKeyIDForUpdate));
-  };
-
-
-
-  const AssignedInstituteBtn = () => {
-
-    setShowEmployeeInstituteModal(true)
-  }
   return (
     <>
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
@@ -437,6 +296,8 @@ const EmployeeList = () => {
 
 
                   <th className="text-center">Address</th>
+                  <th className="text-center">Geo Info</th>
+                  <th className="text-center">Project</th>
                   <th className="text-center actionSticky">Action</th>
                 </tr>
               </thead>
@@ -492,6 +353,60 @@ const EmployeeList = () => {
                           {value.address}
                         </span>
                       )}
+                    </td>
+                    <td style={{ minWidth: "180px" }}>
+                      <div className="d-flex flex-column gap-1">
+
+                        {/* Zone */}
+                        <div className="d-flex align-items-center fade-in">
+                          <FaMapMarkerAlt className="me-2 text-primary" />
+                          <div>
+                            <small className="text-muted d-block">Zone</small>
+                            <span>{value.zoneNames || "-"}</span>
+                          </div>
+                        </div>
+
+                        {/* District */}
+                        <div className="d-flex align-items-center fade-in delay-1">
+                          <FaCity className="me-2 text-success" />
+                          <div>
+                            <small className="text-muted d-block">District</small>
+                            <span>{value.districtNames || "-"}</span>
+                          </div>
+                        </div>
+
+                        {/* Taluka */}
+                        <div className="d-flex align-items-center fade-in delay-2">
+                          <FaRoute className="me-2 text-warning" />
+                          <div>
+                            <small className="text-muted d-block">Taluka</small>
+                            <span>{value.talukaNames || "-"}</span>
+                          </div>
+                        </div>
+
+                      </div>
+                    </td>
+
+                    <td className="text-start">
+                      {value.projectNames
+                        ?.split(",")
+                        .map((proj, i) => {
+                          const name = proj.trim();
+
+                          return (
+                            <div key={i} className="d-flex align-items-center project-row fade-in">
+                              <FaProjectDiagram className="me-2 text-primary icon-pop" />
+
+                              {name.length > 25 ? (
+                                <Tooltip title={name}>
+                                  {name.substring(0, 25)}...
+                                </Tooltip>
+                              ) : (
+                                name
+                              )}
+                            </div>
+                          );
+                        })}
                     </td>
 
 
