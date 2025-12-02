@@ -8,8 +8,8 @@ import { AddUpdateTaluka, GetTalukaModel } from 'services/Master Crud/MasterTalu
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 
 
-const AddUpdateMasterTalukaModal = ({ show, onHide,setModelAction,isAddUpdateActionDone, setIsAddUpdateActionDone,setShowSuccessModal, modelRequestData }) => {
-  
+const AddUpdateMasterTalukaModal = ({ show, onHide, setModelAction, isAddUpdateActionDone, setIsAddUpdateActionDone, setShowSuccessModal, modelRequestData }) => {
+
   const [error, setErrors] = useState(null);
   const [errorMessage, setErrorMessage] = useState();
   const [stateOption, setStateOption] = useState([]);
@@ -101,19 +101,18 @@ const AddUpdateMasterTalukaModal = ({ show, onHide,setModelAction,isAddUpdateAct
       console.error(error);
     }
   };
- useEffect(() => {
-      GetStateLookupListData()
-      
-    }, [])
+  useEffect(() => {
+    GetStateLookupListData()
 
-    useEffect(() => {
-      if(masterTalukaObj.stateID)
-      {
-        GetDistrictLookupListData()
-      }
-      
-    }, [masterTalukaObj.stateID])
-  
+  }, [])
+
+  useEffect(() => {
+    if (masterTalukaObj.stateID) {
+      GetDistrictLookupListData()
+    }
+
+  }, [masterTalukaObj.stateID])
+
   const GetStateLookupListData = async () => {
     try {
       const response = await GetStateLookupList(); // Ensure this function is imported correctly
@@ -134,12 +133,12 @@ const AddUpdateMasterTalukaModal = ({ show, onHide,setModelAction,isAddUpdateAct
       console.error('Error fetching IVR lookup list:', error);
     }
   };
-console.log("state id" + masterTalukaObj.stateID)
+  console.log("state id" + masterTalukaObj.stateID)
 
   const GetDistrictLookupListData = async () => {
-    
+
     try {
-      let response = await GetDistrictLookupList(masterTalukaObj?.stateID);
+      let response = await GetDistrictLookupList({ stateID: masterTalukaObj?.stateID });
       if (response?.data?.statusCode === 200) {
         const cityList = response?.data?.responseData?.data || [];
         const formattedCityList = cityList.map((city) => ({
@@ -176,7 +175,7 @@ console.log("state id" + masterTalukaObj.stateID)
         setMasterTalukaObj({
           ...masterTalukaObj,
           userKeyID: ModelData.userKeyID,
-          stateID:ModelData.stateID,
+          stateID: ModelData.stateID,
           stateName: ModelData.stateName,
           districtName: ModelData.districtName,
           districtID: ModelData.districtID,
@@ -215,7 +214,7 @@ console.log("state id" + masterTalukaObj.stateID)
         <Modal.Header closeButton>
           <Modal.Title>
             <h3 className="text-center">
-              {modelRequestData?.Action === 'Update' ? 'Update Taluka' :  'Add Taluka'}
+              {modelRequestData?.Action === 'Update' ? 'Update Taluka' : 'Add Taluka'}
             </h3>
           </Modal.Title>
         </Modal.Header>
@@ -249,7 +248,7 @@ console.log("state id" + masterTalukaObj.stateID)
                 value={districtOption.filter((item) => item.value === masterTalukaObj.districtID || null)}
                 onChange={handleDistrictChange}
                 menuPosition="fixed"
-                
+
               />
               {error &&
                 (masterTalukaObj.districtID === null || masterTalukaObj.districtID === undefined || masterTalukaObj.districtID === '') ? (
@@ -313,7 +312,7 @@ console.log("state id" + masterTalukaObj.stateID)
           </button>
         </Modal.Footer>
       </Modal>
-      
+
 
       {/* <CusModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} vehicleObj={vehicleObj} /> */}
     </>

@@ -53,10 +53,9 @@ export const GetDistrictLookupList = async ({
   ModuleName
 } = {}) => {
 
-  let url = `${MasterDistrictBaseUrl}/GetDistrictLookupList`;
+  const url = `${MasterDistrictBaseUrl}/GetDistrictLookupList`;
   const params = new URLSearchParams();
 
-  // ✅ Add only if value exists
   if (stateID) params.append("stateID", stateID);
 
   if (ZoneIDs) {
@@ -71,14 +70,11 @@ export const GetDistrictLookupList = async ({
   if (ProjectID) params.append("ProjectID", ProjectID);
   if (ModuleName) params.append("ModuleName", ModuleName);
 
-  // ✅ Attach query params only if any exist
-  const finalUrl = params.toString()
-    ? `${url}?${params.toString()}`
-    : url;
+  const finalUrl = params.toString() ? `${url}?${params.toString()}` : url;
 
-  const res = await getListWithAuthenticated(finalUrl);
-  return res;
+  return await getListWithAuthenticated(finalUrl);
 };
+
 
 
 export const ChangeDistrictStatus = async (id) => {
