@@ -156,7 +156,7 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                   mobileNo: employeeObj.mobileNo,
                   emailID: employeeObj.emailID,
                   designationID: employeeObj.designationID,
-                  attendanceTypeID: employeeObj.attendanceTypeID,
+                  attendanceTypeID: null,
                   password: employeeObj.password,
                   address: employeeObj.address,
                   appUserTypeID: 2,
@@ -185,8 +185,8 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                               setShowSuccessModal(true);
                               setModelAction(
                                     modelRequestData.Action === null || modelRequestData.Action === undefined
-                                          ? 'Institute Employee Added Successfully!'
-                                          : 'Institute Employee Updated Successfully!'
+                                          ? 'Supervisor Added Successfully!'
+                                          : 'Supervisor Updated Successfully!'
                               ); //Do not change this naming convention
 
                               setIsAddUpdateActionDone(true);
