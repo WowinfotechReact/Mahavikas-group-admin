@@ -32,7 +32,7 @@ import { GetAdminUserList } from 'services/Company/CompanyApi';
 
 const EmployeeList = () => {
   const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
-  const fullText = "Search By Name / Ph No. / Mail ID / Company Namee";
+  const fullText = "Search By Name / Ph No. / Mail ID ";
   let index = 0;
   const [visiblePasswords, setVisiblePasswords] = useState({});
   const [showResetIMEIModal, setShowResetIMEIModal] = useState();

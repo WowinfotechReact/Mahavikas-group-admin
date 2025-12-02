@@ -4,7 +4,7 @@ import { ConfigContext } from 'context/ConfigContext';
 import dayjs from 'dayjs';
 import AddUpdateMasterTalukaModal from './MasterTalukaModal';
 import { ChangeTalukaStatus, GetTalukaList } from 'services/Master Crud/MasterTalukaApi';
-
+import { useNavigate } from 'react-router';
 import PaginationComponent from 'component/Pagination';
 import SuccessPopupModal from 'component/SuccessPopupModal';
 import StatusChangeModal from 'component/StatusChangeModal ';
@@ -20,6 +20,7 @@ const MasterTalukaList = () => {
   const [modelAction, setModelAction] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
+  const navigate = useNavigate();
   const [tableRow,setTableRow]=useState([])
   const [totalCount, setTotalCount] = useState(null);
   const [pageSize, setPageSize] = useState(30);
@@ -115,7 +116,19 @@ const MasterTalukaList = () => {
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           {/* Top controls */}
           <div className="d-flex justify-content-between align-items-center mb-1">
+            <button
+                              // className="btn btn-light p-1 me-2"
+                              className="btn btn-outline-secondary btn-sm me-2"
+
+                              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+                              onClick={() => navigate(-1)}
+                              >
+                              <i className="fa-solid fa-arrow-left"></i>
+
+                        </button>
+                        <div className='flex-grow-1'>
             <h5 className="m-0">Taluka</h5>
+            </div>
             <button
               onClick={() => addMasterTalukaBtnClick()}
               className="btn btn-primary btn-sm d-inline d-sm-none"

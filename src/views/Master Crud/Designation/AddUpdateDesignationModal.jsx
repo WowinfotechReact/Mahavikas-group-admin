@@ -195,7 +195,7 @@ const AddUpdateDesignationModal = ({ show, onHide, setIsAddUpdateActionDone, mod
                   <span style={{ color: 'red' }}>*</span>
                 </label>
                 <input
-                  maxLength={20}
+                  maxLength={30}
                   type="text"
                   className="form-control"
                   id="StateName"

@@ -6,6 +6,7 @@ import { ConfigContext } from 'context/ConfigContext';
 import { ChangeStateStatus, GetStateList} from 'services/Master Crud/MasterStateApi';
 import dayjs from 'dayjs';
 import AddUpdateMasterStateModal from './MasterStateModal';
+import { useNavigate } from 'react-router';
 import StatusChangeModal from 'component/StatusChangeModal ';
 import SuccessPopupModal from 'component/SuccessPopupModal';
 import NoResultFoundModel from 'component/NoResultFoundModal';
@@ -19,6 +20,7 @@ const MasterStateList = () => {
   const [modelAction, setModelAction] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
+  const navigate = useNavigate();
   const [totalCount, setTotalCount] = useState(null);
   const [pageSize, setPageSize] = useState(30);
   const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
@@ -130,8 +132,19 @@ console.log(tableRow)
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           {/* Top controls */}
           <div className="d-flex justify-content-between align-items-center mb-1">
-            <h5 className="m-0">State</h5>
+            <button
+                              // className="btn btn-light p-1 me-2"
+                              className="btn btn-outline-secondary btn-sm me-2"
 
+                              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+                              onClick={() => navigate(-1)}
+                              >
+                              <i className="fa-solid fa-arrow-left"></i>
+
+                        </button>
+                        <div className="flex-grow-1 ">
+            <h5 className="m-0">State</h5>
+              </div>
             <button
               onClick={() => addMasterStateBtnClick()}
               className="btn btn-primary btn-sm d-inline d-sm-none"

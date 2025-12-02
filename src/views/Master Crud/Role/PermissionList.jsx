@@ -4,7 +4,7 @@ import React, { useState, useContext } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Android12Switch from 'component/Android12Switch';
 
-
+import { useNavigate } from 'react-router';
 import { ConfigContext } from 'context/ConfigContext';
 import { ChangeStateStatus } from 'services/Master Crud/MasterStateApi';
 
@@ -25,6 +25,7 @@ const PermissionList = () => {
     const { user } = useContext(ConfigContext);
     const [showGrantPermissionModal, setShowGrantPermissionModal] = useState();
     const [modelAction, setModelAction] = useState();
+    const navigate = useNavigate()
     const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState();
 
@@ -74,7 +75,19 @@ const PermissionList = () => {
                 <div className="card-body p-2 bg-white shadow-md rounded-lg">
                     {/* Top controls */}
                     <div className="d-flex justify-content-between align-items-center mb-1">
-                        <h5 className="m-0">Permission</h5>
+                     <button
+                              // className="btn btn-light p-1 me-2"
+                              className="btn btn-outline-secondary btn-sm me-2"
+
+                              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+                              onClick={() => navigate(-1)}
+                              >
+                              <i className="fa-solid fa-arrow-left"></i>
+
+                        </button>
+                        <div className="flex-grow-1">
+                        <h5 className="mb-0">Permission</h5>
+                        </div>
                         <button
                             onClick={() => GrantPermission()}
                             className="btn btn-primary btn-sm d-inline d-sm-none"

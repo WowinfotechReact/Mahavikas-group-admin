@@ -14,6 +14,7 @@ import SuccessPopupModal from 'component/SuccessPopupModal';
 import NoResultFoundModel from 'component/NoResultFoundModal';
 import PaginationComponent from 'component/Pagination';
 import { Tooltip } from '@mui/material';
+import { useNavigate } from 'react-router';
 import { ChenageDesignationStatus, GetDesignationList } from 'services/Master Crud/Designationapi';
 import { hasPermission } from 'Middleware/permissionUtils';
 import MasterServiceModal from './MasterServiceModal';
@@ -26,6 +27,7 @@ const MasterServiceList = () => {
       const [modelAction, setModelAction] = useState();
       const [currentPage, setCurrentPage] = useState(1);
       const [totalPage, setTotalPage] = useState();
+      const navigate = useNavigate();
       const [totalCount, setTotalCount] = useState(null);
       const [pageSize, setPageSize] = useState(30);
       const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
@@ -197,6 +199,16 @@ const MasterServiceList = () => {
                               {/* Top controls */}
 
                               <div className="d-flex justify-content-between align-items-center mb-1">
+                                            <button
+              // className="btn btn-light p-1 me-2"
+              className="btn btn-outline-secondary btn-sm me-2"
+
+              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+              onClick={() => navigate(-1)}
+            >
+              <i className="fa-solid fa-arrow-left"></i>
+
+            </button>
                                     <div className="flex-grow-1 ">
                                           <h5 className="mb-0">Service</h5>
                                     </div>

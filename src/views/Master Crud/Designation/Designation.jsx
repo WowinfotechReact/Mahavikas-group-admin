@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Android12Switch from 'component/Android12Switch';
+import { useNavigate } from 'react-router';
 import { ConfigContext } from 'context/ConfigContext';
 import { ChangeStateStatus, GetStateList } from 'services/Master Crud/MasterStateApi';
 import dayjs from 'dayjs';
@@ -31,6 +32,7 @@ const Designation = () => {
   const [designationListData, setDesignationListData] = useState([]);
   const [openMasterDesignationModal, setOpenMasterDesignationModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState();
+  const navigate = useNavigate()
   const [sortingDirection, setSortingDirection] = useState(null);
   const [sortDirectionObj, setSortDirectionObj] = useState({
     ServiceNameSort: null
@@ -200,6 +202,16 @@ const Designation = () => {
           {/* Top controls */}
 
           <div className="d-flex justify-content-between align-items-center mb-1">
+             <button
+                              // className="btn btn-light p-1 me-2"
+                              className="btn btn-outline-secondary btn-sm me-2"
+
+                              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+                              onClick={() => navigate(-1)}
+                              >
+                              <i className="fa-solid fa-arrow-left"></i>
+
+                        </button>
             <div className="flex-grow-1 ">
               <h5 className="mb-0">Designation</h5>
             </div>
