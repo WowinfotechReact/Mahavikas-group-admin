@@ -65,7 +65,18 @@ const MasterDistrictList = () => {
   }, [isAddUpdateActionDone, appliedFilter])
 
 
-
+  const handleSearch = (e) => {
+    let searchKeywordValue = e.target.value;
+    const trimmedValue = searchKeywordValue.replace(/^\s+/g, '');
+    const capitalizedValue = trimmedValue.charAt(0).toUpperCase() + trimmedValue.slice(1).toLowerCase();
+    if (searchKeywordValue.length === 1 && searchKeywordValue.startsWith(' ')) {
+      searchKeywordValue = searchKeywordValue.trimStart();
+      return;
+    }
+    setSearchKeyword(capitalizedValue);
+    setCurrentPage(1);
+    GetDistrictListData(1, capitalizedValue, toDate, fromDate);
+  };
 
 
   const GetDistrictListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
@@ -126,15 +137,30 @@ const MasterDistrictList = () => {
     setShowSuccessModal(false);
   }
 
-  const handleSearch = (searchValue) => {
-    setAppliedFilter({ ...appliedFilter, searchKeyword: searchValue })
-  }
+
 
   // const empData = [
   //   { stateName: 'MH', districtName: 'Nashik' },
   //   { stateName: 'Himchal Pradesh', districtName: 'Gharwal' },
   // ]
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
 
+  const fullText = "Search By District Name / State Namee";
+
+  let index = 0;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimatedPlaceholder(fullText.slice(0, index));
+      index++;
+
+      if (index > fullText.length) {
+        index = 0;
+        setAnimatedPlaceholder(""); // Restart effect
+      }
+    }, 180);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <>
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
@@ -166,12 +192,12 @@ const MasterDistrictList = () => {
           <div className="d-flex justify-content-between align-items-center mb-1">
             <input
               type="text"
-              className="form-control "
-              placeholder="Search District"
-              style={{ maxWidth: "350px" }}
-              // value={searchKeyword}
+              className="form-control"
+              placeholder={animatedPlaceholder}
+              style={{ maxWidth: '350px' }}
+              value={searchKeyword}
               onChange={(e) => {
-                handleSearch(e.target.value);
+                handleSearch(e);
               }}
             />
             <Tooltip title="Add District">

@@ -183,20 +183,20 @@ const InstituteWiseAttendanceReport = () => {
                   console.error("Error fetching project lookup list:", error);
             }
       };
-      const GetInstituteLookupListData = async (projectID) => {
+
+
+      const GetInstituteLookupListData = async (projectIDs) => {
             setLoader(true);
 
             try {
-                  let url = '/GetInstituteLookupList';
-
-                  const response = await GetInstituteLookupList(url, {
-                        projectIDs: projectID
+                  const response = await GetInstituteLookupList('/GetInstituteLookupList', {
+                        projectIDs: [projectIDs]   // 🔥 Sending array
                   });
 
                   if (response?.data?.statusCode === 200) {
                         setLoader(false);
 
-                        const list = response.data.responseData.data;
+                        const list = response.data.responseData.data || [];
 
                         const formatted = list.map(item => ({
                               value: item.instituteID,
@@ -204,16 +204,16 @@ const InstituteWiseAttendanceReport = () => {
                         }));
 
                         setInstituteOption(formatted);
-
                   } else {
                         setLoader(false);
                         setErrorMessage(response?.response?.data?.errorMessage);
                   }
-            } catch (error) {
+            } catch (err) {
                   setLoader(false);
-                  console.error(error);
+                  console.error(err);
             }
       };
+
 
 
 
@@ -437,7 +437,7 @@ const InstituteWiseAttendanceReport = () => {
                                                 <Select
                                                       options={monthOptions}
                                                       value={monthOptions.find(item => item.value === instituteObj.month)}
-                                                      placeholder="Select Month"
+                                                      placeholder="Select Mon"
                                                       onChange={(selected) =>
                                                             setInstituteObj(prev => ({
                                                                   ...prev,

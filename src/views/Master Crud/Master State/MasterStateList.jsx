@@ -150,7 +150,7 @@ const MasterStateList = () => {
   }
   const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
 
-  const fullText = "Search By Name / Phone No. / Mail IDD";
+  const fullText = "Search By State Namee";
   let index = 0;
   useEffect(() => {
     const interval = setInterval(() => {

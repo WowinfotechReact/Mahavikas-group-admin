@@ -12,6 +12,8 @@ import { toast } from 'react-toastify';
 import NoResultFoundModel from 'component/NoResultFoundModal';
 import ImageModal from 'component/ImageModal';
 import Android12Switch from 'component/Android12Switch';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 import StatusChangeModal from 'component/StatusChangeModal ';
 import SuccessPopupModal from 'component/SuccessPopupModal';
 import { Tooltip } from '@mui/material';
@@ -160,6 +162,8 @@ const EmployeeList = () => {
     setShowEmployeeModal(true);
   };
 
+  const [visibleIndex, setVisibleIndex] = useState(null);
+
 
   const handleSearch = (e) => {
     let searchKeywordValue = e.target.value;
@@ -298,6 +302,7 @@ const EmployeeList = () => {
                   <th className="text-center">Address</th>
                   <th className="text-center">Geo Info</th>
                   <th className="text-center">Project</th>
+                  <th className="text-center">Password</th>
                   <th className="text-center actionSticky">Action</th>
                 </tr>
               </thead>
@@ -407,6 +412,31 @@ const EmployeeList = () => {
                             </div>
                           );
                         })}
+                    </td>
+
+
+                    <td>
+                      <div className="d-flex align-items-center">
+                        {/* Password text */}
+                        <span className="me-2">
+                          {visibleIndex === idx ? value.password : "••••••"}
+                        </span>
+                        {/* Eye Toggle Icon */}
+                        <span
+                          role="button"
+                          onClick={() =>
+                            setVisibleIndex(visibleIndex === idx ? null : idx)
+                          }
+                          style={{ cursor: "pointer" }}
+                        >
+                          {visibleIndex === idx ? (
+                            <FaEyeSlash size={16} />
+                          ) : (
+                            <FaEye size={16} />
+                          )}
+                        </span>
+
+                      </div>
                     </td>
 
 
