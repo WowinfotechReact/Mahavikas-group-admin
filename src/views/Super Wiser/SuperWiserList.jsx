@@ -321,6 +321,7 @@ const SuperWiserList = () => {
                                                       <th className="text-center">Address</th>
                                                       <th className="text-center">Organization Details</th>
 
+                                                      <th className="text-center">Can Update Att.</th>
                                                       <th className="text-center">Password</th>
                                                       <th className="text-center actionSticky">Action</th>
                                                 </tr>
@@ -418,6 +419,7 @@ const SuperWiserList = () => {
 
                                                                   </div>
                                                             </td>
+                                                            <td className='text-center'>{value.canUpdateAttendance === true ? "Yes" : 'No'}</td>
                                                             <td>
                                                                   <div className="d-flex align-items-center">
                                                                         {/* Password text */}

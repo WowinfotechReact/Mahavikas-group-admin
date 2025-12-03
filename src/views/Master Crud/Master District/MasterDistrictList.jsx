@@ -33,9 +33,7 @@ const MasterDistrictList = () => {
   const [changeStatusKey, setChangeStatusKey] = useState('');
   const [fromDate, setFromDate] = useState(null); // Initialize as null
   const [toDate, setToDate] = useState(null);
-  const [tableRow,setTableRow]=useState([])
-  const [showVehicleModal, setShowVehicleModal] = useState(false);
-  const [stateListData, setStateListData] = useState([]);
+  const [tableRow, setTableRow] = useState([])
   const [openMasterDistrictModal, setOpenMasterDistrictModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState();
   const [modelRequestData, setModelRequestData] = useState({
@@ -46,74 +44,89 @@ const MasterDistrictList = () => {
   });
 
   const [appliedFilter, setAppliedFilter] = useState({
-          pageSize: pageSize,
-          pageNo: 0,
-          searchKeyword: null,
-          fromDate: null,
-          toDate: null
-      })
+    pageSize: pageSize,
+    pageNo: 0,
+    searchKeyword: null,
+    fromDate: null,
+    toDate: null
+  })
 
   const addMasterDistrictBtnClick = () => {
     setOpenMasterDistrictModal(true)
   }
 
-   useEffect(()=>{
-    GetDistrictListData()
-    },[isAddUpdateActionDone,appliedFilter])
-  
-    
-      const GetDistrictListData = async () => {
-  
-          try {
-              
-              let response = null;
-                  response = await GetDistrictList({
-                      ...appliedFilter,
-                  });
-                    
-                  if (response?.data?.statusCode === 200) {
-                    console.log("enter")  
-                    const { data, totalRecords } = response.data.responseData;
-  
-                      setTableRow(data || []);
-                      setTotalRecords(totalRecords || data?.length || 0);
-                    
-                      
-                      
-                  } else {
-                      console.warn("Unexpected API response", response);
-                      setTableRow([]);
-                  }
-                  } catch (error) {
-              console.error("Error fetching category list:", error);
-          } finally {
-              
-          }
-            
-      };
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    GetDistrictListData(pageNumber, null, null, null)
+  };
 
-       const confirmStatusChange=()=>{
+  useEffect(() => {
+    GetDistrictListData(1, null, null, null)
+  }, [isAddUpdateActionDone, appliedFilter])
+
+
+
+
+
+  const GetDistrictListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
+    // debugger
+    setLoader(true);
+    try {
+      const data = await GetDistrictList({
+        pageSize,
+        // userKeyID: user.userKeyID,
+        pageNo: pageNumber - 1, // Page numbers are typically 0-based in API calls
+        searchKeyword: searchKeywordValue === undefined ? searchKeyword : searchKeywordValue,
+        toDate: null,
+        fromDate: null,
+
+      });
+
+      if (data) {
+        if (data?.data?.statusCode === 200) {
+          setLoader(false);
+          if (data?.data?.responseData?.data) {
+            const vehicleListData = data.data.responseData.data;
+            const totalItems = data.data?.totalCount; // const totalItems = 44;
+            setTotalCount(totalItems);
+            const totalPages = Math.ceil(totalItems / pageSize);
+            setTotalPage(totalPages);
+            setTotalRecords(vehicleListData.length);
+            setTableRow(vehicleListData);
+          }
+        } else {
+          setErrorMessage(data?.data?.errorMessage);
+          setLoader(false);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      setLoader(false);
+    }
+  };
+
+  const confirmStatusChange = () => {
     setShowStatusChangeModal(true)
   }
 
-      const handleStatusChange = async()=>{
-          try {
-            let res=null;
-                      res = await ChangeDistrictStatus(changeStatusKey);
-                      if (res?.data?.statusCode === 200) {
-                        setShowStatusChangeModal(false)
-                        setIsAddUpdateActionDone(!isAddUpdateActionDone)
-                        setShowSuccessModal(true)
-                      }
-                  } catch (error) {
-                      console.log("error ==>>", error)
-                  }
-        }
-        const closeAllModal=()=>{
+  const handleStatusChange = async () => {
+    try {
+      let res = null;
+      res = await ChangeDistrictStatus(changeStatusKey);
+      if (res?.data?.statusCode === 200) {
+        setShowStatusChangeModal(false)
+        setIsAddUpdateActionDone(!isAddUpdateActionDone)
+        setShowSuccessModal(true)
+      }
+    } catch (error) {
+      console.log("error ==>>", error)
+    }
+  }
+  const closeAllModal = () => {
     setShowSuccessModal(false);
   }
 
-  const handleSearch=(searchValue) => {
+  const handleSearch = (searchValue) => {
     setAppliedFilter({ ...appliedFilter, searchKeyword: searchValue })
   }
 
@@ -130,17 +143,17 @@ const MasterDistrictList = () => {
           <div className="d-flex justify-content-between align-items-center mb-1">
 
             <button
-                              // className="btn btn-light p-1 me-2"
-                              className="btn btn-outline-secondary btn-sm me-2"
+              // className="btn btn-light p-1 me-2"
+              className="btn btn-outline-secondary btn-sm me-2"
 
-                              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
-                              onClick={() => navigate(-1)}
-                              >
-                              <i className="fa-solid fa-arrow-left"></i>
+              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+              onClick={() => navigate(-1)}
+            >
+              <i className="fa-solid fa-arrow-left"></i>
 
-                        </button>
-                        <div className='flex-grow-1'>
-            <h5 className="m-0">District</h5>
+            </button>
+            <div className='flex-grow-1'>
+              <h5 className="m-0">District</h5>
             </div>
             <button
               onClick={() => addMasterDistrictBtnClick()}
@@ -163,12 +176,13 @@ const MasterDistrictList = () => {
             />
             <Tooltip title="Add District">
               <button
-                onClick={() =>{
+                onClick={() => {
                   setModelRequestData({
-                    Action:"Add",
-                    districtKeyID:null
+                    Action: "Add",
+                    districtKeyID: null
                   })
-                  addMasterDistrictBtnClick()}}
+                  addMasterDistrictBtnClick()
+                }}
                 style={{ background: '#ffaa33' }} className="btn text-white  btn-sm d-none d-sm-inline"
 
 
@@ -182,7 +196,7 @@ const MasterDistrictList = () => {
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '61vh', overflowY: 'auto', position: 'relative' }}>
             <table className="table table-bordered table-striped">
-              <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1, backgroundColor:'white'}}>
+              <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1, backgroundColor: 'white' }}>
                 <tr>
                   <th className="text-center">Sr No</th>
                   <th className="text-center">District Name</th>
@@ -194,44 +208,46 @@ const MasterDistrictList = () => {
               </thead>
               <tbody>
                 {tableRow.length > 0 &&
-                   tableRow.map((row,index) => (
-                  <tr key={row.id}>
-                    <td className="text-center">{(currentPage - 1) * pageSize + index + 1}</td>
-                    <td className="text-center">{row.districtName}</td>
-                    <td className="text-center">{row.stateName}</td>
-                    <td className="text-center">
-                      <Tooltip title={row.status === 'Active' ? 'Inactive' : 'Active'}>
-                        {row.status === 'Active' ? 'Active' : 'Inactive'}
-                        <Android12Switch style={{ padding: '8px' }} onClick={() =>{ confirmStatusChange(); setChangeStatusKey(row.districtKeyID); setModelAction("Status Updated Successfully!")}}  checked={row.status === 'Active'} />
-                      </Tooltip>{' '}
-                    </td>
-                    {/* <td className="text-center">{row.status===true?'True':'false'}</td> */}
-                    {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
-                    <td className="text-center">
-                      <Tooltip title="Update District">
-                        <button style={{ background: '#ffaa33',border:'#ffaa33'}}  onClick={() =>{ 
-                          setModelRequestData({
-                            Action:"Update",
-                            districtKeyID:row.districtKeyID
-                          })  
-                          addMasterDistrictBtnClick(row)}} type="button" className="btn-sm btn btn-primary">
-                          <i className="fa-solid fa-pen-to-square"></i>
-                        </button>
-                      </Tooltip>
-                    </td>
-                  </tr>
-                ))}
+                  tableRow.map((row, index) => (
+                    <tr key={row.id}>
+                      <td className="text-center">{(currentPage - 1) * pageSize + index + 1}</td>
+                      <td className="text-center">{row.districtName}</td>
+                      <td className="text-center">{row.stateName}</td>
+                      <td className="text-center">
+                        <Tooltip title={row.status === 'Active' ? 'Inactive' : 'Active'}>
+                          {row.status === 'Active' ? 'Active' : 'Inactive'}
+                          <Android12Switch style={{ padding: '8px' }} onClick={() => { confirmStatusChange(); setChangeStatusKey(row.districtKeyID); setModelAction("Status Updated Successfully!") }} checked={row.status === 'Active'} />
+                        </Tooltip>{' '}
+                      </td>
+                      {/* <td className="text-center">{row.status===true?'True':'false'}</td> */}
+                      {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
+                      <td className="text-center">
+                        <Tooltip title="Update District">
+                          <button style={{ background: '#ffaa33', border: '#ffaa33' }} onClick={() => {
+                            setModelRequestData({
+                              Action: "Update",
+                              districtKeyID: row.districtKeyID
+                            })
+                            addMasterDistrictBtnClick(row)
+                          }} type="button" className="btn-sm btn btn-primary">
+                            <i className="fa-solid fa-pen-to-square"></i>
+                          </button>
+                        </Tooltip>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
 
-            { tableRow.length === 0 &&(
-                          <NoResultFoundModel
-                           />) }
+            {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />}
+
           </div>
 
           {/* Pagination */}
           <div className="d-flex justify-content-end ">
-
+            {totalCount > pageSize && (
+              <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
+            )}
           </div>
         </div>
       </div>

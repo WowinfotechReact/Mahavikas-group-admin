@@ -175,14 +175,14 @@ const MapCityList = () => {
                                                 handleSearch(e);
                                           }}
                                     />
-                                    <Tooltip title="Add City">
+                                    <Tooltip title="Add District">
                                           <button
                                                 style={{ background: '#ffaa33', color: 'white' }}
                                                 className="btn btn-sm d-none d-sm-inline"
                                                 onClick={addMasterZoneBtnClick}
                                           >
                                                 <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
-                                                <span className="d-none d-sm-inline"> Add City</span>
+                                                <span className="d-none d-sm-inline"> Add District</span>
                                           </button>
 
                                     </Tooltip>

@@ -898,11 +898,16 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   </div>
 
 
-                  {(error && employeeObj.canUpdateAttendance === undefined || employeeObj.canUpdateAttendance === null || employeeObj.canUpdateAttendance === ''
-
-                  ) && (
-                      <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                    )}
+                  {error &&
+                    (
+                      employeeObj.canUpdateAttendance === undefined ||
+                      employeeObj.canUpdateAttendance === null ||
+                      employeeObj.canUpdateAttendance === ''
+                    )
+                    && (
+                      <span style={{ color: "red" }}>{ERROR_MESSAGES}</span>
+                    )
+                  }
 
                 </div>
 

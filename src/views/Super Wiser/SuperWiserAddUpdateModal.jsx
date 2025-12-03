@@ -51,6 +51,7 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
       });
 
       const location = useLocation()
+      const [showPassword, setShowPassword] = useState(false);
 
       useEffect(() => {
             if (modelRequestData?.Action === 'Update') {
@@ -112,6 +113,10 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
             let isValid = false;
 
             if (
+
+                  employeeObj.canUpdateAttendance === null ||
+                  employeeObj.canUpdateAttendance === undefined ||
+                  employeeObj.canUpdateAttendance === '' ||
                   employeeObj.firstName === null ||
                   employeeObj.firstName === undefined ||
                   employeeObj.firstName === '' ||
@@ -132,9 +137,7 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                   employeeObj.instituteIDs === undefined ||
                   employeeObj.instituteIDs === '' ||
 
-                  employeeObj.canUpdateAttendance === null ||
-                  employeeObj.canUpdateAttendance === undefined ||
-                  employeeObj.canUpdateAttendance === '' ||
+
                   employeeObj.address === null ||
                   employeeObj.address === undefined ||
                   employeeObj.address === ''
@@ -465,45 +468,55 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                                     <div className="row">
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
-                                                      <label htmlFor="customerLName" className="form-label">
+                                                      <label htmlFor="Password" className="form-label">
                                                             Password
                                                             <span style={{ color: 'red' }}>*</span>
                                                       </label>
-                                                      <input
-                                                            maxLength={50}
-                                                            type="text"
-                                                            className="form-control"
-                                                            id="Password"
-                                                            placeholder="Enter Password"
-                                                            aria-describedby="Employee"
-                                                            value={employeeObj.password}
-                                                            onChange={(e) => {
-                                                                  setErrorMessage(false);
-                                                                  let inputValue = e.target.value;
+                                                      <div className="input-group">
+                                                            <input
+                                                                  maxLength={15}
+                                                                  type={showPassword ? 'text' : 'Password'} // Toggle input type
+                                                                  className="form-control"
+                                                                  placeholder="Enter Password"
+                                                                  value={employeeObj.password}
+                                                                  onChange={(e) => {
+                                                                        let InputValue = e.target.value;
+                                                                        // Allow alphanumeric characters and special characters like @, #, $, %, &, *, !
+                                                                        const updatedValue = InputValue.replace(/[^a-zA-Z0-9@#$%&*!]/g, '');
+                                                                        setEmployeeObj((prev) => ({
+                                                                              ...prev,
+                                                                              password: updatedValue
+                                                                        }));
+                                                                  }}
+                                                            />
+                                                            <button
+                                                                  type="button"
+                                                                  className="btn btn-outline-secondary"
 
-                                                                  // Remove leading spaces
-                                                                  inputValue = inputValue.replace(/^\s+/, '');
-
-
-
-                                                                  // Auto-capitalize the first letter
-                                                                  if (inputValue.length > 0) {
-                                                                        inputValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
-                                                                  }
-
-                                                                  setEmployeeObj((prev) => ({
-                                                                        ...prev,
-                                                                        password: inputValue
-                                                                  }));
-                                                            }}
-                                                      />
-                                                      {error && (employeeObj.password === null || employeeObj.password === undefined || employeeObj.password === '') ? (
-                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                                  onClick={() => setShowPassword((prev) => !prev)} // Toggle Password visibility
+                                                            >
+                                                                  {showPassword ? <i class="fa-regular fa-eye-slash"></i> : <i class="fa fa-eye" aria-hidden="true"></i>}
+                                                            </button>
+                                                      </div>
+                                                      {error &&
+                                                            (
+                                                                  employeeObj.password === null ||
+                                                                  employeeObj.password === undefined ||
+                                                                  employeeObj.password === '' ||
+                                                                  employeeObj.password.length < 8
+                                                            ) ? (
+                                                            <span style={{ color: 'red' }}>
+                                                                  {employeeObj.password && employeeObj.password.length < 8
+                                                                        ? 'Password must be at least 8 characters long'
+                                                                        : ERROR_MESSAGES}
+                                                            </span>
                                                       ) : (
                                                             ''
                                                       )}
+
                                                 </div>
                                           </div>
+
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="vehicleNumber" className="form-label">
@@ -594,8 +607,14 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                                                       />
 
 
-                                                      {error && !employeeObj.instituteIDs && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
-
+                                                      {error &&
+                                                            (employeeObj.instituteIDs === null ||
+                                                                  employeeObj.instituteIDs === undefined ||
+                                                                  employeeObj.instituteIDs.length === 0) ? (
+                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                      ) : (
+                                                            ''
+                                                      )}
 
 
                                                 </div>
@@ -640,7 +659,11 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                                                       </style>
 
                                                       <div className="mb-3">
-                                                            <label className="mb-1">Can Update Attendance?</label>
+                                                            <label className="mb-1">Can Update Attendance?
+
+                                                                  <span style={{ color: 'red' }}>*</span>
+
+                                                            </label>
 
                                                             <div className="custom-radio-group">
 
@@ -676,11 +699,16 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
 
                                                             </div>
 
-                                                            {(error && employeeObj.canUpdateAttendance === undefined || employeeObj.canUpdateAttendance === null || employeeObj.canUpdateAttendance === ''
-
-                                                            ) && (
-                                                                        <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                                  )}
+                                                            {error &&
+                                                                  (
+                                                                        employeeObj.canUpdateAttendance === undefined ||
+                                                                        employeeObj.canUpdateAttendance === null ||
+                                                                        employeeObj.canUpdateAttendance === ''
+                                                                  )
+                                                                  && (
+                                                                        <span style={{ color: "red" }}>{ERROR_MESSAGES}</span>
+                                                                  )
+                                                            }
 
                                                       </div>
 

@@ -25,9 +25,9 @@ const MasterStateList = () => {
   const [pageSize, setPageSize] = useState(30);
   const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
   const [isAddUpdateActionDone, setIsAddUpdateActionDone] = useState(false);
-  // const [searchKeyword, setSearchKeyword] = useState('');
-  // const [fromDate, setFromDate] = useState(null); // Initialize as null
-  // const [toDate, setToDate] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [fromDate, setFromDate] = useState(null); // Initialize as null
+  const [toDate, setToDate] = useState(null);
   const [stateListData, setStateListData] = useState([]);
   const [openMasterStateModal, setOpenMasterStateModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState();
@@ -54,42 +54,51 @@ const MasterStateList = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    GetStateListData();
+    GetStateListData(pageNumber, null, null, null)
   };
 
   useEffect(() => {
-    GetStateListData()
+    GetStateListData(1, null, null, null)
   }, [isAddUpdateActionDone, appliedFilter])
 
 
-  const GetStateListData = async () => {
 
+
+  const GetStateListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
+    // debugger
+    setLoader(true);
     try {
+      const data = await GetStateList({
+        pageSize,
+        // userKeyID: user.userKeyID,
+        pageNo: pageNumber - 1, // Page numbers are typically 0-based in API calls
+        searchKeyword: searchKeywordValue === undefined ? searchKeyword : searchKeywordValue,
+        toDate: null,
+        fromDate: null,
 
-      let response = null;
-      response = await GetStateList({
-        ...appliedFilter,
       });
 
-      if (response?.data?.statusCode === 200) {
-        console.log("enter")
-        const { data, totalRecords } = response.data.responseData;
-
-        setTableRow(data || []);
-        setTotalRecords(totalRecords || data?.length || 0);
-
-
-
-      } else {
-        console.warn("Unexpected API response", response);
-        setTableRow([]);
+      if (data) {
+        if (data?.data?.statusCode === 200) {
+          setLoader(false);
+          if (data?.data?.responseData?.data) {
+            const vehicleListData = data.data.responseData.data;
+            const totalItems = data.data?.totalCount; // const totalItems = 44;
+            setTotalCount(totalItems);
+            const totalPages = Math.ceil(totalItems / pageSize);
+            setTotalPage(totalPages);
+            setTotalRecords(vehicleListData.length);
+            setTableRow(vehicleListData);
+          }
+        } else {
+          setErrorMessage(data?.data?.errorMessage);
+          setLoader(false);
+        }
       }
     } catch (error) {
-      console.error("Error fetching category list:", error);
-    } finally {
-
+      console.log(error);
+      setLoader(false);
     }
-
   };
 
   const addMasterStateBtnClick = () => {
@@ -101,9 +110,21 @@ const MasterStateList = () => {
     setOpenMasterStateModal(true);
   }
 
-  const handleSearch = (searchValue) => {
-    setAppliedFilter({ ...appliedFilter, searchKeyword: searchValue })
-  }
+
+
+
+  const handleSearch = (e) => {
+    let searchKeywordValue = e.target.value;
+    const trimmedValue = searchKeywordValue.replace(/^\s+/g, '');
+    const capitalizedValue = trimmedValue.charAt(0).toUpperCase() + trimmedValue.slice(1).toLowerCase();
+    if (searchKeywordValue.length === 1 && searchKeywordValue.startsWith(' ')) {
+      searchKeywordValue = searchKeywordValue.trimStart();
+      return;
+    }
+    setSearchKeyword(capitalizedValue);
+    setCurrentPage(1);
+    GetStateListData(1, capitalizedValue, toDate, fromDate);
+  };
 
   const confirmStatusChange = () => {
     setShowStatusChangeModal(true)
@@ -127,7 +148,23 @@ const MasterStateList = () => {
   const closeAllModal = () => {
     setShowSuccessModal(false);
   }
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
 
+  const fullText = "Search By Name / Phone No. / Mail IDD";
+  let index = 0;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimatedPlaceholder(fullText.slice(0, index));
+      index++;
+
+      if (index > fullText.length) {
+        index = 0;
+        setAnimatedPlaceholder(""); // Restart effect
+      }
+    }, 180);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <>
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
@@ -158,11 +195,13 @@ const MasterStateList = () => {
           <div className="d-flex justify-content-between align-items-center mb-1">
             <input
               type="text"
-              className="form-control "
-              placeholder="Search State"
-              style={{ maxWidth: "350px" }}
-              // value={searchKeyword}
-              onChange={(e) => handleSearch(e.target.value)}
+              className="form-control"
+              placeholder={animatedPlaceholder}
+              style={{ maxWidth: '350px' }}
+              value={searchKeyword}
+              onChange={(e) => {
+                handleSearch(e);
+              }}
             />
             <Tooltip title="Add State">
               <button
