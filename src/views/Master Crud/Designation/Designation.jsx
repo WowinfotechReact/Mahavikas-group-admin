@@ -202,16 +202,16 @@ const Designation = () => {
           {/* Top controls */}
 
           <div className="d-flex justify-content-between align-items-center mb-1">
-             <button
-                              // className="btn btn-light p-1 me-2"
-                              className="btn btn-outline-secondary btn-sm me-2"
+            <button
+              // className="btn btn-light p-1 me-2"
+              className="btn btn-outline-secondary btn-sm me-2"
 
-                              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
-                              onClick={() => navigate(-1)}
-                              >
-                              <i className="fa-solid fa-arrow-left"></i>
+              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+              onClick={() => navigate(-1)}
+            >
+              <i className="fa-solid fa-arrow-left"></i>
 
-                        </button>
+            </button>
             <div className="flex-grow-1 ">
               <h5 className="mb-0">Designation</h5>
             </div>
@@ -304,12 +304,12 @@ const Designation = () => {
                 ))}
               </tbody>
             </table>
-            {/* {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />} */}
+            {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />}
           </div>
           <div className="d-flex justify-content-end ">
-            {/* {totalCount > pageSize && (
+            {totalCount > pageSize && (
               <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
-            )} */}
+            )}
           </div>
         </div>
       </div>

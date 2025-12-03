@@ -22,7 +22,7 @@ const MasterStateList = () => {
   const [totalPage, setTotalPage] = useState();
   const navigate = useNavigate();
   const [totalCount, setTotalCount] = useState(null);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(30);
   const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
   const [isAddUpdateActionDone, setIsAddUpdateActionDone] = useState(false);
   // const [searchKeyword, setSearchKeyword] = useState('');
@@ -52,7 +52,10 @@ const MasterStateList = () => {
   })
 
 
-
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    GetStateListData();
+  };
 
   useEffect(() => {
     GetStateListData()
@@ -88,7 +91,6 @@ const MasterStateList = () => {
     }
 
   };
-  console.log(tableRow)
 
   const addMasterStateBtnClick = () => {
     setModelRequestData({
@@ -133,18 +135,18 @@ const MasterStateList = () => {
           {/* Top controls */}
           <div className="d-flex justify-content-between align-items-center mb-1">
             <button
-                              // className="btn btn-light p-1 me-2"
-                              className="btn btn-outline-secondary btn-sm me-2"
+              // className="btn btn-light p-1 me-2"
+              className="btn btn-outline-secondary btn-sm me-2"
 
-                              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
-                              onClick={() => navigate(-1)}
-                              >
-                              <i className="fa-solid fa-arrow-left"></i>
+              // style={{ borderRadius: "50%", width: "36px", height: "36px" }}
+              onClick={() => navigate(-1)}
+            >
+              <i className="fa-solid fa-arrow-left"></i>
 
-                        </button>
-                        <div className="flex-grow-1 ">
-            <h5 className="m-0">State</h5>
-              </div>
+            </button>
+            <div className="flex-grow-1 ">
+              <h5 className="m-0">State</h5>
+            </div>
             <button
               onClick={() => addMasterStateBtnClick()}
               className="btn btn-primary btn-sm d-inline d-sm-none"
@@ -182,19 +184,7 @@ const MasterStateList = () => {
                   <th className="text-center">Sr No</th>
                   <th className="text-center">
                     State Name
-                    {/* {sortDirectionObj.ServiceNameSort === "desc" ? (
-    <i
-      onClick={() => handleSort("desc", "stateName")}
-      style={{ cursor: "pointer" }}
-      className="fas fa-sort-alpha-up ml-1"
-    ></i>
-  ) : (
-    <i
-      onClick={() => handleSort("asc", "stateName")}
-      style={{ cursor: "pointer" }}
-      className="fas fa-sort-alpha-down ml-1"
-    ></i>
-  )} */}
+
                   </th>
                   <th className="text-center">Status</th>
                   {/* <th className="text-center">Created On</th> */}
@@ -252,12 +242,14 @@ const MasterStateList = () => {
                   ))}
               </tbody>
             </table>
-            {tableRow.length === 0 && (
-              <NoResultFoundModel
-              />)}
+
+            {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />}
+
           </div>
           <div className="d-flex justify-content-end ">
-
+            {totalCount > pageSize && (
+              <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
+            )}
           </div>
         </div>
       </div>

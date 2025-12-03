@@ -6,6 +6,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router';
 import { BsPerson, BsEnvelope, BsTelephone } from "react-icons/bs";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { OverlayTrigger } from "react-bootstrap";
+import { FaBuilding, FaSchool, FaFolderTree } from "react-icons/fa6";
 
 import { ConfigContext } from 'context/ConfigContext';
 import * as XLSX from 'xlsx';
@@ -79,6 +82,7 @@ const SuperWiserList = () => {
             return () => clearInterval(interval);
       }, []);
 
+      const [visibleIndex, setVisibleIndex] = useState(null);
 
 
       useEffect(() => {
@@ -315,6 +319,9 @@ const SuperWiserList = () => {
 
 
                                                       <th className="text-center">Address</th>
+                                                      <th className="text-center">Organization Details</th>
+
+                                                      <th className="text-center">Password</th>
                                                       <th className="text-center actionSticky">Action</th>
                                                 </tr>
                                           </thead>
@@ -326,19 +333,6 @@ const SuperWiserList = () => {
                                                                         {(currentPage - 1) * pageSize + idx + 1}
                                                                   </span>
                                                             </td>
-
-
-
-
-
-
-
-
-
-
-
-
-
                                                             <td className="text-center">
                                                                   <div className="d-flex flex-column align-items-center">
                                                                         <div className="d-flex align-items-center gap-2 mb-1">
@@ -371,20 +365,84 @@ const SuperWiserList = () => {
                                                                         </span>
                                                                   )}
                                                             </td>
+                                                            <td>
+                                                                  <div className="d-flex flex-column gap-1">
+
+                                                                        {/* Company Name */}
+                                                                        <span
+
+                                                                              placement="top"
+                                                                        >
+                                                                              <span className="d-flex align-items-center text-dark small">
+                                                                                    <FaBuilding className="me-2 text-primary" size={14} />
+                                                                                    {value.companyName?.length > 35
+                                                                                          ? value.companyName.substring(0, 35) + "..."
+                                                                                          : value.companyName || "-"}
+                                                                              </span>
+                                                                        </span>
+
+                                                                        {/* Institute Name */}
+                                                                        <span
+
+                                                                              placement="top"
+                                                                        >
+                                                                              <span className="d-flex align-items-center text-dark small">
+                                                                                    <FaSchool className="me-2 text-success" size={14} />
+
+
+                                                                                    {value.instituteName?.length > 30 ? (
+                                                                                          <Tooltip title={value.instituteName}>{`${value.instituteName?.substring(0, 30)}...`}</Tooltip>
+                                                                                    ) : (
+                                                                                          <>{value.instituteName}</>
+                                                                                    )}
+                                                                              </span>
+                                                                        </span>
+
+                                                                        {/* Project Names */}
+                                                                        <span
+
+                                                                              placement="top"
+                                                                        >
+                                                                              <span className="d-flex align-items-center text-dark small">
+                                                                                    <FaFolderTree className="me-2 text-warning" size={14} />
 
 
 
+                                                                                    {value.projectNames?.length > 30 ? (
+                                                                                          <Tooltip title={value.projectNames}>{`${value.projectNames?.substring(0, 30)}...`}</Tooltip>
+                                                                                    ) : (
+                                                                                          <>{value.projectNames}</>
+                                                                                    )}
+                                                                              </span>
+                                                                        </span>
 
+                                                                  </div>
+                                                            </td>
+                                                            <td>
+                                                                  <div className="d-flex align-items-center">
+                                                                        {/* Password text */}
+                                                                        <span className="me-2">
+                                                                              {visibleIndex === idx ? value.password : "••••••"}
+                                                                        </span>
+                                                                        {/* Eye Toggle Icon */}
+                                                                        <span
+                                                                              role="button"
+                                                                              onClick={() =>
+                                                                                    setVisibleIndex(visibleIndex === idx ? null : idx)
+                                                                              }
+                                                                              style={{ cursor: "pointer" }}
+                                                                        >
+                                                                              {visibleIndex === idx ? (
+                                                                                    <FaEyeSlash size={16} />
+                                                                              ) : (
+                                                                                    <FaEye size={16} />
+                                                                              )}
+                                                                        </span>
 
-
+                                                                  </div>
+                                                            </td>
                                                             <td className="text-center relative  actionColSticky " style={{ zIndex: 4 }}>
-
-
                                                                   <div className="">
-
-
-
-
                                                                         <Tooltip title="Update Employee">
                                                                               {/* <Tooltip title="Under Development"> */}
                                                                               <button
@@ -402,28 +460,7 @@ const SuperWiserList = () => {
                                                                               >
                                                                                     <i className="fa-solid fa-pen-to-square"></i>
                                                                               </button>
-                                                                        </Tooltip>
-
-                                                                        {/* <Tooltip title="View Employee"> */}
-                                                                        <Tooltip title="View Employee Details">
-                                                                              <button
-                                                                                    style={{
-                                                                                          padding: '4px 8px', // Adjust padding for smaller size
-                                                                                          fontSize: '12px', // Optional: smaller font size
-                                                                                          height: '28px', // Set height
-                                                                                          width: '48px', // Set width,
-                                                                                          background: '#ffaa33', color: 'white'
-                                                                                    }}
-                                                                                    onClick={() => viewEmpDetails(value)}
-                                                                                    type="button"
-
-                                                                                    className="btn-sm btn me-2"
-                                                                              >
-                                                                                    View                            </button>
-                                                                        </Tooltip>
-
-
-                                                                  </div>
+                                                                        </Tooltip>         </div>
 
 
 
@@ -439,7 +476,9 @@ const SuperWiserList = () => {
 
                               {/* Pagination */}
                               <div className="d-flex justify-content-end ">
-
+                                    {totalCount > pageSize && (
+                                          <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
+                                    )}
                               </div>
                         </div>
                   </div>

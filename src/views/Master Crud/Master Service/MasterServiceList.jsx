@@ -15,8 +15,6 @@ import NoResultFoundModel from 'component/NoResultFoundModal';
 import PaginationComponent from 'component/Pagination';
 import { Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router';
-import { ChenageDesignationStatus, GetDesignationList } from 'services/Master Crud/Designationapi';
-import { hasPermission } from 'Middleware/permissionUtils';
 import MasterServiceModal from './MasterServiceModal';
 import { ChangeServiceStatus, GetServiceList } from 'services/Services/ServicesApi';
 

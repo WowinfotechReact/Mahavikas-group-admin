@@ -1,6 +1,4 @@
-
 import React, { useState, useEffect, useContext } from 'react';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useLocation, useNavigate } from 'react-router';
 import PaginationComponent from 'component/Pagination';
@@ -11,10 +9,9 @@ import ImageModal from 'component/ImageModal';
 import StatusChangeModal from 'component/StatusChangeModal ';
 import SuccessPopupModal from 'component/SuccessPopupModal';
 import { Tooltip } from '@mui/material';
-import { ChangeCustomerStatus, GetCustomerList } from 'services/CustomerStaff/CustomerStaffApi';
+import { ChangeCustomerStatus } from 'services/CustomerStaff/CustomerStaffApi';
 import InstituteUserAddUpdateModal from 'views/Employee/InstituteUserAddUpdateModal';
 import InstituteEmployeeAddUpdateModal from './InstituteEmployeeAddUpdateModal';
-import { GetInstituteList } from 'services/Institute/InstituteApi';
 import { GetAppUserList } from 'services/Employee Staff/EmployeeApi';
 import SetPasswordModal from './SetPasswordModal';
 import ChangePasswordModal from './ChangePasswordModal';
@@ -25,7 +22,6 @@ const InstituteEmployeeList = () => {
       const [changePasswordModal, setChangePasswordModal] = useState(false);
       const [showInstituteUserModal, setShowInstituteUserModal
       ] = useState(false);
-      const [showVehicleViewModal, setShowVehicleViewModal] = useState(false);
       const [imgModalTitle, setImgModalTitle] = useState('');
       const [imgModalShow, setImgModalShow] = useState(false);
       const [selectedImage, setSelectedImage] = useState('');
@@ -311,7 +307,7 @@ const InstituteEmployeeList = () => {
                                                       <th className="text-center">Address</th>
                                                       <th className="text-center">Project</th>
                                                       <th className="text-center">Designation </th>
-                                                      <th className="text-center">Password </th>
+                                                      {/* <th className="text-center">Password </th> */}
                                                       <th className="text-center">Attendance Type </th>
                                                       <th className="text-center actionSticky">Action</th>
                                                 </tr>
@@ -370,30 +366,7 @@ const InstituteEmployeeList = () => {
                                                                         <>{row.designationName}</>
                                                                   </div>
                                                             </td>
-                                                            <td className="text-center" style={{ minWidth: "150px" }}>
-                                                                  {row.password !== null &&
-                                                                        <div className="d-flex justify-content-center align-items-center gap-2">
 
-                                                                              {/* Masked or Full Password */}
-                                                                              <span>
-                                                                                    {visiblePasswordIndex === idx ? row.password : "****"}
-                                                                              </span>
-
-                                                                              {/* Eye / Eye Slash */}
-                                                                              <i
-                                                                                    className={`fa-solid ${visiblePasswordIndex === idx ? "fa-eye-slash" : "fa-eye"
-                                                                                          }`}
-                                                                                    style={{ cursor: "pointer" }}
-                                                                                    onClick={() =>
-                                                                                          setVisiblePasswordIndex(
-                                                                                                visiblePasswordIndex === idx ? null : idx
-                                                                                          )
-                                                                                    }
-                                                                              ></i>
-
-                                                                        </div>
-                                                                  }
-                                                            </td>
 
 
 
@@ -425,40 +398,8 @@ const InstituteEmployeeList = () => {
                                                                                     <i className="fa-solid fa-pen-to-square"></i>
                                                                               </button>
                                                                         </Tooltip>
-                                                                        {row.isWebAppUser !== 1 &&
-                                                                              <Tooltip title={`Set APP User `}>
-                                                                                    <button
-                                                                                          style={{
-                                                                                                padding: '4px 8px',
-                                                                                                fontSize: '12px',
-                                                                                                height: '28px',
-                                                                                                background: '#ffaa33', color: 'white'
-                                                                                          }}
-                                                                                          onClick={() => setAppUserBtnClick(row)}
-                                                                                          type="button"
-                                                                                          className="btn-sm btn "
-                                                                                    >
-                                                                                          Set App User
-                                                                                    </button>
-                                                                              </Tooltip>
-                                                                        }
-                                                                        {row?.isWebAppUser == 1 &&
-                                                                              <Tooltip title={`Change Password`}>
-                                                                                    <button
-                                                                                          style={{
-                                                                                                padding: '4px 8px',
-                                                                                                fontSize: '12px',
-                                                                                                height: '28px',
-                                                                                                background: '#ffaa33', color: 'white'
-                                                                                          }}
-                                                                                          onClick={() => changePassBtn(row)}
-                                                                                          type="button"
-                                                                                          className="btn-sm btn "
-                                                                                    >
-                                                                                          Change Password
-                                                                                    </button>
-                                                                              </Tooltip>
-                                                                        }
+
+
 
 
 
