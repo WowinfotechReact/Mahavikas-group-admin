@@ -114,9 +114,7 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
 
             if (
 
-                  employeeObj.canUpdateAttendance === null ||
-                  employeeObj.canUpdateAttendance === undefined ||
-                  employeeObj.canUpdateAttendance === '' ||
+
                   employeeObj.firstName === null ||
                   employeeObj.firstName === undefined ||
                   employeeObj.firstName === '' ||
@@ -163,8 +161,7 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                   password: employeeObj.password,
                   address: employeeObj.address,
                   appUserTypeID: 2,
-
-                  canUpdateAttendance: employeeObj.canUpdateAttendance,
+                  canUpdateAttendance: true,
                   roleKeyID: employeeObj.roleKeyID,
                   companyID: Number(companyID),
                   instituteIDs: employeeObj.instituteIDs,
@@ -658,59 +655,7 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
 `}
                                                       </style>
 
-                                                      <div className="mb-3">
-                                                            <label className="mb-1">Can Update Attendance?
 
-                                                                  <span style={{ color: 'red' }}>*</span>
-
-                                                            </label>
-
-                                                            <div className="custom-radio-group">
-
-                                                                  {/* YES OPTION */}
-                                                                  <label
-                                                                        className={`custom-radio ${employeeObj.canUpdateAttendance === true ? "active" : ""}`}
-                                                                  >
-                                                                        <input
-                                                                              type="radio"
-                                                                              name="canUpdateAttendance"
-                                                                              checked={employeeObj.canUpdateAttendance === true}
-                                                                              onChange={() =>
-                                                                                    setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: true }))
-                                                                              }
-                                                                        />
-                                                                        Yes
-                                                                  </label>
-
-                                                                  {/* NO OPTION */}
-                                                                  <label
-                                                                        className={`custom-radio ${employeeObj.canUpdateAttendance === false ? "active" : ""}`}
-                                                                  >
-                                                                        <input
-                                                                              type="radio"
-                                                                              name="canUpdateAttendance"
-                                                                              checked={employeeObj.canUpdateAttendance === false}
-                                                                              onChange={() =>
-                                                                                    setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: false }))
-                                                                              }
-                                                                        />
-                                                                        No
-                                                                  </label>
-
-                                                            </div>
-
-                                                            {error &&
-                                                                  (
-                                                                        employeeObj.canUpdateAttendance === undefined ||
-                                                                        employeeObj.canUpdateAttendance === null ||
-                                                                        employeeObj.canUpdateAttendance === ''
-                                                                  )
-                                                                  && (
-                                                                        <span style={{ color: "red" }}>{ERROR_MESSAGES}</span>
-                                                                  )
-                                                            }
-
-                                                      </div>
 
                                                 </div>
                                           </div>

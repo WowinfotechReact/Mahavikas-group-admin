@@ -238,7 +238,7 @@ export default {
             // },
             {
               id: 'Master',
-              title: 'Institute Attendance Report',
+              title: 'Institute Attendance ',
               moduleName: 'Customer',
               type: 'item',
               icon: icons['CabinIcon'],
@@ -246,7 +246,7 @@ export default {
             },
             {
               id: 'Master',
-              title: 'Employee Attendance Report',
+              title: 'Employee Attendance ',
               moduleName: 'Customer',
               type: 'item',
               icon: icons['CabinIcon'],

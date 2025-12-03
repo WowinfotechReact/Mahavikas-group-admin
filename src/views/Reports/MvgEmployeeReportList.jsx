@@ -43,7 +43,6 @@ const MvgEmployeeReportList = () => {
             toDate: null,
             duration: null
       });
-
       const handleToDateChange = (newValue) => {
             if (newValue && dayjs(newValue).isValid()) {
                   const newToDate = dayjs(newValue);
@@ -58,7 +57,6 @@ const MvgEmployeeReportList = () => {
                   setToDate(null);
             }
       };
-
       const handleFromDateChange = (newValue) => {
             debugger
             if (newValue && dayjs(newValue).isValid()) {
@@ -83,7 +81,6 @@ const MvgEmployeeReportList = () => {
             GetMvgEmployeeReportListData(1, null, toDate, fromDate);
       }, []);
       const GetMvgEmployeeReportListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
-            // debugger
             setLoader(true);
             try {
                   const data = await GetMvgEmployeeReportList({
@@ -118,8 +115,6 @@ const MvgEmployeeReportList = () => {
                   setLoader(false);
             }
       };
-
-
       const getLocationName = async (lat, lng) => {
             try {
                   if (!lat || !lng) return "No Location";
@@ -141,7 +136,6 @@ const MvgEmployeeReportList = () => {
                   return "Unknown Place";
             }
       };
-
       useEffect(() => {
             const fetchLocations = async () => {
                   const checkInArray = [];
@@ -149,21 +143,16 @@ const MvgEmployeeReportList = () => {
 
                   for (let i = 0; i < mvgEmployeeData.length; i++) {
                         const row = mvgEmployeeData[i];
-
                         const inLoc = await getLocationName(row.latitude, row.longitude);
                         const outLoc = await getLocationName(row.checkOutLatitude, row.checkOutLongitude);
-
                         checkInArray.push(inLoc);
                         checkOutArray.push(outLoc);
                   }
-
                   setCheckInLocations(checkInArray);
                   setCheckOutLocations(checkOutArray);
             };
-
             fetchLocations();
       }, []);
-
       const splitDateTime = (raw) => {
             if (!raw) return { date: "-", time: "-" };
 
@@ -179,15 +168,11 @@ const MvgEmployeeReportList = () => {
 
             return { date, time };
       };
-
       const clearDate = () => {
             setToDate(null)
             setFromDate(null)
             GetMvgEmployeeReportListData(1, null, null, null);
-
       }
-
-
       const handleSearch = (e) => {
             let searchKeywordValue = e.target.value;
             const trimmedValue = searchKeywordValue.replace(/^\s+/g, '');
@@ -199,11 +184,7 @@ const MvgEmployeeReportList = () => {
             setSearchKeyword(capitalizedValue);
             setCurrentPage(1);
             GetMvgEmployeeReportListData(1, capitalizedValue, null, null);
-
-
       };
-
-
       const exportToExcel = () => {
             if (!mvgEmployeeData || mvgEmployeeData.length === 0) {
                   alert("No data to export");
@@ -238,19 +219,14 @@ const MvgEmployeeReportList = () => {
             const fileName = `MVG_Employee_Report_${new Date().getTime()}.xlsx`;
             saveAs(new Blob([excelBuffer], { type: "application/octet-stream" }), fileName);
       };
-
-
       return (
             <div className="container-fluid py-4">
-                  {/* ---------- PAGE HEADER ---------- */}
                   <div className="d-flex justify-content-between align-items-center mb-3">
                         <h5 className="fw-bold text-primary mb-0">Employee Attendance Report</h5>
                         <Button onClick={() => exportToExcel()} variant="success" size="sm">
                               <i className="bi bi-file-earmark-excel me-1"></i>Export
                         </Button>
                   </div>
-
-                  {/* ---------- FILTER SECTION ---------- */}
                   <div className="border rounded p-3 bg-light mb-4">
                         <Form>
                               <Row className="g-3 align-items-end">
@@ -308,14 +284,7 @@ const MvgEmployeeReportList = () => {
                               </Row>
                         </Form>
                   </div>
-
-                  {/* ---------- SUMMARY SECTION ---------- */}
-
-
-                  {/* ---------- ATTENDANCE TABLE ---------- */}
                   <div className="border rounded p-3">
-
-
                         <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
                               <table className="table table-bordered table-striped">
                                     <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff', }}>
