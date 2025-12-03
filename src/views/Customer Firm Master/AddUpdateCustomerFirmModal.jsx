@@ -300,7 +300,8 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       let response = await GetDistrictLookupList({
         ZoneIDs: ZoneIDsParam,        // <-- Correct param
         ProjectID: modelRequestData?.projectID,
-        userID: companyID             // <-- If needed
+        userID: companyID,
+        ModuleName: 'Project'// <-- If needed
       });
 
       if (response?.data?.statusCode === 200) {

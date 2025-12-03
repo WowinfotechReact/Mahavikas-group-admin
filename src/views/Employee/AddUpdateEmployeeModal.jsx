@@ -342,8 +342,10 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
     try {
       const ZoneIDsParam = zoneIds.join(",");
 
-      let response = await GetDistrictLookupList(ZoneIDsParam);
-
+      const response = await GetDistrictLookupList({
+        ZoneIDs: ZoneIDsParam,
+        ModuleName: "project"
+      });
       if (response?.data?.statusCode === 200) {
         const list = response?.data?.responseData?.data || [];
 
