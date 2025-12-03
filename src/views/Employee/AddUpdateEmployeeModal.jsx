@@ -403,7 +403,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
   const GetZoneLookupListData = async () => {
 
     try {
-      let response = await GetZoneLookupList();
+      let response = await GetZoneLookupList(companyID);
       if (response?.data?.statusCode === 200) {
         const zoneList = response?.data?.responseData?.data || [];
         const formattedCityList = zoneList.map((zone) => ({

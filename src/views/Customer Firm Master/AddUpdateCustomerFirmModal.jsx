@@ -297,12 +297,16 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
     try {
       const ZoneIDsParam = zoneIds.join(",");
 
-      let response = await GetDistrictLookupList(ZoneIDsParam, companyID, modelRequestData?.projectID);
+      let response = await GetDistrictLookupList({
+        ZoneIDs: ZoneIDsParam,        // <-- Correct param
+        ProjectID: modelRequestData?.projectID,
+        userID: companyID             // <-- If needed
+      });
 
       if (response?.data?.statusCode === 200) {
         const list = response?.data?.responseData?.data || [];
 
-        const formatted = list.map((d) => ({
+        const formatted = list.map(d => ({
           value: d.districtID,
           label: d.districtName,
         }));
@@ -316,6 +320,7 @@ const AddUpdateCustomerFirmModal = ({ show, onHide, setIsAddUpdateActionDone, mo
       setDistrictOption([]);
     }
   };
+
 
 
 
