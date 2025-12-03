@@ -219,6 +219,29 @@ const MvgEmployeeReportList = () => {
             const fileName = `MVG_Employee_Report_${new Date().getTime()}.xlsx`;
             saveAs(new Blob([excelBuffer], { type: "application/octet-stream" }), fileName);
       };
+      useEffect(() => {
+            if (!mvgEmployeeData || mvgEmployeeData.length === 0) return;
+
+            const fetchLocations = async () => {
+                  const checkInArray = await Promise.all(
+                        mvgEmployeeData.map(row =>
+                              getLocationName(row.latitude, row.longitude)
+                        )
+                  );
+
+                  const checkOutArray = await Promise.all(
+                        mvgEmployeeData.map(row =>
+                              getLocationName(row.checkOutLatitude, row.checkOutLongitude)
+                        )
+                  );
+
+                  setCheckInLocations(checkInArray);
+                  setCheckOutLocations(checkOutArray);
+            };
+
+            fetchLocations();
+      }, [mvgEmployeeData]);
+
       return (
             <div className="container-fluid py-4">
                   <div className="d-flex justify-content-between align-items-center mb-3">
@@ -289,13 +312,13 @@ const MvgEmployeeReportList = () => {
                               <table className="table table-bordered table-striped">
                                     <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff', }}>
                                           <tr className="text-center">
-                                                <th>#</th>
+                                                <th>Sr No .</th>
                                                 <th>Employee Name</th>
                                                 <th>Mobile No</th>
-                                                <th>Punch In Time</th>
                                                 <th>Punch In Date</th>
-                                                <th>Punch Out Time</th>
+                                                <th>Punch In Time</th>
                                                 <th>Punch Out Date</th>
+                                                <th>Punch Out Time</th>
                                                 <th>Punch In Location</th>
                                                 <th>Punch Out Location</th>
                                           </tr>
@@ -315,10 +338,10 @@ const MvgEmployeeReportList = () => {
 
                                                                   <td>{row.fullName}</td>
                                                                   <td>{row.mobileNo}</td>
-                                                                  <td>{checkIn.time}</td>
                                                                   <td>{checkIn.date}</td>
-                                                                  <td>{checkOut.time}</td>
+                                                                  <td>{checkIn.time}</td>
                                                                   <td>{checkOut.date}</td>
+                                                                  <td>{checkOut.time}</td>
 
 
 
