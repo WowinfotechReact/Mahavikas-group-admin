@@ -220,8 +220,11 @@ const Default = () => {
         <div className="row g-3">
           {stats.map(item => (
             <div key={item.id} className="col-xl-3 col-md-6" onClick={() => navigate(item.route)}>
-              <div className="card shadow-sm h-100 hover-card" role="button" tabIndex={0}>
-                <div className="card-body d-flex justify-content-between align-items-center">
+
+              <div
+                className={`card shadow-sm h-100 hover-card ${item.route ? "cursor-pointer" : "cursor-default"}`}
+                onClick={() => item.route && navigate(item.route)}
+              >                <div className="card-body d-flex justify-content-between align-items-center">
                   <div>
                     {/* <h5 className="card-title mb-1">{item.title}</h5> */}
                     <p className="display-6 fw-bold mb-0">{item.value}</p>

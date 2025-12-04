@@ -5,6 +5,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router';
+import { FaFileExcel } from "react-icons/fa6";
+
 import { BsPerson, BsEnvelope, BsTelephone } from "react-icons/bs";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { OverlayTrigger } from "react-bootstrap";
@@ -425,7 +427,12 @@ const SuperWiserList = () => {
                 </button>
               </Tooltip> */}  <Tooltip title="Export Attendance Authority Report">
                                                 <button onClick={() => exportAppUserExcel()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline ">
-                                                      <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>{" "}
+                                                      {/* <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>{" "} */}
+                                                      < FaFileExcel size={14} /> {"  "}
+                                                      {/* < FiDownload size={18} /> */}
+
+
+
                                                       <span className="d-none d-sm-inline">Export</span>
                                                 </button>
                                           </Tooltip>
