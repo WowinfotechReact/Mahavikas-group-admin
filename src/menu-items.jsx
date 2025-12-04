@@ -342,14 +342,14 @@ export default {
               icon: icons['DesignServicesIcon']
             },
 
-            {
-              id: 'bloodGroup',
-              title: 'Permission',
-              moduleName: 'Blood Group',
-              type: 'item',
-              url: '/master-role-type',
-              icon: icons['KeyIcon']
-            },
+            // {
+            //   id: 'bloodGroup',
+            //   title: 'Permission',
+            //   moduleName: 'Blood Group',
+            //   type: 'item',
+            //   url: '/master-role-type',
+            //   icon: icons['KeyIcon']
+            // },
 
           ]
         },
