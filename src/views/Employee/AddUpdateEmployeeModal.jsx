@@ -489,7 +489,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
               <div className="col-12 col-md-6 mb-2">
                 <div>
                   <label htmlFor="customerName" className="form-label">
-                    First Name
+                    Full Name
                     <span style={{ color: 'red' }}>*</span>
                   </label>
                   <input
@@ -567,6 +567,97 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                   )}
 
                 </div>
+              </div>
+
+
+              <div className="col-12 col-md-6 mb-2">
+                <style>
+                  {`
+.custom-radio-group {
+  display: flex;
+  gap: 12px;
+}
+
+.custom-radio {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 00;
+  user-select: none;
+}
+
+.custom-radio input {
+  display: none;
+}
+
+.custom-radio.active {
+  background-color: #ff7d34;
+  border-color: #ff7d34;
+  color: #fff;
+}
+
+.custom-radio:hover {
+  border-color: #ff7d34;
+}
+`}
+                </style>
+
+                <div className="mb-3">
+                  <label className="mb-1">Can Update Attendance?</label>
+                  <span style={{ color: 'red' }}>*</span>
+
+                  <div className="custom-radio-group">
+
+                    {/* YES OPTION */}
+                    <label
+                      className={`custom-radio ${employeeObj.canUpdateAttendance === true ? "active" : ""}`}
+                    >
+                      <input
+                        type="radio"
+                        name="canUpdateAttendance"
+                        checked={employeeObj.canUpdateAttendance === true}
+                        onChange={() =>
+                          setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: true }))
+                        }
+                      />
+                      Yes
+                    </label>
+
+                    {/* NO OPTION */}
+                    <label
+                      className={`custom-radio ${employeeObj.canUpdateAttendance === false ? "active" : ""}`}
+                    >
+                      <input
+                        type="radio"
+                        name="canUpdateAttendance"
+                        checked={employeeObj.canUpdateAttendance === false}
+                        onChange={() =>
+                          setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: false }))
+                        }
+                      />
+                      No
+                    </label>
+
+                  </div>
+
+
+                  {error &&
+                    (
+                      employeeObj.canUpdateAttendance === undefined ||
+                      employeeObj.canUpdateAttendance === null ||
+                      employeeObj.canUpdateAttendance === ''
+                    )
+                    && (
+                      <span style={{ color: "red" }}>{ERROR_MESSAGES}</span>
+                    )
+                  }
+
+                </div>
+
               </div>
             </div>
             <div className="row">
@@ -845,95 +936,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                 </div>
               </div></div>
             <div className="row">
-              <div className="col-12 col-md-6 mb-2">
-                <style>
-                  {`
-.custom-radio-group {
-  display: flex;
-  gap: 12px;
-}
 
-.custom-radio {
-  display: flex;
-  align-items: center;
-  padding: 6px 12px;
-  border-radius: 25px;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  transition: 0.3s;
-  font-weight: 00;
-  user-select: none;
-}
-
-.custom-radio input {
-  display: none;
-}
-
-.custom-radio.active {
-  background-color: #ff7d34;
-  border-color: #ff7d34;
-  color: #fff;
-}
-
-.custom-radio:hover {
-  border-color: #ff7d34;
-}
-`}
-                </style>
-
-                <div className="mb-3">
-                  <label className="mb-1">Can Update Attendance?</label>
-                  <span style={{ color: 'red' }}>*</span>
-
-                  <div className="custom-radio-group">
-
-                    {/* YES OPTION */}
-                    <label
-                      className={`custom-radio ${employeeObj.canUpdateAttendance === true ? "active" : ""}`}
-                    >
-                      <input
-                        type="radio"
-                        name="canUpdateAttendance"
-                        checked={employeeObj.canUpdateAttendance === true}
-                        onChange={() =>
-                          setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: true }))
-                        }
-                      />
-                      Yes
-                    </label>
-
-                    {/* NO OPTION */}
-                    <label
-                      className={`custom-radio ${employeeObj.canUpdateAttendance === false ? "active" : ""}`}
-                    >
-                      <input
-                        type="radio"
-                        name="canUpdateAttendance"
-                        checked={employeeObj.canUpdateAttendance === false}
-                        onChange={() =>
-                          setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: false }))
-                        }
-                      />
-                      No
-                    </label>
-
-                  </div>
-
-
-                  {error &&
-                    (
-                      employeeObj.canUpdateAttendance === undefined ||
-                      employeeObj.canUpdateAttendance === null ||
-                      employeeObj.canUpdateAttendance === ''
-                    )
-                    && (
-                      <span style={{ color: "red" }}>{ERROR_MESSAGES}</span>
-                    )
-                  }
-
-                </div>
-
-              </div>
             </div>
 
 
