@@ -104,20 +104,29 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
         : ModelData.projectIDs ? [ModelData.projectIDs] : [];
 
       // STEP 1: Set employee object
+      const fName = ModelData.firstName ? ModelData.firstName.trim() : "";
+      const lName = ModelData.lastName ? ModelData.lastName.trim() : "";
+
+      let fullName = fName;
+
+      if (lName && lName !== "") {
+        fullName = `${fName} ${lName}`;
+      }
       setEmployeeObj((prev) => ({
         ...prev,
         userKeyIDForUpdate: ModelData.userKeyIDForUpdate ?? null,
         userDetailsKeyID: ModelData.userDetailsKeyID ?? null,
         canUpdateAttendance: ModelData.canUpdateAttendance ?? null,
+        firstName: fName,
+        lastName: lName || null,
+        fullName: fullName,
 
-
-        firstName: ModelData.firstName ?? "",
-        lastName: ModelData.lastName ?? "",
         companyKeyID: ModelData.companyKeyID ?? "",
         emailID: ModelData.emailID ?? "",
         mobileNo: ModelData.mobileNo ?? "",
         password: ModelData.password ?? "",
         address: ModelData.address ?? "",
+
 
         zoneIDs,
         districtIDs,
@@ -150,14 +159,17 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
   const Submit = async () => {
 
     let isValid = false;
-    debugger
+    const fullName = employeeObj.fullName ? employeeObj.fullName.trim() : "";
+
+    // Split the name
+    const parts = fullName.split(" ").filter(Boolean);
+
+
+
     if (
-      employeeObj.firstName === null ||
-      employeeObj.firstName === undefined ||
-      employeeObj.firstName === '' ||
-      employeeObj.lastName === null ||
-      employeeObj.lastName === undefined ||
-      employeeObj.lastName === '' ||
+      fullName === "" ||          // nothing entered
+      parts.length === 0 ||       // no valid word
+      fullName.endsWith(" ") ||
 
       employeeObj.canUpdateAttendance === null ||
       employeeObj.canUpdateAttendance === undefined ||
@@ -203,7 +215,16 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       setErrors(false);
       isValid = false;
     }
+    let firstName = null;
+    let lastName = null;
 
+    if (parts.length === 1) {
+      firstName = parts[0];
+      lastName = null;
+    } else if (parts.length === 2) {
+      firstName = parts[0];
+      lastName = parts[1];
+    }
     const apiParam = {
       userKeyID: user.userKeyID,
       userKeyIDForUpdate: employeeObj?.userKeyIDForUpdate,
@@ -222,7 +243,9 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       districtIDs: Array.isArray(employeeObj.districtIDs) ? employeeObj.districtIDs : [],
       talukaIDs: Array.isArray(employeeObj.talukaIDs) ? employeeObj.talukaIDs : [],
 
-      projectIDs: employeeObj.projectIDs
+      projectIDs: employeeObj.projectIDs,
+      firstName,
+      lastName
     };
     if (!isValid) {
       AddUpdateAppUserData(apiParam);
@@ -473,79 +496,76 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                     maxLength={50}
                     type="text"
                     className="form-control"
-                    id="customerName"
-                    placeholder="Enter First Name"
-                    aria-describedby="Employee"
-                    value={employeeObj.firstName}
+                    id="fullName"
+                    placeholder="Enter Full Name"
+                    value={employeeObj.fullName}
                     onChange={(e) => {
                       setErrorMessage(false);
-                      let inputValue = e.target.value;
+                      let value = e.target.value;
 
-                      // Remove leading spaces
-                      inputValue = inputValue.replace(/^\s+/, '');
+                      // Block leading spaces
+                      value = value.replace(/^\s+/, "");
 
-                      // Allow only letters and spaces
-                      inputValue = inputValue.replace(/[^a-zA-Z]/g, '');
+                      // Allow only letters and space
+                      value = value.replace(/[^a-zA-Z ]/g, "");
 
-                      // Auto-capitalize the first letter
-                      if (inputValue.length > 0) {
-                        inputValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+                      // ❌ Prevent more than ONE space — second space will not be accepted
+                      const spaceCount = (value.match(/ /g) || []).length;
+                      if (spaceCount > 1) {
+                        return; // stop typing here
                       }
 
+                      // Auto-capitalize each word
+                      value = value
+                        .split(" ")
+                        .map((word) =>
+                          word.length > 0
+                            ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                            : ""
+                        )
+                        .join(" ");
+
+                      // Update fullName
                       setEmployeeObj((prev) => ({
                         ...prev,
-                        firstName: inputValue
+                        fullName: value
                       }));
-                    }}
-                  />
-                  {error && (employeeObj.firstName === null || employeeObj.firstName === undefined || employeeObj.firstName === '') ? (
-                    <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                  ) : (
-                    ''
-                  )}
-                </div>
-              </div>
 
-              <div className="col-12 col-md-6 mb-2">
-                <div>
-                  <label htmlFor="customerLName" className="form-label">
-                    Last Name
-                    <span style={{ color: 'red' }}>*</span>
-                  </label>
-                  <input
-                    maxLength={50}
-                    type="text"
-                    className="form-control"
-                    id="customerLName"
-                    placeholder="Enter Last Name"
-                    aria-describedby="Employee"
-                    value={employeeObj.lastName}
-                    onChange={(e) => {
-                      setErrorMessage(false);
-                      let inputValue = e.target.value;
+                      // Split into first & last name
+                      const parts = value.trim().split(" ");
 
-                      // Remove leading spaces
-                      inputValue = inputValue.replace(/^\s+/, '');
-
-                      // Allow only letters and spaces
-                      inputValue = inputValue.replace(/[^a-zA-Z]/g, '');
-
-                      // Auto-capitalize the first letter
-                      if (inputValue.length > 0) {
-                        inputValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+                      if (parts.length === 1) {
+                        setEmployeeObj((prev) => ({
+                          ...prev,
+                          firstName: parts[0],
+                          lastName: null
+                        }));
+                      } else if (parts.length === 2) {
+                        setEmployeeObj((prev) => ({
+                          ...prev,
+                          firstName: parts[0],
+                          lastName: parts[1]
+                        }));
                       }
-
-                      setEmployeeObj((prev) => ({
-                        ...prev,
-                        lastName: inputValue
-                      }));
                     }}
                   />
-                  {error && (employeeObj.lastName === null || employeeObj.lastName === undefined || employeeObj.lastName === '') ? (
-                    <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+
+
+
+
+                  {error &&
+                    (employeeObj.fullName === "" ||
+                      employeeObj.fullName === undefined ||
+                      employeeObj.fullName.endsWith(" ")) ? (
+                    <span style={{ color: 'red' }}>
+                      {employeeObj.fullName?.endsWith(" ")
+                        ? "Please enter last name"
+                        : "First name is required"}
+                    </span>
                   ) : (
-                    ''
+                    ""
                   )}
+
                 </div>
               </div>
             </div>

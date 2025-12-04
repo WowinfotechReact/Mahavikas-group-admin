@@ -119,11 +119,22 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                         setLoader(false);
                         const ModelData = data.data.responseData.data; // Assuming data is an array
                         console.log(ModelData.dateOfBirth, 'dsadsadasdas');
+
+                        // Build fullName for update mode
+                        const fName = ModelData.firstName ? ModelData.firstName.trim() : "";
+                        const lName = ModelData.lastName ? ModelData.lastName.trim() : "";
+
+                        let fullName = fName;
+
+                        if (lName && lName !== "") {
+                              fullName = `${fName} ${lName}`;
+                        }
                         setAdminObj({
                               ...adminObj,
                               userKeyIDForUpdate: modelRequestData.userKeyIDForUpdate,
-                              firstName: ModelData.firstName,
-                              lastName: ModelData.lastName,
+                              firstName: fName,
+                              lastName: lName || null,
+                              fullName: fullName,
                               roleKeyID: ModelData.roleKeyID,
                               emailID: ModelData.emailID,
                               mobileNo: ModelData.mobileNo,
@@ -148,13 +159,19 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
             debugger
             let isValid = false;
 
+
+            const fullName = adminObj.fullName ? adminObj.fullName.trim() : "";
+
+            // Split the name
+            const parts = fullName.split(" ").filter(Boolean);
+
+
+
+
             if (
-                  adminObj.firstName === null ||
-                  adminObj.firstName === undefined ||
-                  adminObj.firstName === '' ||
-                  adminObj.lastName === null ||
-                  adminObj.lastName === undefined ||
-                  adminObj.lastName === '' ||
+                  fullName === "" ||          // nothing entered
+                  parts.length === 0 ||       // no valid word
+                  fullName.endsWith(" ") ||
 
 
                   adminObj.mobileNo === null ||
@@ -183,7 +200,17 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                   setErrors(false);
                   isValid = false;
             }
+            // Set firstName & lastName properly
+            let firstName = null;
+            let lastName = null;
 
+            if (parts.length === 1) {
+                  firstName = parts[0];
+                  lastName = null;
+            } else if (parts.length === 2) {
+                  firstName = parts[0];
+                  lastName = parts[1];
+            }
             const apiParam = {
                   userKeyID: user.userKeyID,
                   userKeyIDForUpdate: modelRequestData?.userKeyIDForUpdate,
@@ -196,6 +223,8 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                   companyIDs: adminObj.companyIDs,
                   roleKeyID: adminObj.roleKeyID,
                   instituteKeyID: modelRequestData.instituteKeyID,
+                  firstName,
+                  lastName
             };
             if (!isValid) {
                   AddUpdateAppUserData(apiParam);
@@ -238,16 +267,6 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
 
 
 
-
-
-
-
-
-
-
-
-
-
       return (
             <>
                   <Modal size="lg" show={show} style={{ zIndex: 1300 }} onHide={onHide} backdrop="static" keyboard={false} centered>
@@ -264,88 +283,119 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
                                                       <label htmlFor="customerName" className="form-label">
-                                                            First Name
+                                                            Full Name
                                                             <span style={{ color: 'red' }}>*</span>
                                                       </label>
                                                       <input
                                                             maxLength={50}
                                                             type="text"
                                                             className="form-control"
-                                                            id="customerName"
-                                                            placeholder="Enter First Name"
-                                                            aria-describedby="Employee"
-                                                            value={adminObj.firstName}
+                                                            id="fullName"
+                                                            placeholder="Enter Full Name"
+                                                            value={adminObj.fullName}
                                                             onChange={(e) => {
                                                                   setErrorMessage(false);
-                                                                  let inputValue = e.target.value;
+                                                                  let value = e.target.value;
 
-                                                                  // Remove leading spaces
-                                                                  inputValue = inputValue.replace(/^\s+/, '');
+                                                                  // Block leading spaces
+                                                                  value = value.replace(/^\s+/, "");
 
-                                                                  // Allow only letters and spaces
-                                                                  inputValue = inputValue.replace(/[^a-zA-Z]/g, '');
+                                                                  // Allow only letters and space
+                                                                  value = value.replace(/[^a-zA-Z ]/g, "");
 
-                                                                  // Auto-capitalize the first letter
-                                                                  if (inputValue.length > 0) {
-                                                                        inputValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+                                                                  // ❌ Prevent more than ONE space — second space will not be accepted
+                                                                  const spaceCount = (value.match(/ /g) || []).length;
+                                                                  if (spaceCount > 1) {
+                                                                        return; // stop typing here
                                                                   }
 
+                                                                  // Auto-capitalize each word
+                                                                  value = value
+                                                                        .split(" ")
+                                                                        .map((word) =>
+                                                                              word.length > 0
+                                                                                    ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                                                                                    : ""
+                                                                        )
+                                                                        .join(" ");
+
+                                                                  // Update fullName
                                                                   setAdminObj((prev) => ({
                                                                         ...prev,
-                                                                        firstName: inputValue
+                                                                        fullName: value
                                                                   }));
+
+                                                                  // Split into first & last name
+                                                                  const parts = value.trim().split(" ");
+
+                                                                  if (parts.length === 1) {
+                                                                        setAdminObj((prev) => ({
+                                                                              ...prev,
+                                                                              firstName: parts[0],
+                                                                              lastName: null
+                                                                        }));
+                                                                  } else if (parts.length === 2) {
+                                                                        setAdminObj((prev) => ({
+                                                                              ...prev,
+                                                                              firstName: parts[0],
+                                                                              lastName: parts[1]
+                                                                        }));
+                                                                  }
                                                             }}
                                                       />
-                                                      {error && (adminObj.firstName === null || adminObj.firstName === undefined || adminObj.firstName === '') ? (
-                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+
+
+
+
+                                                      {error &&
+                                                            (adminObj.fullName === "" ||
+                                                                  adminObj.fullName === undefined ||
+                                                                  adminObj.fullName.endsWith(" ")) ? (
+                                                            <span style={{ color: 'red' }}>
+                                                                  {adminObj.fullName?.endsWith(" ")
+                                                                        ? "Please enter last name"
+                                                                        : "First name is required"}
+                                                            </span>
                                                       ) : (
-                                                            ''
+                                                            ""
                                                       )}
+
                                                 </div>
                                           </div>
 
                                           <div className="col-12 col-md-6 mb-2">
                                                 <div>
-                                                      <label htmlFor="customerLName" className="form-label">
-                                                            Last Name
+                                                      <label className="form-label">
+                                                            Select Company
                                                             <span style={{ color: 'red' }}>*</span>
                                                       </label>
-                                                      <input
-                                                            maxLength={50}
-                                                            type="text"
-                                                            className="form-control"
-                                                            id="customerLName"
-                                                            placeholder="Enter Last Name"
-                                                            aria-describedby="Employee"
-                                                            value={adminObj.lastName}
-                                                            onChange={(e) => {
-                                                                  setErrorMessage(false);
-                                                                  let inputValue = e.target.value;
-
-                                                                  // Remove leading spaces
-                                                                  inputValue = inputValue.replace(/^\s+/, '');
-
-                                                                  // Allow only letters and spaces
-                                                                  inputValue = inputValue.replace(/[^a-zA-Z]/g, '');
-
-                                                                  // Auto-capitalize the first letter
-                                                                  if (inputValue.length > 0) {
-                                                                        inputValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+                                                      <div>
+                                                            <Select
+                                                                  isMulti
+                                                                  value={companyOption.filter((option) =>
+                                                                        adminObj.companyIDs?.includes(option.value)
+                                                                  )}
+                                                                  onChange={(selectedOptions) =>
+                                                                        setAdminObj((prev) => ({
+                                                                              ...prev,
+                                                                              companyIDs: selectedOptions ? selectedOptions.map((o) => o.value) : [],
+                                                                        }))
                                                                   }
+                                                                  options={companyOption}
+                                                                  placeholder="Select Company"
+                                                            />
 
-                                                                  setAdminObj((prev) => ({
-                                                                        ...prev,
-                                                                        lastName: inputValue
-                                                                  }));
-                                                            }}
-                                                      />
-                                                      {error && (adminObj.lastName === null || adminObj.lastName === undefined || adminObj.lastName === '') ? (
-                                                            <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                      ) : (
-                                                            ''
-                                                      )}
+                                                            {error &&
+                                                                  (adminObj.roleKeyID === null || adminObj.roleKeyID === undefined || adminObj.roleKeyID === '') ? (
+                                                                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                                                            ) : (
+                                                                  ''
+                                                            )}
+                                                      </div>
                                                 </div>
                                           </div>
+
+
                                     </div>
                                     <div className="row">
 
@@ -581,37 +631,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                           </div>
 
 
-                                          <div className="col-12 col-md-6 mb-2">
-                                                <div>
-                                                      <label className="form-label">
-                                                            Select Company
-                                                            <span style={{ color: 'red' }}>*</span>
-                                                      </label>
-                                                      <div>
-                                                            <Select
-                                                                  isMulti
-                                                                  value={companyOption.filter((option) =>
-                                                                        adminObj.companyIDs?.includes(option.value)
-                                                                  )}
-                                                                  onChange={(selectedOptions) =>
-                                                                        setAdminObj((prev) => ({
-                                                                              ...prev,
-                                                                              companyIDs: selectedOptions ? selectedOptions.map((o) => o.value) : [],
-                                                                        }))
-                                                                  }
-                                                                  options={companyOption}
-                                                                  placeholder="Select Company"
-                                                            />
 
-                                                            {error &&
-                                                                  (adminObj.roleKeyID === null || adminObj.roleKeyID === undefined || adminObj.roleKeyID === '') ? (
-                                                                  <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                                                            ) : (
-                                                                  ''
-                                                            )}
-                                                      </div>
-                                                </div>
-                                          </div>
                                     </div>
 
                                     <span style={{ color: 'red' }}>{errorMessage}</span>

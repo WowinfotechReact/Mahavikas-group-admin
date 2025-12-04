@@ -22,6 +22,7 @@ import { ChangeEmployeeStatus, GetAppUserList, } from 'services/Employee Staff/E
 import ResetIMEIModal from 'component/Staff/ResetIMEIModal';
 import { Link } from 'react-router-dom';
 import SuperWiserAddUpdateModal from './SuperWiserAddUpdateModal';
+import dayjs from 'dayjs';
 
 
 
@@ -242,6 +243,137 @@ const SuperWiserList = () => {
             setExpandedLead((prev) => (prev === userKeyIDForUpdate ? null : userKeyIDForUpdate));
       };
 
+      const exportAppUserExcel = async () => {
+            // debugger
+            try {
+                  let allRows = [];
+                  let page = 1;
+                  let totalPages = 1;
+
+                  while (page <= totalPages) {
+                        const response = await GetAppUserList({
+                              pageSize,
+                              pageNo: page - 1,
+                              searchKeyword: searchKeyword,
+                              toDate: toDate ? dayjs(toDate).format("YYYY-MM-DD") : null,
+                              fromDate: fromDate ? dayjs(fromDate).format("YYYY-MM-DD") : null,
+                              companyID: Number(companyID),
+                              appUserTypeID: 2,
+                        });
+
+                        if (response?.data?.statusCode === 200) {
+                              const list = response.data.responseData?.data || [];
+                              const count = response.data.totalCount || 0;
+
+                              totalPages = Math.ceil(count / pageSize);
+                              allRows = [...allRows, ...list];
+                        }
+
+                        page++;
+                  }
+
+                  if (!allRows.length) {
+                        alert("No records found!");
+                        return;
+                  }
+
+                  // ---------------------------------------------------------
+                  // ✔ Remove unwanted API keys here
+                  // ---------------------------------------------------------
+                  let keys = Object.keys(allRows[0]).filter(
+                        (k) => !["userKeyIDForUpdate", "userDetailsKeyID", "userID", "canUpdateAttendance"].includes(k)
+                  );
+
+
+                  // You can remove more keys like this:
+                  // .filter(k => !["id","guid","xxx"].includes(k))
+
+                  // ---------------------------------------------------------
+                  // ✔ Convert camelCase → Title Case with spaces
+                  // ---------------------------------------------------------
+                  const formatHeader = (str) =>
+                        str
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, (m) => m.toUpperCase())
+                              .trim();
+
+                  // ---------------------------------------------------------
+                  // ✔ Title + Date Range
+                  // ---------------------------------------------------------
+                  const title = "Attendance Authority Report";
+
+                  const dateLine = `
+      <div style="margin-bottom:10px; font-size:14px;">
+        ${fromDate ? `From: <b>${dayjs(fromDate).format("DD-MM-YYYY")}</b>` : ""}
+        ${fromDate && toDate ? "&nbsp;&nbsp;|" : ""}
+        ${toDate ? `To: <b>${dayjs(toDate).format("DD-MM-YYYY")}</b>` : ""}
+      </div>
+    `;
+
+                  // ---------------------------------------------------------
+                  // ✔ Build Excel Table
+                  // ---------------------------------------------------------
+                  let table = `
+      <h2 style="text-align:center; margin-bottom:5px;">${title}</h2>
+      ${dateLine}
+
+      <table border="1" style="border-collapse: collapse; font-size: 14px; width:100%;">
+        <thead>
+          <tr>
+            <th style="border:1px solid #000; padding:5px;">Sr No</th>
+    `;
+
+                  keys.forEach((key) => {
+                        table += `
+        <th style="border:1px solid #000; padding:5px;">
+          ${formatHeader(key)}
+        </th>
+      `;
+                  });
+
+                  table += `
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+                  allRows.forEach((row, index) => {
+                        table += `
+        <tr>
+          <td style="border:1px solid #000; padding:5px;">${index + 1}</td>
+      `;
+
+                        keys.forEach((key) => {
+                              table += `
+          <td style="border:1px solid #000; padding:5px;">
+            ${row[key] ?? ""}
+          </td>
+        `;
+                        });
+
+                        table += `</tr>`;
+                  });
+
+                  table += `
+        </tbody>
+      </table>
+    `;
+
+                  // ---------------------------------------------------------
+                  // ✔ Download Excel
+                  // ---------------------------------------------------------
+                  const blob = new Blob([table], {
+                        type: "application/vnd.ms-excel;charset=utf-8;",
+                  });
+
+                  const link = document.createElement("a");
+                  link.href = URL.createObjectURL(blob);
+                  link.download = `Attendance_Authority_Report_${dayjs().format("DDMMYYYY_HHmm")}.xls`;
+                  link.click();
+            } catch (error) {
+                  console.log("Export error:", error);
+            }
+      };
 
 
 
@@ -262,7 +394,7 @@ const SuperWiserList = () => {
 
                                     </button>
                                     <div className="flex-grow-1 ">
-                                          <h5 className="mb-0">Supervisor</h5>
+                                          <h5 className="mb-0">Attendance Authority</h5>
                                     </div>
                                     <div className="position-absolute end-0 me-2">
                                           <button onClick={() => VehicleAddBtnClicked()} className="btn btn-success btn-sm d-inline d-sm-none">
@@ -290,13 +422,19 @@ const SuperWiserList = () => {
                   <i className="fa-solid fa-file-export" style={{ fontSize: '11px' }}></i>
                   {" "}  <span className="d-none d-sm-inline">Export</span>
                 </button>
-              </Tooltip> */}
+              </Tooltip> */}  <Tooltip title="Export Attendance Authority Report">
+                                                <button onClick={() => exportAppUserExcel()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline ">
+                                                      <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>{" "}
+                                                      <span className="d-none d-sm-inline">Export</span>
+                                                </button>
+                                          </Tooltip>
                                           <Tooltip title="Add Employee">
                                                 <button onClick={() => VehicleAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline ">
                                                       <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>{" "}
                                                       <span className="d-none d-sm-inline">Add</span>
                                                 </button>
                                           </Tooltip>
+
 
 
                                     </div>
@@ -321,7 +459,7 @@ const SuperWiserList = () => {
                                                       <th className="text-center">Address</th>
                                                       <th className="text-center">Organization Details</th>
 
-                                                      <th className="text-center">Can Update Att.</th>
+                                                      {/* <th className="text-center">Can Update Att.</th> */}
                                                       <th className="text-center">Password</th>
                                                       <th className="text-center actionSticky">Action</th>
                                                 </tr>
@@ -419,7 +557,7 @@ const SuperWiserList = () => {
 
                                                                   </div>
                                                             </td>
-                                                            <td className='text-center'>{value.canUpdateAttendance === true ? "Yes" : 'No'}</td>
+                                                            {/* <td className='text-center'>{value.canUpdateAttendance === true ? "Yes" : 'No'}</td> */}
                                                             <td>
                                                                   <div className="d-flex align-items-center">
                                                                         {/* Password text */}

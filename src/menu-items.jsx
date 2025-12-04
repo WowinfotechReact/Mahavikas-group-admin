@@ -201,7 +201,7 @@ export default {
         {
           id: 'superW',
           moduleName: 'Employee',
-          title: 'Super Wiser',
+          title: 'Attendance Authority',
           type: 'item',
           icon: icons['VerifiedIcon'],
           url: '/super-wiser'

@@ -27,6 +27,7 @@ import { FaUserShield, FaUsersCog, FaStore, FaCalculator, FaTools, FaUserTie } f
 import EmployeeInstituteModal from './EmployeeInstituteModal';
 import ViewEmployeeModal from './ViewEmployeeModal';
 import { GetAdminUserList } from 'services/Company/CompanyApi';
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 
 
@@ -302,6 +303,7 @@ const EmployeeList = () => {
                   <th className="text-center">Address</th>
                   <th className="text-center">Geo Info</th>
                   <th className="text-center">Project</th>
+                  <th className="text-center">Attendance Authority</th>
                   <th className="text-center">Password</th>
                   <th className="text-center actionSticky">Action</th>
                 </tr>
@@ -413,7 +415,41 @@ const EmployeeList = () => {
                           );
                         })}
                     </td>
-
+                    <td className="text-center">
+                      {value.canUpdateAttendance ? (
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            padding: "3px 8px",
+                            borderRadius: "12px",
+                            backgroundColor: "#e6f4ea",
+                            color: "#1e7d34",
+                            fontWeight: "500",
+                            fontSize: "0.85rem"
+                          }}
+                        >
+                          <FaCheckCircle size={14} className="me-1" />
+                          Yes
+                        </span>
+                      ) : (
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            padding: "3px 8px",
+                            borderRadius: "12px",
+                            backgroundColor: "#fdecea",
+                            color: "#c62828",
+                            fontWeight: "500",
+                            fontSize: "0.85rem"
+                          }}
+                        >
+                          <FaTimesCircle size={14} className="me-1" />
+                          No
+                        </span>
+                      )}
+                    </td>
 
                     <td>
                       <div className="d-flex align-items-center">
