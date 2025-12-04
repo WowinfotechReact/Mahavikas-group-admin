@@ -443,7 +443,7 @@ const CustomerFirmList = () => {
                           </button>
                         </Tooltip>
 
-                        <Tooltip title={`Add Employee To ${row.instituteName} Institute`}>
+                        <Tooltip title={`Add Employee `}>
                           <button
                             style={{
                               padding: '4px 8px',

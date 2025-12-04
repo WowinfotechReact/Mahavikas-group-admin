@@ -331,7 +331,7 @@ const AdminEmployeeList = () => {
                                                       <th className="text-center">Sr No.</th>
                                                       <th className="text-center"> Employee Info</th>
 
-                                                      <th className="text-center">Address </th>
+                                                      {/* <th className="text-center">Address </th> */}
                                                       <th className="text-center">Role  </th>
                                                       <th className="text-center">Password  </th>
                                                       <th className="text-center actionSticky ">Action</th>
@@ -361,23 +361,26 @@ const AdminEmployeeList = () => {
                                                                               <BsEnvelope className="text-danger" />
                                                                               <span>{row.emailID || "N/A"}</span>
                                                                         </div>
+                                                                        <div className="d-flex align-items-center gap-2 mb-1">
+                                                                              {row.address?.length > 30 ? (
+                                                                                    <Tooltip title={row.address}>
+                                                                                          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                                                                                                <i className="fa-solid fa-location-dot" style={{ color: "#d94e4e" }}></i>
+                                                                                                {`${row.address?.substring(0, 30)}...`}
+                                                                                          </span>
+                                                                                    </Tooltip>
+                                                                              ) : (
+                                                                                    <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                                                                                          <i className="fa-solid fa-location-dot" style={{ color: "#d94e4e" }}></i>
+                                                                                          {row.address}
+                                                                                    </span>
+                                                                              )}
+                                                                        </div>
+
+
                                                                   </div>
                                                             </td>
-                                                            <td className="text-center">
-                                                                  {row.address?.length > 30 ? (
-                                                                        <Tooltip title={row.address}>
-                                                                              <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                                                                                    <i className="fa-solid fa-location-dot" style={{ color: "#d94e4e" }}></i>
-                                                                                    {`${row.address?.substring(0, 30)}...`}
-                                                                              </span>
-                                                                        </Tooltip>
-                                                                  ) : (
-                                                                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                                                                              <i className="fa-solid fa-location-dot" style={{ color: "#d94e4e" }}></i>
-                                                                              {row.address}
-                                                                        </span>
-                                                                  )}
-                                                            </td>
+
 
 
                                                             <td className="text-center">

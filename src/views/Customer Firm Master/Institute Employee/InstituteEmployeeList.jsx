@@ -278,7 +278,7 @@ const InstituteEmployeeList = () => {
             </div> */}
 
                                     <div className="d-flex align-items-center ms-2 gap-2 mt-2 mt-sm-0">
-                                          <Tooltip title={`Add Employee Against ${location?.state?.instituteName}`} >
+                                          <Tooltip title={`Add Employee `} >
                                                 <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
                                                       <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
                                                       <span className="d-none d-sm-inline">Add</span>

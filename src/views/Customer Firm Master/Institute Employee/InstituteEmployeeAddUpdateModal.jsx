@@ -480,7 +480,7 @@ const InstituteEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDon
                                                       <textarea
                                                             className="form-control"
                                                             placeholder="Enter Address"
-                                                            maxLength={250}
+                                                            maxLength={500}
                                                             value={employeeObj.address}
                                                             onChange={(e) => {
                                                                   setErrorMessage(false);

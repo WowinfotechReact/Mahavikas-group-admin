@@ -587,8 +587,6 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                   )}
 
                 </div>
-              </div>
-              <div className="row">
                 <div className="col-md-6 mb-3">
                   <label htmlFor="customerAddress" className="form-label">
                     Select Taluka
@@ -614,32 +612,8 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                   )}
 
                 </div>
-
-
-                <div className="col-md-6 mb-3">
-                  <label htmlFor="ProductName" className="form-label">
-                    Select Services<span style={{ color: 'red' }}>*</span>
-                  </label>
-                  <Select
-                    options={servicesOption}
-                    value={
-                      servicesOption.find(
-                        (item) => item.value === Number(productObj.serviceID)
-                      ) || null
-                    }
-                    onChange={(selected) => {
-                      setProductObj(prev => ({
-                        ...prev,
-                        serviceID: Number(selected.value)
-                      }));
-                    }}
-                    menuPosition="fixed"
-                  />
-
-                  {error && !productObj.serviceID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
-                  {errorMessage && <span style={{ color: 'red' }}>{errorMessage}</span>}
-                </div>
               </div>
+
               {/* GST Percentage */}
               <div className="row">
                 <div className="col-md-6 mb-3">
@@ -677,6 +651,34 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                   />
                   {error && !productObj.endDate && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
 
+                </div>
+              </div>
+              <div className="row">
+
+
+
+                <div className="col-md-6 mb-3">
+                  <label htmlFor="ProductName" className="form-label">
+                    Select Services<span style={{ color: 'red' }}>*</span>
+                  </label>
+                  <Select
+                    options={servicesOption}
+                    value={
+                      servicesOption.find(
+                        (item) => item.value === Number(productObj.serviceID)
+                      ) || null
+                    }
+                    onChange={(selected) => {
+                      setProductObj(prev => ({
+                        ...prev,
+                        serviceID: Number(selected.value)
+                      }));
+                    }}
+                    menuPosition="fixed"
+                  />
+
+                  {error && !productObj.serviceID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
+                  {errorMessage && <span style={{ color: 'red' }}>{errorMessage}</span>}
                 </div>
               </div>
 

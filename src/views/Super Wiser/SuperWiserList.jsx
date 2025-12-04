@@ -436,7 +436,7 @@ const SuperWiserList = () => {
                                                       <span className="d-none d-sm-inline">Export</span>
                                                 </button>
                                           </Tooltip>
-                                          <Tooltip title="Add Employee">
+                                          <Tooltip title="Add Authorized Person">
                                                 <button onClick={() => VehicleAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline ">
                                                       <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>{" "}
                                                       <span className="d-none d-sm-inline">Add</span>
