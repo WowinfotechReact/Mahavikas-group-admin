@@ -281,8 +281,9 @@ const SuperWiserList = () => {
                   // ✔ Remove unwanted API keys here
                   // ---------------------------------------------------------
                   let keys = Object.keys(allRows[0]).filter(
-                        (k) => !["userKeyIDForUpdate", "userDetailsKeyID", "userID", "canUpdateAttendance"].includes(k)
+                        (k) => !["userKeyIDForUpdate", "userDetailsKeyID", "userID", "canUpdateAttendance", 'designationName', 'attendanceTypeName', 'instituteName', 'districtNames', 'zoneNames', 'talukaNames', 'isWebAppUser', 'presentCount', 'absentCount', 'weeklyOffCount'].includes(k)
                   );
+
 
 
                   // You can remove more keys like this:
