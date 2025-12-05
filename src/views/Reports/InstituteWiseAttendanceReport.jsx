@@ -322,7 +322,7 @@ const InstituteWiseAttendanceReport = () => {
                         name: `${emp.firstName} ${emp.lastName}`,
                         designation: emp.designationName,
                         days: Array(daysInMonth).fill("-"),
-                        downloadURL: emp.downloadURL || null,
+                        uploadURL: emp.uploadURL || null,
 
                         // ✅ Init totals
                         totalP: 0,
@@ -531,8 +531,8 @@ const InstituteWiseAttendanceReport = () => {
                                                             <td>{row.totalA}</td>
                                                             <td>{row.totalW}</td>
                                                             <td>
-                                                                  {row.downloadURL ? (
-                                                                        <a href={row.downloadURL} target="_blank" rel="noopener noreferrer">
+                                                                  {row.uploadURL ? (
+                                                                        <a href={row.uploadURL} target="_blank" rel="noopener noreferrer">
                                                                               Download
                                                                         </a>
                                                                   ) : "-"}
