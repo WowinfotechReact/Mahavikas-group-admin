@@ -45,6 +45,7 @@ const routeTitles = {
   '/mapped-city': 'Mapped City - Maha Vikas Group',
   '/employee-wise-attendance-report': 'Employee Wise Attendance Report - Maha Vikas Group',
   '/super-wiser': 'Attendance Authority - Maha Vikas Group',
+  '/help-and-support': 'Help & Support - Maha Vikas Group',
   '/master-service': 'Services - Maha Vikas Group',
   '/site-engineer-report': 'Site Engineer Report - Maha Vikas Group',
   '/zone-manager': 'Zone Manager - Maha Vikas Group',

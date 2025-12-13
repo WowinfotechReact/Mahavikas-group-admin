@@ -31,6 +31,7 @@ import MasterZoneList from 'views/Master Crud/Master Zone/MasterZoneList';
 import MapCityList from 'views/Master Crud/Zone Master/MapCityList';
 import MvgEmployeeReportList from 'views/Reports/MvgEmployeeReportList';
 import SuperWiserList from 'views/Super Wiser/SuperWiserList';
+import HelpAndSupportList from 'views/Help & Support/HelpAndSupportList';
 const Profile = Loadable(lazy(() => import('Profile')));
 const EmployeeList = Loadable(lazy(() => import('views/Employee/EmployeeList')));
 const CustomerFirmList = Loadable(lazy(() => import('views/Customer Firm Master/CustomerFirmList')));
@@ -219,6 +220,14 @@ const MainRoutes = {
       element: (
         <Suspense fallback={<Loader />}>
           <AdminEmployeeList />
+        </Suspense>
+      )
+    },
+    {
+      path: '/help-and-support',
+      element: (
+        <Suspense fallback={<Loader />}>
+          <HelpAndSupportList />
         </Suspense>
       )
     },

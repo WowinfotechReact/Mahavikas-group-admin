@@ -206,6 +206,14 @@ export default {
           icon: icons['VerifiedIcon'],
           url: '/super-wiser'
         },
+        {
+          id: 'superW',
+          moduleName: 'Employee',
+          title: 'Help & Support',
+          type: 'item',
+          icon: icons['VerifiedIcon'],
+          url: '/help-and-support'
+        },
         // {
         //   id: 'customer/firm ',
         //   moduleName: 'Customer',
