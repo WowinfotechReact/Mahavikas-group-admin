@@ -21,6 +21,12 @@ export const AddUpdateProject = async (url = '', params) => {
 };
 
 
+export const GetMappedProjectLookupList = async (id,CompanyID) => {
+    let url = `${projectBaseURI}/GetMappedProjectLookupList?UserDetailsKeyID=${id}&CompanyID=${CompanyID}`;
+  
+    const res = await getListWithAuthenticated(url);
+    return res;
+  };
 export const GetProjectModel = async (id) => {
     let url = `${projectBaseURI}/GetProjectModel?ProjectKeyID=${id}`;
   

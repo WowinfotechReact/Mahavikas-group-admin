@@ -171,9 +171,9 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       parts.length === 0 ||       // no valid word
       fullName.endsWith(" ") ||
 
-      employeeObj.canUpdateAttendance === null ||
-      employeeObj.canUpdateAttendance === undefined ||
-      employeeObj.canUpdateAttendance === '' ||
+      // employeeObj.canUpdateAttendance === null ||
+      // employeeObj.canUpdateAttendance === undefined ||
+      // employeeObj.canUpdateAttendance === '' ||
 
 
 
@@ -237,7 +237,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
       address: employeeObj.address,
       companyID: companyID,
       appUserTypeID: 1,
-      canUpdateAttendance: employeeObj.canUpdateAttendance,
+      // canUpdateAttendance: employeeObj.canUpdateAttendance,
       instituteIDs: [],
       zoneIDs: Array.isArray(employeeObj.zoneIDs) ? employeeObj.zoneIDs : [],
       districtIDs: Array.isArray(employeeObj.districtIDs) ? employeeObj.districtIDs : [],
@@ -569,96 +569,36 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                 </div>
               </div>
 
-
               <div className="col-12 col-md-6 mb-2">
-                <style>
-                  {`
-.custom-radio-group {
-  display: flex;
-  gap: 12px;
-}
-
-.custom-radio {
-  display: flex;
-  align-items: center;
-  padding: 6px 12px;
-  border-radius: 25px;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  transition: 0.3s;
-  font-weight: 00;
-  user-select: none;
-}
-
-.custom-radio input {
-  display: none;
-}
-
-.custom-radio.active {
-  background-color: #ff7d34;
-  border-color: #ff7d34;
-  color: #fff;
-}
-
-.custom-radio:hover {
-  border-color: #ff7d34;
-}
-`}
-                </style>
-
-                <div className="mb-3">
-                  <label className="mb-1">Can Update Attendance?</label>
-                  <span style={{ color: 'red' }}>*</span>
-
-                  <div className="custom-radio-group">
-
-                    {/* YES OPTION */}
-                    <label
-                      className={`custom-radio ${employeeObj.canUpdateAttendance === true ? "active" : ""}`}
-                    >
-                      <input
-                        type="radio"
-                        name="canUpdateAttendance"
-                        checked={employeeObj.canUpdateAttendance === true}
-                        onChange={() =>
-                          setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: true }))
-                        }
-                      />
-                      Yes
-                    </label>
-
-                    {/* NO OPTION */}
-                    <label
-                      className={`custom-radio ${employeeObj.canUpdateAttendance === false ? "active" : ""}`}
-                    >
-                      <input
-                        type="radio"
-                        name="canUpdateAttendance"
-                        checked={employeeObj.canUpdateAttendance === false}
-                        onChange={() =>
-                          setEmployeeObj(prev => ({ ...prev, canUpdateAttendance: false }))
-                        }
-                      />
-                      No
-                    </label>
-
-                  </div>
-
-
-                  {error &&
-                    (
-                      employeeObj.canUpdateAttendance === undefined ||
-                      employeeObj.canUpdateAttendance === null ||
-                      employeeObj.canUpdateAttendance === ''
-                    )
-                    && (
-                      <span style={{ color: "red" }}>{ERROR_MESSAGES}</span>
-                    )
-                  }
-
+                <div>
+                  <label htmlFor="vehicleNumber" className="form-label">
+                    Address
+                    <span style={{ color: 'red' }}>*</span>
+                  </label>
+                  <textarea
+                    className="form-control"
+                    placeholder="Enter Address"
+                    maxLength={250}
+                    value={employeeObj.address}
+                    onChange={(e) => {
+                      setErrorMessage(false);
+                      let InputValue = e.target.value;
+                      // Updated regex to allow common special characters for addresses
+                      const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s,.-/#&()]/g, '');
+                      setEmployeeObj((prev) => ({
+                        ...prev,
+                        address: updatedValue
+                      }));
+                    }}
+                  />
+                  {error && (employeeObj.address === null || employeeObj.address === undefined || employeeObj.address === '') ? (
+                    <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                  ) : (
+                    ''
+                  )}
                 </div>
-
               </div>
+
             </div>
             <div className="row">
 
@@ -906,35 +846,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
 
                 </div>
               </div>
-              <div className="col-12 col-md-6 mb-2">
-                <div>
-                  <label htmlFor="vehicleNumber" className="form-label">
-                    Address
-                    <span style={{ color: 'red' }}>*</span>
-                  </label>
-                  <textarea
-                    className="form-control"
-                    placeholder="Enter Address"
-                    maxLength={250}
-                    value={employeeObj.address}
-                    onChange={(e) => {
-                      setErrorMessage(false);
-                      let InputValue = e.target.value;
-                      // Updated regex to allow common special characters for addresses
-                      const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s,.-/#&()]/g, '');
-                      setEmployeeObj((prev) => ({
-                        ...prev,
-                        address: updatedValue
-                      }));
-                    }}
-                  />
-                  {error && (employeeObj.address === null || employeeObj.address === undefined || employeeObj.address === '') ? (
-                    <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
-                  ) : (
-                    ''
-                  )}
-                </div>
-              </div></div>
+            </div>
             <div className="row">
 
             </div>

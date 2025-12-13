@@ -12,19 +12,15 @@ import StatusChangeModal from 'component/StatusChangeModal ';
 import SuccessPopupModal from 'component/SuccessPopupModal';
 import { Tooltip } from '@mui/material';
 import AddUpdateCustomerFirmModal from './AddUpdateCustomerFirmModal';
-import { ChangeCustomerStatus, GetCustomerList } from 'services/CustomerStaff/CustomerStaffApi';
 import CustomerFirmViewModal from './CustomerFirmViewModal';
-import { hasPermission } from 'Middleware/permissionUtils';
-import { Link } from 'react-router-dom';
 import InstituteUserAddUpdateModal from 'views/Employee/InstituteUserAddUpdateModal';
-import { GetInstituteList } from 'services/Institute/InstituteApi';
+import { ChangeInstituteStatus, GetInstituteList } from 'services/Institute/InstituteApi';
 
 const CustomerFirmList = () => {
   const [stateChangeStatus, setStateChangeStatus] = useState('');
   const [openCustomerViewModal, setOpenCustomerViewModal] = useState(false);
   const [showInstituteUserModal, setShowInstituteUserModal
   ] = useState(false);
-  const [showVehicleViewModal, setShowVehicleViewModal] = useState(false);
   const [imgModalTitle, setImgModalTitle] = useState('');
   const [imgModalShow, setImgModalShow] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
@@ -173,7 +169,7 @@ const CustomerFirmList = () => {
     // debugger
     try {
       const { instituteKeyID } = row; // Destructure to access only what's needed
-      const response = await ChangeCustomerStatus(instituteKeyID, user.userKeyID);
+      const response = await ChangeInstituteStatus(instituteKeyID);
 
       if (response && response.data.statusCode === 200) {
         setLoader(false);
@@ -184,7 +180,7 @@ const CustomerFirmList = () => {
         GetInstituteListData(currentPage, null, toDate, fromDate);
         // GetMasterDistrictListData(currentPage, null, toDate, fromDate);
         setShowSuccessModal(true);
-        setModelAction('Employee status changed successfully.');
+        setModelAction('Institute status changed successfully.');
       } else {
         setLoader(false);
         console.error(response?.data?.errorMessage);
@@ -217,14 +213,11 @@ const CustomerFirmList = () => {
     // Join parts with spaces
     return parts.filter((part) => part).join(' ');
   };
-
-  const VehicleViewBtnClicked = async (row) => {
-    setModelRequestData({
-      ...modelRequestData,
-      vehicleKeyID: row.vehicleKeyID
-    });
-    setShowVehicleViewModal(true);
+  const handleStatusChange = (row) => {
+    setStateChangeStatus(row);
+    setShowStatusChangeModal(true);
   };
+
   const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
 
   const fullText = "Search By Institute / Project / Zone / Distractt";
@@ -350,6 +343,7 @@ const CustomerFirmList = () => {
                   <th className="text-center">Zone</th>
                   <th className="text-center">District</th>
                   <th className="text-center">Taluka</th>
+                  <th className="text-center ">Status</th>
                   <th className="text-center actionSticky">Action</th>
                 </tr>
               </thead>
@@ -421,7 +415,13 @@ const CustomerFirmList = () => {
                       </div>
                     </td>
 
+                    <td className="text-center">
+                      {row.status === 'Active' ? 'Active' : 'In-Active'}
+                      <Android12Switch style={{ padding: '8px' }}
+                        onClick={() => handleStatusChange(row)} checked={row.status === 'Active'} />
 
+
+                    </td>
 
                     {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
                     <td className="text-center relative  actionColSticky " style={{ zIndex: 4 }}>

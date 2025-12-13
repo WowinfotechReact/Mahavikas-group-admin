@@ -42,8 +42,8 @@ export const GetInstituteModel = async (id) => {
 
 
 
-export const ChangeEmployeeStatus = async (id, UserKeyID) => {
-  let url = `${InstituteBaseURI}/ChangeEmployeeStatus?EmployeeKeyID=${id}&UserKeyID=${UserKeyID}`;
+export const ChangeInstituteStatus = async (id) => {
+  let url = `${InstituteBaseURI}/ChangeInstituteStatus?InstituteKeyID=${id}`;
   const res = await getListWithAuthenticated(url);
   return res;
 };

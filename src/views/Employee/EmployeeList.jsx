@@ -28,6 +28,7 @@ import EmployeeInstituteModal from './EmployeeInstituteModal';
 import ViewEmployeeModal from './ViewEmployeeModal';
 import { GetAdminUserList } from 'services/Company/CompanyApi';
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import ProjectPermissionModal from './ProjectPermissionModal';
 
 
 
@@ -64,6 +65,7 @@ const EmployeeList = () => {
   const [showStatusChangeModal, setShowStatusChangeModal] = useState(false);
   const [showEmployeeInstituteModal, setShowEmployeeInstituteModal] = useState(false)
   const [showEmployeeViewModal, setShowEmployeeViewModal] = useState(false)
+  const [showProjectPermissionModal, setShowProjectPermissionModal] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState();
   const [modelRequestData, setModelRequestData] = useState({
     adminID: null,
@@ -103,7 +105,10 @@ const EmployeeList = () => {
     GetAppUserListData(1, null, toDate, fromDate);
   }, [setIsAddUpdateActionDone]);
 
-
+  const handleStatusChange = (value) => {
+    setStateChangeStatus(value);
+    setShowStatusChangeModal(true);
+  };
 
   const GetAppUserListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
     setLoader(true);
@@ -162,6 +167,16 @@ const EmployeeList = () => {
     });
     setShowEmployeeModal(true);
   };
+  const assignProjectBtnClick = (value) => {
+
+    setModelRequestData({
+      ...modelRequestData,
+      userKeyIDForUpdate: value.userKeyIDForUpdate,
+      userDetailsKeyID: value.userDetailsKeyID,
+      Action: 'Update'
+    });
+    setShowProjectPermissionModal(true);
+  };
 
   const [visibleIndex, setVisibleIndex] = useState(null);
 
@@ -194,12 +209,12 @@ const EmployeeList = () => {
 
     setShowEmployeeViewModal(true)
   }
-  const confirmStatusChange = async (row, user) => {
+  const confirmStatusChange = async (value, user) => {
     setLoader(true);
 
     // debugger
     try {
-      const { userKeyIDForUpdate } = row; // Destructure to access only what's needed
+      const { userKeyIDForUpdate } = value; // Destructure to access only what's needed
       const response = await ChangeEmployeeStatus(userKeyIDForUpdate, user.userKeyID);
 
       if (response && response.data.statusCode === 200) {
@@ -303,8 +318,9 @@ const EmployeeList = () => {
                   <th className="text-center">Address</th>
                   <th className="text-center">Geo Info</th>
                   <th className="text-center">Project</th>
-                  <th className="text-center">Attendance Authority</th>
+                  {/* <th className="text-center">Attendance Authority</th> */}
                   <th className="text-center">Password</th>
+                  <th className="text-center">Status</th>
                   <th className="text-center actionSticky">Action</th>
                 </tr>
               </thead>
@@ -378,7 +394,28 @@ const EmployeeList = () => {
                           <FaCity className="me-2 text-success" />
                           <div>
                             <small className="text-muted d-block">District</small>
-                            <span>{value.districtNames || "-"}</span>
+                            <span>
+
+                              {value.districtNames
+                                ?.split(",")
+                                .map((proj, i) => {
+                                  const name = proj.trim();
+
+                                  return (
+                                    <div key={i} className="d-flex align-items-center project-row fade-in">
+                                      {/* <FaProjectDiagram className="me-2 text-primary icon-pop" /> */}
+
+                                      {name.length > 25 ? (
+                                        <Tooltip title={name}>
+                                          {name.substring(0, 25)}...
+                                        </Tooltip>
+                                      ) : (
+                                        name
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                            </span>
                           </div>
                         </div>
 
@@ -387,7 +424,30 @@ const EmployeeList = () => {
                           <FaRoute className="me-2 text-warning" />
                           <div>
                             <small className="text-muted d-block">Taluka</small>
-                            <span>{value.talukaNames || "-"}</span>
+                            <span>
+
+                              {value.talukaNames
+                                ?.split(",")
+                                .map((proj, i) => {
+                                  const name = proj.trim();
+
+                                  return (
+                                    <div key={i} className="d-flex align-items-center project-row fade-in">
+                                      {/* <FaProjectDiagram className="me-2 text-primary icon-pop" /> */}
+
+                                      {name.length > 25 ? (
+                                        <Tooltip title={name}>
+                                          {name.substring(0, 25)}...
+                                        </Tooltip>
+                                      ) : (
+                                        name
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                            </span>
+
+
                           </div>
                         </div>
 
@@ -415,7 +475,7 @@ const EmployeeList = () => {
                           );
                         })}
                     </td>
-                    <td className="text-center">
+                    {/* <td className="text-center">
                       {value.canUpdateAttendance ? (
                         <span
                           style={{
@@ -449,7 +509,7 @@ const EmployeeList = () => {
                           No
                         </span>
                       )}
-                    </td>
+                    </td> */}
 
                     <td>
                       <div className="d-flex align-items-center">
@@ -476,6 +536,14 @@ const EmployeeList = () => {
                     </td>
 
 
+                    <td className="text-center">
+                      {value.status === 'Active' ? 'Active' : 'In-Active'}
+                      <Android12Switch style={{ padding: '8px' }}
+                        onClick={() => handleStatusChange(value)} checked={value.status === 'Active'} />
+
+
+                    </td>
+
 
 
 
@@ -488,6 +556,24 @@ const EmployeeList = () => {
 
 
 
+                        <Tooltip title="Assign Project">
+                          {/* <Tooltip title="Under Development"> */}
+                          <button
+                            style={{
+                              padding: '4px 8px', // Adjust padding for smaller size
+                              fontSize: '12px', // Optional: smaller font size
+                              height: '28px', // Set height
+                              // width: '28px', // Set width,
+                              background: '#ffaa33', color: 'white'
+                            }}
+                            onClick={() => assignProjectBtnClick(value)}
+                            type="button"
+
+                            className="btn-sm btn me-2"
+                          >
+                            Assign Project
+                          </button>
+                        </Tooltip>
                         <Tooltip title="Update Employee">
                           {/* <Tooltip title="Under Development"> */}
                           <button
@@ -591,6 +677,15 @@ const EmployeeList = () => {
         <ViewEmployeeModal
           show={showEmployeeViewModal}
           onHide={() => setShowEmployeeViewModal(false)}
+          modelRequestData={modelRequestData}
+          setModelRequestData={setModelRequestData}
+          setIsAddUpdateActionDone={setIsAddUpdateActionDone}
+        />
+      )}
+      {showProjectPermissionModal && (
+        <ProjectPermissionModal
+          show={showProjectPermissionModal}
+          onHide={() => setShowProjectPermissionModal(false)}
           modelRequestData={modelRequestData}
           setModelRequestData={setModelRequestData}
           setIsAddUpdateActionDone={setIsAddUpdateActionDone}
