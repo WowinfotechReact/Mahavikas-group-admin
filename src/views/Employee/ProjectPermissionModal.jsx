@@ -1,33 +1,72 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import SuccessPopupModal from 'component/SuccessPopupModal';
 import Select from 'react-select';
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { GetMappedProjectLookupList } from 'services/Project/ProjectApi';
+import { ConfigContext } from 'context/ConfigContext';
+import { UpdateUserProjectPermission } from 'services/Employee Staff/EmployeeApi';
 
 const ProjectPermissionModal = ({ show, onHide, modelRequestData, }) => {
+      const { setLoader, user, companyID, permissions } = useContext(ConfigContext);
+      const [projectList, setProjectList] = useState([])
+      const [isAddUpdateActionDone, setIsAddUpdateActionDone] = useState(false)
 
-      const projectList = [
-            { id: 1, name: "Velvet GPS" },
-            { id: 2, name: "Sales CRM" },
-            { id: 3, name: "Inventory Automation" },
-            { id: 4, name: "Smart IoT Portal" },
-      ];
+      useEffect(() => {
+            if (show) {
+                  GetMappedProjectLookupListData(modelRequestData.userDetailsKeyID, companyID);
+            }
+      }, [show]);
+      useEffect(() => {
+            if (isAddUpdateActionDone) {
+                  GetMappedProjectLookupListData(modelRequestData.userDetailsKeyID, companyID);
+            }
+            setIsAddUpdateActionDone(false)
+      }, [isAddUpdateActionDone]);
 
-
-
-      const GetEmployeeLookupListData = async (roleTypeID, companyID) => {
+      const UpdateUserProjectPermissionData = async (apiParam) => {
+            setLoader(true);
             try {
-                  let response = await GetMappedProjectLookupList(roleTypeID, companyID); // Call to get employee list based on roleTypeID
-                  if (response?.data?.statusCode === 200) {
-                        const employeeList = response?.data?.responseData?.data || [];
+                  const url = "/UpdateUserProjectPermission";
 
-                        const filteredEmployees = employeeList.map((emp) => ({
-                              value: emp.employeeID,
-                              label: emp.name
+                  const response = await UpdateUserProjectPermission(url, apiParam);
+
+                  if (response?.data?.statusCode === 200) {
+                        // setShowSuccessModal(true);
+                        // setModelAction(
+                        //       modelRequestData.Action === null
+                        //             ? "Project Added Successfully!"
+                        //             : "Project Updated Successfully!"
+                        // );
+
+                        setIsAddUpdateActionDone(true);
+                  } else {
+                        setErrorMessage(response?.response?.data?.errorMessage);
+                  }
+
+                  return response; // ✅ IMPORTANT
+            } catch (error) {
+                  console.error(error);
+                  throw error; // ✅ rethrow so caller can catch
+            } finally {
+                  setLoader(false);
+            }
+      };
+
+      const GetMappedProjectLookupListData = async (UserDetailsKeyID, companyID) => {
+            try {
+                  let response = await GetMappedProjectLookupList(UserDetailsKeyID, companyID); // Call to get employee list based on roleTypeID
+                  if (response?.data?.statusCode === 200) {
+                        const project = response?.data?.responseData?.data || [];
+
+                        const filteredEmployees = project.map((emp) => ({
+                              value: emp.projectID,
+                              label: emp.projectName,
+                              userDetailsKeyID: emp.userDetailsKeyID,
+                              canUpdateAttendance: emp.canUpdateAttendance,
                         }));
-                        setEmployeeOption(filteredEmployees); // Make sure you have a state setter function for IVR list
+                        setProjectList(filteredEmployees); // Make sure you have a state setter function for IVR list
                   } else {
                         console.error('Bad request');
                   }
@@ -36,10 +75,48 @@ const ProjectPermissionModal = ({ show, onHide, modelRequestData, }) => {
             }
       };
       const [assigned, setAssigned] = useState({});
+      const toggleAssign = async (projectID) => {
+            const currentProject = projectList.find(
+                  (p) => p.value === projectID
+            );
 
-      const toggleAssign = (id) => {
-            setAssigned((prev) => ({ ...prev, [id]: !prev[id] }));
+            if (!currentProject) return;
+
+            const payload = {
+                  userDetailsKeyID: modelRequestData.userDetailsKeyID,
+                  projectID: projectID,
+            };
+
+            try {
+                  const response = await UpdateUserProjectPermissionData(payload);
+
+                  if (response?.data?.statusCode === 200) {
+                        setProjectList((prev) =>
+                              prev.map((p) =>
+                                    p.value === projectID
+                                          ? { ...p, canUpdateAttendance: !currentProject.canUpdateAttendance }
+                                          : p
+                              )
+                        );
+                  } else {
+                        toast.error("Failed to update project permission");
+                  }
+            } catch (error) {
+                  console.error("Permission update error:", error);
+                  toast.error("Something went wrong");
+            }
       };
+
+
+
+
+      useEffect(() => {
+            const initialAssigned = {};
+            projectList.forEach((p) => {
+                  initialAssigned[p.value] = true; // or based on API flag
+            });
+            setAssigned(initialAssigned);
+      }, [projectList]);
 
 
       return (
@@ -60,7 +137,7 @@ const ProjectPermissionModal = ({ show, onHide, modelRequestData, }) => {
                                     <div className="list-group">
                                           {projectList.map((project) => (
                                                 <div
-                                                      key={project.id}
+                                                      key={project.value}
                                                       className="list-group-item d-flex justify-content-between align-items-center mb-2 border rounded-3 shadow-sm"
                                                       style={{
                                                             transition: "0.3s",
@@ -70,29 +147,43 @@ const ProjectPermissionModal = ({ show, onHide, modelRequestData, }) => {
                                                 >
                                                       {/* Project Name */}
                                                       <div className="fw-semibold" style={{ fontSize: "1rem" }}>
-                                                            {project.name}
+                                                            {project.label}
                                                       </div>
 
                                                       {/* Toggle Button */}
-                                                      <button
-                                                            className={`btn px-4 py-2 d-flex align-items-center gap-2 fw-bold ${assigned[project.id] ? "btn-success" : "btn-outline-secondary"
+                                                      <div className="form-check form-switch m-0">
+                                                            <input
+                                                                  className="form-check-input"
+                                                                  type="checkbox"
+                                                                  role="switch"
+                                                                  checked={project.canUpdateAttendance}
+                                                                  onChange={() =>
+                                                                        toggleAssign(project.value, project.canUpdateAttendance)
+                                                                  }
+                                                                  style={{ cursor: "pointer" }}
+                                                            />
+                                                      </div>
+
+                                                      {/* Status Label */}
+                                                      <span
+                                                            className={`fw-bold ${project.canUpdateAttendance ? "text-success" : "text-secondary"
                                                                   }`}
-                                                            style={{ transition: "0.3s" }}
-                                                            onClick={() => toggleAssign(project.id)}
                                                       >
-                                                            {assigned[project.id] ? (
+                                                            {project.canUpdateAttendance ? (
                                                                   <>
-                                                                        <FaCheckCircle size={18} /> Assigned
+                                                                        <FaCheckCircle className="me-1" /> Assigned
                                                                   </>
                                                             ) : (
                                                                   <>
-                                                                        <FaTimesCircle size={18} /> Unassigned
+                                                                        <FaTimesCircle className="me-1" /> Unassigned
                                                                   </>
                                                             )}
-                                                      </button>
+                                                      </span>
+
                                                 </div>
                                           ))}
                                     </div>
+
 
                               </div>
                         </Modal.Body>
