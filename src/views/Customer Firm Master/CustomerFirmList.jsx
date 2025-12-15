@@ -343,6 +343,7 @@ const CustomerFirmList = () => {
                   <th className="text-center">Zone</th>
                   <th className="text-center">District</th>
                   <th className="text-center">Taluka</th>
+                  <th className="text-center ">Download</th>
                   <th className="text-center ">Status</th>
                   <th className="text-center actionSticky">Action</th>
                 </tr>
@@ -413,6 +414,23 @@ const CustomerFirmList = () => {
                         <span style={{ fontSize: "18px" }}>📍</span>
                         <span>{row.talukaName}</span>
                       </div>
+                    </td>
+
+                    <td className="text-center">
+                      {row.uploadURL ? (
+                        <a
+                          href={row.uploadURL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
+                          download
+                        >
+                          <i className="bi bi-download"></i>
+                          Download
+                        </a>
+                      ) : (
+                        '-'
+                      )}
                     </td>
 
                     <td className="text-center">

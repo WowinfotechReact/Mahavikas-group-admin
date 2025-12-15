@@ -12,9 +12,10 @@ import { Tooltip } from '@mui/material';
 import { ChangeCustomerStatus } from 'services/CustomerStaff/CustomerStaffApi';
 import InstituteUserAddUpdateModal from 'views/Employee/InstituteUserAddUpdateModal';
 import InstituteEmployeeAddUpdateModal from './InstituteEmployeeAddUpdateModal';
-import { GetAppUserList } from 'services/Employee Staff/EmployeeApi';
+import { ChangeEmployeeStatus, GetAppUserList } from 'services/Employee Staff/EmployeeApi';
 import SetPasswordModal from './SetPasswordModal';
 import ChangePasswordModal from './ChangePasswordModal';
+import Android12Switch from 'component/Android12Switch';
 
 const InstituteEmployeeList = () => {
       const [stateChangeStatus, setStateChangeStatus] = useState('');
@@ -29,6 +30,7 @@ const InstituteEmployeeList = () => {
       const { setLoader, user, companyID, permissions } = useContext(ConfigContext);
       const [modelAction, setModelAction] = useState();
       const navigate = useNavigate();
+
       const [currentPage, setCurrentPage] = useState(1);
       const [totalPage, setTotalPage] = useState();
       const [totalCount, setTotalCount] = useState(null);
@@ -162,8 +164,8 @@ const InstituteEmployeeList = () => {
 
             // debugger
             try {
-                  const { customerKeyID } = row; // Destructure to access only what's needed
-                  const response = await ChangeCustomerStatus(customerKeyID, user.userKeyID);
+                  const { userKeyIDForUpdate } = row; // Destructure to access only what's needed
+                  const response = await ChangeEmployeeStatus(userKeyIDForUpdate, user.userKeyID);
 
                   if (response && response.data.statusCode === 200) {
                         setLoader(false);
@@ -187,6 +189,12 @@ const InstituteEmployeeList = () => {
                   setShowSuccessModal(true);
                   setModelAction('An error occurred while changing the Employee status.');
             }
+      };
+
+
+      const handleStatusChange = (row) => {
+            setStateChangeStatus(row);
+            setShowStatusChangeModal(true);
       };
 
       const setAppUserBtnClick = (row) => {
@@ -309,6 +317,8 @@ const InstituteEmployeeList = () => {
                                                       <th className="text-center">Designation </th>
                                                       {/* <th className="text-center">Password </th> */}
                                                       <th className="text-center">Attendance Type </th>
+                                                      <th className="text-center">Status</th>
+
                                                       <th className="text-center actionSticky">Action</th>
                                                 </tr>
                                           </thead>
@@ -377,7 +387,13 @@ const InstituteEmployeeList = () => {
                                                             </td>
 
 
+                                                            <td className="text-center">
+                                                                  {row.status === 'Active' ? 'Active' : 'In-Active'}
+                                                                  <Android12Switch style={{ padding: '8px' }}
+                                                                        onClick={() => handleStatusChange(row)} checked={row.status === 'Active'} />
 
+
+                                                            </td>
 
 
                                                             {/* <td className="text-center">{row.createdOnDate ? dayjs(row.createdOnDate).format('DD/MM/YYYY') : '-'}</td> */}
