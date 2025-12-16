@@ -19,6 +19,30 @@ export const postApiWithAuthenticated = async (url, params) => {
   }
 };
 
+export const postApiWithAuthenticatedZip = async (url, params, config = {}) => {
+  try {
+    const res = await Api.post(url, params, {
+      ...config
+    });
+
+    // 🔥 DO NOT check statusCode for blob responses
+    if (
+      config.responseType !== 'blob' &&
+      res?.data?.statusCode === 401
+    ) {
+      return;
+    }
+
+    return res;
+  } catch (error) {
+    if (error?.response?.status === 401) {
+      localStorage.clear();
+      window.location.replace('/login');
+    }
+    throw error;
+  }
+};
+
 //......................Get List With Authorization....................................
 
 export const getListWithAuthenticated = async (url) => {

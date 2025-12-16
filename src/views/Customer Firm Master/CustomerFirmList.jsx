@@ -16,7 +16,7 @@ import { Tooltip } from '@mui/material';
 import AddUpdateCustomerFirmModal from './AddUpdateCustomerFirmModal';
 import CustomerFirmViewModal from './CustomerFirmViewModal';
 import InstituteUserAddUpdateModal from 'views/Employee/InstituteUserAddUpdateModal';
-import { ChangeInstituteStatus, GetInstituteList } from 'services/Institute/InstituteApi';
+import { ChangeInstituteStatus, ExportInstituteAttendanceZip, GetInstituteList } from 'services/Institute/InstituteApi';
 import axios from 'axios';
 
 const CustomerFirmList = () => {
@@ -300,6 +300,45 @@ const CustomerFirmList = () => {
   };
 
 
+  const submitPDFZip = () => {
+    const paylaod = {
+      companyID: companyID,
+      projectID: location.state.projectID
+    }
+    ExportInstituteAttendanceZipData(paylaod)
+  }
+  const ExportInstituteAttendanceZipData = async (apiParam) => {
+    setLoader(true);
+
+    try {
+      const response = await ExportInstituteAttendanceZip(
+        "/ExportInstituteAttendanceZip",
+        apiParam
+      );
+
+      const blob = new Blob([response.data], {
+        type: "application/zip"
+      });
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Institute_Attendance_Report.zip";
+      document.body.appendChild(a);
+      a.click();
+
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+      setLoader(false);
+    } catch (error) {
+      console.error(error);
+      setLoader(false);
+    }
+  };
+
+
   return (
     <>
       {/* <Sidebar drawerOpen={true} drawerToggle={() => {}} modalOpen={show} /> */}
@@ -381,7 +420,7 @@ const CustomerFirmList = () => {
                 </button>
               </Tooltip>
               <Tooltip title="Add Institute" >
-                <button onClick={() => downloadAllPDFsFrontendSafe()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
+                <button onClick={() => submitPDFZip()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
 
                   <span className="d-none d-sm-inline">
                     <i className="bi bi-file-earmark-zip"></i>

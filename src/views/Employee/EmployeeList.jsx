@@ -321,7 +321,7 @@ const EmployeeList = () => {
                   {/* <th className="text-center">Attendance Authority</th> */}
                   <th className="text-center">Password</th>
                   <th className="text-center">Status</th>
-                  <th className="text-center actionSticky">Action</th>
+                  <th className="text-center actionSticky  " >Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -548,7 +548,7 @@ const EmployeeList = () => {
 
 
 
-                    <td className="text-center relative  actionColSticky " style={{ zIndex: 4 }}>
+                    <td className="text-center relative  actionColSticky  " style={{ zIndex: 4 }}>
 
 
                       <div className="">

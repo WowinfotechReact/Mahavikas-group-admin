@@ -1,5 +1,5 @@
 import { Base_Url } from 'component/Base-Url/BaseUrl';
-import { postApiWithAuthenticated, getListWithAuthenticated } from 'services/ApiMethod/ApiMethod';
+import { postApiWithAuthenticated, getListWithAuthenticated, postApiWithAuthenticatedZip } from 'services/ApiMethod/ApiMethod';
 
 const InstituteBaseURI = `${Base_Url}/Institute`;
 
@@ -19,6 +19,21 @@ export const AddUpdateInstitute = async (url = '', params) => {
   const res = await postApiWithAuthenticated(`${InstituteBaseURI}${url}`, params);
   return res;
 };
+// export const ExportInstituteAttendanceZip = async (url = '', params) => {
+ 
+//   const res = await postApiWithAuthenticated(`${InstituteBaseURI}${url}`, params);
+//   return res;
+// };
+
+
+export const ExportInstituteAttendanceZip = async (url = '', params) => {
+  return postApiWithAuthenticatedZip(
+    `${InstituteBaseURI}${url}`,
+    params,
+    { responseType: 'blob' } // 🔥 REQUIRED
+  );
+};
+
 export const GetInstituteLookupList = async (url = '', params) => {
   if (params.employeeKeyID === null || params.employeeKeyID === undefined) {
     delete params.employeeKeyID;
