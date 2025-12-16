@@ -166,7 +166,7 @@ const MasterTalukaList = () => {
 
             </button>
             <div className='flex-grow-1'>
-              <h5 className="m-0">Taluka</h5>
+              <h5 className="tracking-in-contract">Taluka</h5>
             </div>
             <button
               onClick={() => addMasterTalukaBtnClick()}

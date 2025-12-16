@@ -209,7 +209,7 @@ const MasterServiceList = () => {
 
                                     </button>
                                     <div className="flex-grow-1 ">
-                                          <h5 className="mb-0">Service</h5>
+                                          <h5 className="tracking-in-contract">Service</h5>
                                     </div>
                                     {/* <div className="position-absolute end-0 me-2">
 

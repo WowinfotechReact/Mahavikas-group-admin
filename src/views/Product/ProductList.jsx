@@ -204,7 +204,7 @@ const ProductList = () => {
 
             </button>
             <div className="flex-grow-1">
-              <h5 className="m-0">Project List</h5>
+              <h5 className="tracking-in-contract">Project List</h5>
             </div>
             <button onClick={addProductBtnClick} className="btn btn-primary btn-sm d-inline d-sm-none">
               <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>

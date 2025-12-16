@@ -213,7 +213,7 @@ const Designation = () => {
 
             </button>
             <div className="flex-grow-1 ">
-              <h5 className="mb-0">Designation</h5>
+              <h5 className="tracking-in-contract">Designation</h5>
             </div>
             <div className="position-absolute end-0 me-2">
               {hasPermission(permissions, 'Designation', 'Can Insert') && (

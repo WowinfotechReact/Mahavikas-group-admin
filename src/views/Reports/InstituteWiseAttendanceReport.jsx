@@ -363,7 +363,7 @@ const InstituteWiseAttendanceReport = () => {
             <div className="container-fluid py-4">
                   {/* ---------- PAGE HEADER ---------- */}
                   <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h5 className="fw-bold text-primary mb-0">Institute-wise Attendance Report</h5>
+                        <h5 className="tracking-in-contract">Institute-wise Attendance Report</h5>
 
                   </div>
 

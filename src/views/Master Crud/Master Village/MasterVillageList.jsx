@@ -52,7 +52,7 @@ const MasterVillageList = () => {
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           {/* Top controls */}
           <div className="d-flex justify-content-between align-items-center mb-1">
-            <h5 className="m-0">Village</h5>
+            <h5 className="tracking-in-contract">Village</h5>
 
             <button
               onClick={() => addMasterVillageBtnClick()}

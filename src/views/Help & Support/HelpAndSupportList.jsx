@@ -188,7 +188,7 @@ const HelpAndSupportList = () => {
             <div className="card w-full max-w-[50vh] mx-auto h-auto">
                   <div className="card-body p-2 bg-white shadow-md rounded-lg">
                         <div className="container mt-4">
-                              <h5 className="mb-3">Help & Support</h5>
+                              <h5 className="tracking-in-contract">Help & Support</h5>
 
                               <table className="table table-bordered table-hover">
                                     <thead className="table-light">

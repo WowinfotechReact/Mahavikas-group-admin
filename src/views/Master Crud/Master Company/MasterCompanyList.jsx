@@ -194,38 +194,38 @@ const MasterCompanyList = () => {
       <div className="card w-full max-w-[50vh] mx-auto h-auto">
         <div className="card-body p-2 bg-white shadow-md rounded-lg">
           {/* Top controls */}
-       
+
           <div className="d-flex justify-content-between align-items-center mb-1">
-      <h5 className="m-0">Company</h5>
-      <button
-    onClick={() => addMasterCompanyBtnClick()}
-    className="btn btn-primary btn-sm d-inline d-sm-none"
-  >
-    <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
-    <span className="d-inline d-sm-none">  Add</span>
-   </button>
-    </div>
-    <div className="d-flex justify-content-between align-items-center mb-1">
-      <input
-        type="text"
-        className="form-control "
-        placeholder="Search Company"
-        style={{ maxWidth: "350px" }}
-        value={searchKeyword}
-        onChange={(e) => {
-          handleSearch(e);
-        }}
-      />
-      <Tooltip title="Add Company">
-      <button
-    onClick={() => addMasterCompanyBtnClick()}
-    className="btn btn-primary btn-sm d-none d-sm-inline"
-  >
-    <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
-    <span className="d-none d-sm-inline"> Add Company</span>
-  </button>
-      </Tooltip>
-    </div>
+            <h5 className="tracking-in-contract">Company</h5>
+            <button
+              onClick={() => addMasterCompanyBtnClick()}
+              className="btn btn-primary btn-sm d-inline d-sm-none"
+            >
+              <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
+              <span className="d-inline d-sm-none">  Add</span>
+            </button>
+          </div>
+          <div className="d-flex justify-content-between align-items-center mb-1">
+            <input
+              type="text"
+              className="form-control "
+              placeholder="Search Company"
+              style={{ maxWidth: "350px" }}
+              value={searchKeyword}
+              onChange={(e) => {
+                handleSearch(e);
+              }}
+            />
+            <Tooltip title="Add Company">
+              <button
+                onClick={() => addMasterCompanyBtnClick()}
+                className="btn btn-primary btn-sm d-none d-sm-inline"
+              >
+                <i className="fa-solid fa-plus" style={{ fontSize: "11px" }}></i>
+                <span className="d-none d-sm-inline"> Add Company</span>
+              </button>
+            </Tooltip>
+          </div>
 
           {/* Table */}
           <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
@@ -251,7 +251,7 @@ const MasterCompanyList = () => {
                   <tr key={idx}>
                     <td className="text-center">{(currentPage - 1) * pageSize + idx + 1}</td>
                     <td className="text-center">{row.companyName || '-'}</td>
-                   
+
                     <td className="text-center">{row.gstNo || '-'}</td>
                     <td className="text-center">{row.stateName || '-'}</td>
                     <td className="text-center">{row.districtName || '-'}</td>
@@ -260,14 +260,14 @@ const MasterCompanyList = () => {
 
                     <td className="text-center">{row.contactNumber || '-'}</td>
                     <td className="text-center">{row.email || '-'}</td>
-                  
+
                     <td className="text-center text-nowrap">
                       <Tooltip title={row.status === true ? 'Enable' : 'Disable'}>
                         {row.status === true ? 'Enable' : 'Disable'}
                         <Android12Switch style={{ padding: '8px' }} onClick={() => handleStatusChange(row)} checked={row.status === true} />
                       </Tooltip>
                     </td>
-                    <td className="text-center actionColSticky"  style={{zIndex:4}}>
+                    <td className="text-center actionColSticky" style={{ zIndex: 4 }}>
                       <div className="d-inline-flex justify-content-center align-items-center" style={{ gap: '10px' }}>
                         <Tooltip title="Update Company">
                           <button

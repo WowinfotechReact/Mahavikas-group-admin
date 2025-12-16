@@ -259,7 +259,7 @@ const EmployeeList = () => {
 
             </button>
             <div className="flex-grow-1 ">
-              <h5 className="mb-0">Employee Master</h5>
+              <h5 className="tracking-in-contract">Employee Master</h5>
             </div>
             <div className="position-absolute end-0 me-2">
               <button onClick={() => VehicleAddBtnClicked()} className="btn btn-success btn-sm d-inline d-sm-none">

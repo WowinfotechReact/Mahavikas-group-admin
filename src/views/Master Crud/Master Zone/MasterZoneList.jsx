@@ -212,7 +212,7 @@ const MasterZoneList = () => {
 
             </button>
             <div className='flex-grow-1'>
-              <h5 className="m-0">Zone</h5>
+              <h5 className="tracking-in-contract">Zone</h5>
             </div>
             <button
               onClick={() => addMasterZoneBtnClick()}

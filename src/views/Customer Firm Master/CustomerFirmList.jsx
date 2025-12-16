@@ -377,7 +377,7 @@ const CustomerFirmList = () => {
                 🎓
               </div>
 
-              <h5 className="mb-0">
+              <h5 className="tracking-in-contract">
                 Institute :
                 <span style={{ textDecoration: "underline", marginLeft: "6px" }}>
                   {location?.state?.projectName}

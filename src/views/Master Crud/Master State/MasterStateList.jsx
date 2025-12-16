@@ -182,7 +182,7 @@ const MasterStateList = () => {
 
             </button>
             <div className="flex-grow-1 ">
-              <h5 className="m-0">State</h5>
+              <h5 className="tracking-in-contract">State</h5>
             </div>
             <button
               onClick={() => addMasterStateBtnClick()}

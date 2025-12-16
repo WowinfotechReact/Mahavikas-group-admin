@@ -179,7 +179,7 @@ const MasterDistrictList = () => {
 
             </button>
             <div className='flex-grow-1'>
-              <h5 className="m-0">District</h5>
+              <h5 className="tracking-in-contract">District</h5>
             </div>
             <button
               onClick={() => addMasterDistrictBtnClick()}

@@ -397,7 +397,7 @@ const SuperWiserList = () => {
 
                                     </button>
                                     <div className="flex-grow-1 ">
-                                          <h5 className="mb-0">Attendance Authority</h5>
+                                          <h5 className="tracking-in-contract">Attendance Authority</h5>
                                     </div>
                                     <div className="position-absolute end-0 me-2">
                                           <button onClick={() => VehicleAddBtnClicked()} className="btn btn-success btn-sm d-inline d-sm-none">
