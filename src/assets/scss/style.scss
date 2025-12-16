@@ -1161,3 +1161,68 @@ logout-confirmation-modal {
 .cursor-default {
   cursor: default !important;
 }
+
+
+/* Improve visibility of toggle when OFF */
+.project-toggle {
+  width: 3rem;
+  height: 1.5rem;
+  background-color: #dee2e6;
+  border: 1px solid #adb5bd;
+}
+
+/* OFF state knob */
+.project-toggle:not(:checked)::before {
+  background-color: #6c757d;
+}
+
+/* ON state */
+.project-toggle:checked {
+  background-color: #198754;
+  /* Bootstrap success */
+  border-color: #198754;
+}
+
+/* Smooth animation */
+.project-toggle {
+  transition: background-color 0.25s ease-in-out;
+}
+
+.project-toggle:hover {
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+.project-toggle:hover {
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+
+
+
+
+.download-btn {
+  background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+  color: #fff !important;
+  border: none;
+  padding: 6px 12px;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.25s ease-in-out;
+}
+
+/* Icon animation */
+.download-btn i {
+  transition: transform 0.25s ease-in-out;
+}
+
+/* Hover effect */
+.download-btn:hover {
+  background: linear-gradient(135deg, #0b5ed7, #084298);
+  box-shadow: 0 6px 14px rgba(13, 110, 253, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Icon moves slightly on hover */
+.download-btn:hover i {
+  transform: translateY(2px);
+}

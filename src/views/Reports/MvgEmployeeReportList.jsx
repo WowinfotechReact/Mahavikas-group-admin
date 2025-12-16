@@ -120,7 +120,7 @@ const MvgEmployeeReportList = () => {
                   if (!lat || !lng) return "No Location";
 
                   const res = await fetch(
-                        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyA5rVW7DkyryqQM-cDhsSrHb4soE2iXIJ8`
+                        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyAtZ94hrxs813CocYwcRdWMOQvP0dIlvgA`
                   );
 
 
@@ -156,18 +156,40 @@ const MvgEmployeeReportList = () => {
       const splitDateTime = (raw) => {
             if (!raw) return { date: "-", time: "-" };
 
-            let str = raw.trim();
+            let str = raw.trim().replace(/\s+/g, " ");
 
-            // remove double spaces
-            str = str.replace(/\s+/g, " ");
+            // If already contains AM/PM → return as-is
+            if (/AM|PM/i.test(str)) {
+                  const parts = str.split(" ");
+                  return {
+                        date: parts[0] || "-",
+                        time: parts.slice(1).join(" ") || "-"
+                  };
+            }
 
-            // add space before AM/PM if missing
-            str = str.replace(/(AM|PM)$/i, " $1");
+            // Expected format: YYYY-MM-DD HH:mm or HH:mm:ss
+            const [date, timePart] = str.split(" ");
 
-            const [date, time] = str.split(" ");
+            if (!date || !timePart) return { date: "-", time: "-" };
 
-            return { date, time };
+            const [hh, mm] = timePart.split(":").map(Number);
+
+            if (isNaN(hh) || isNaN(mm)) {
+                  return { date, time: "-" };
+            }
+
+            // Convert to 12-hour format
+            const period = hh >= 12 ? "PM" : "AM";
+            const hour12 = hh % 12 || 12;
+
+            const formattedTime = `${hour12}:${mm.toString().padStart(2, "0")} ${period}`;
+
+            return {
+                  date,
+                  time: formattedTime
+            };
       };
+
       const clearDate = () => {
             setToDate(null)
             setFromDate(null)
@@ -243,130 +265,136 @@ const MvgEmployeeReportList = () => {
       }, [mvgEmployeeData]);
 
       return (
-            <div className="container-fluid py-4">
-                  <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h5 className="fw-bold text-primary mb-0">Employee Attendance Report</h5>
-                        <Button onClick={() => exportToExcel()} variant="success" size="sm">
-                              <i className="bi bi-file-earmark-excel me-1"></i>Export
-                        </Button>
-                  </div>
-                  <div className="border rounded p-3 bg-light mb-4">
-                        <Form>
-                              <Row className="g-3 align-items-end">
-                                    <Col md={4}>
-                                          <Form.Group>
-                                                <Form.Label className="fw-semibold small mb-1">Search</Form.Label>
+            <div className="card">
+                  <div className="card-body">
 
-                                                <input
-                                                      type="text"
-                                                      className="form-control"
-                                                      placeholder='Search'
-                                                      style={{ maxWidth: '350px' }}
-                                                      value={searchKeyword}
-                                                      onChange={(e) => {
-                                                            handleSearch(e);
-                                                      }}
-                                                />
-                                          </Form.Group>
-                                    </Col>
-                                    <Col md={3}>
-                                          <Form.Group>
-                                                <Form.Label className="fw-semibold small mb-1">From Date</Form.Label>
-                                                <DatePicker
-                                                      value={fromDate ? fromDate.toDate() : null}
-                                                      onChange={(date) => {
-                                                            handleFromDateChange(dayjs(date));
-                                                      }}
-                                                      format="dd/MM/y"
-                                                      clearIcon={null}
-                                                />
+                        <div className="container-fluid py-4">
+                              <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 className="fw-bold text-primary mb-0">Employee Attendance Report</h5>
+                                    <Button onClick={() => exportToExcel()} variant="success" size="sm">
+                                          <i className="bi bi-file-earmark-excel me-1"></i>Export
+                                    </Button>
+                              </div>
+                              <div className="border rounded p-3 bg-light mb-4">
+                                    <Form>
+                                          <Row className="g-3 align-items-end">
+                                                <Col md={4}>
+                                                      <Form.Group>
+                                                            <Form.Label className="fw-semibold small mb-1">Search</Form.Label>
 
-
-                                          </Form.Group>
-                                    </Col>
-                                    <Col md={3}>
-                                          <Form.Group>
-                                                <Form.Label className="fw-semibold small mb-1">To Date</Form.Label>
-
-                                                <DatePicker
-                                                      value={toDate ? toDate.toDate() : null}
-                                                      onChange={(date) => {
-                                                            handleToDateChange(dayjs(date));
-                                                      }}
-                                                      clearIcon={null}
-
-                                                      format="dd/MM/y"
-                                                />
+                                                            <input
+                                                                  type="text"
+                                                                  className="form-control"
+                                                                  placeholder='Search'
+                                                                  style={{ maxWidth: '350px' }}
+                                                                  value={searchKeyword}
+                                                                  onChange={(e) => {
+                                                                        handleSearch(e);
+                                                                  }}
+                                                            />
+                                                      </Form.Group>
+                                                </Col>
+                                                <Col md={3}>
+                                                      <Form.Group>
+                                                            <Form.Label className="fw-semibold small mb-1">From Date</Form.Label>
+                                                            <DatePicker
+                                                                  value={fromDate ? fromDate.toDate() : null}
+                                                                  onChange={(date) => {
+                                                                        handleFromDateChange(dayjs(date));
+                                                                  }}
+                                                                  format="dd/MM/y"
+                                                                  clearIcon={null}
+                                                            />
 
 
-                                          </Form.Group>
-                                    </Col>
-                                    <Col md={2}>
-                                          <Button onClick={() => { clearDate() }}>Clear </Button>
-                                    </Col>
-                              </Row>
-                        </Form>
-                  </div>
-                  <div className="border rounded p-3">
-                        <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
-                              <table className="table table-bordered table-striped">
-                                    <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff', }}>
-                                          <tr className="text-center">
-                                                <th>Sr No .</th>
-                                                <th>Employee Name</th>
-                                                <th>Mobile No</th>
-                                                <th>Punch In Date</th>
-                                                <th>Punch In Time</th>
-                                                <th>Punch Out Date</th>
-                                                <th>Punch Out Time</th>
-                                                <th>Punch In Location</th>
-                                                <th>Punch Out Location</th>
-                                          </tr>
-                                    </thead>
-                                    <tbody>
-                                          {mvgEmployeeData.map((row, idx) => {
-                                                const checkIn = splitDateTime(row.checkInDateTime);
-                                                const checkOut = splitDateTime(row.checkOutDateTime);
+                                                      </Form.Group>
+                                                </Col>
+                                                <Col md={3}>
+                                                      <Form.Group>
+                                                            <Form.Label className="fw-semibold small mb-1">To Date</Form.Label>
 
-                                                try {
-                                                      return (
-                                                            <tr key={idx} className="text-center">
-                                                                  <td>
+                                                            <DatePicker
+                                                                  value={toDate ? toDate.toDate() : null}
+                                                                  onChange={(date) => {
+                                                                        handleToDateChange(dayjs(date));
+                                                                  }}
+                                                                  clearIcon={null}
 
-                                                                        {(currentPage - 1) * pageSize + idx + 1}
-                                                                  </td>
-
-                                                                  <td>{row.fullName}</td>
-                                                                  <td>{row.mobileNo}</td>
-                                                                  <td>{checkIn.date}</td>
-                                                                  <td>{checkIn.time}</td>
-                                                                  <td>{checkOut.date}</td>
-                                                                  <td>{checkOut.time}</td>
+                                                                  format="dd/MM/y"
+                                                            />
 
 
+                                                      </Form.Group>
+                                                </Col>
+                                                <Col md={2}>
+                                                      <Button onClick={() => { clearDate() }}>Clear </Button>
+                                                </Col>
+                                          </Row>
+                                    </Form>
+                              </div>
+                              <div className="border rounded p-3">
+                                    <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
+                                          <table className="table table-bordered table-striped">
+                                                <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff', }}>
+                                                      <tr className="text-center">
+                                                            <th>Sr No .</th>
+                                                            <th>Employee Name</th>
+                                                            <th>Mobile No</th>
+                                                            <th>Punch In Date</th>
+                                                            <th>Punch In Time</th>
+                                                            <th>Punch Out Date</th>
+                                                            <th>Punch Out Time</th>
+                                                            <th>Punch In Location</th>
+                                                            <th>Punch Out Location</th>
+                                                      </tr>
+                                                </thead>
+                                                <tbody>
+                                                      {mvgEmployeeData.map((row, idx) => {
+                                                            const checkIn = splitDateTime(row.checkInDateTime);
+                                                            const checkOut = splitDateTime(row.checkOutDateTime);
 
-                                                                  <td>{checkInLocations[idx] || "Loading..."}</td>
+                                                            try {
+                                                                  return (
+                                                                        <tr key={idx} className="text-center">
+                                                                              <td>
 
-                                                                  <td>{checkOutLocations[idx] || "Loading..."}</td>
+                                                                                    {(currentPage - 1) * pageSize + idx + 1}
+                                                                              </td>
 
-                                                            </tr>
-                                                      );
-                                                } catch (error) {
-                                                      console.error("Error rendering row:", error);
-                                                      return null; // or handle the error in a different way
-                                                }
-                                          })}
-                                    </tbody>
-                              </table>
-                              {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />}
+                                                                              <td>{row.fullName}</td>
+                                                                              <td>{row.mobileNo}</td>
+                                                                              <td>{checkIn.date}</td>
+                                                                              <td>{checkIn.time}</td>
+                                                                              <td>{checkOut.date}</td>
+                                                                              <td>{checkOut.time}</td>
 
+
+
+                                                                              <td>{checkInLocations[idx] || "Loading..."}</td>
+
+                                                                              <td>{checkOutLocations[idx] || "Loading..."}</td>
+
+                                                                        </tr>
+                                                                  );
+                                                            } catch (error) {
+                                                                  console.error("Error rendering row:", error);
+                                                                  return null; // or handle the error in a different way
+                                                            }
+                                                      })}
+                                                </tbody>
+                                          </table>
+                                          {totalRecords <= 0 && <NoResultFoundModel totalRecords={totalRecords} />}
+
+                                    </div>
+                                    <div className="d-flex justify-content-end ">
+                                          {totalCount > pageSize && (
+                                                <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
+                                          )}
+                                    </div>
+                              </div>
                         </div>
-                        <div className="d-flex justify-content-end ">
-                              {totalCount > pageSize && (
-                                    <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
-                              )}
-                        </div>
                   </div>
+
             </div>
       );
 };

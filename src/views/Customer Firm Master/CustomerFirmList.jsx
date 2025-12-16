@@ -4,6 +4,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useLocation, useNavigate } from 'react-router';
 import PaginationComponent from 'component/Pagination';
 import { ConfigContext } from 'context/ConfigContext';
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 import NoResultFoundModel from 'component/NoResultFoundModal';
 import ImageModal from 'component/ImageModal';
@@ -15,6 +17,7 @@ import AddUpdateCustomerFirmModal from './AddUpdateCustomerFirmModal';
 import CustomerFirmViewModal from './CustomerFirmViewModal';
 import InstituteUserAddUpdateModal from 'views/Employee/InstituteUserAddUpdateModal';
 import { ChangeInstituteStatus, GetInstituteList } from 'services/Institute/InstituteApi';
+import axios from 'axios';
 
 const CustomerFirmList = () => {
   const [stateChangeStatus, setStateChangeStatus] = useState('');
@@ -104,14 +107,22 @@ const CustomerFirmList = () => {
     }
   };
 
-  const customerViewModalBtnClick = (row) => {
-    setModelRequestData({
-      ...modelRequestData,
-      instituteKeyID: row.instituteKeyID,
-      Action: 'View'
+
+
+  const downloadAllPDFsFrontendSafe = () => {
+    vehicleListData?.forEach((row) => {
+      if (row.uploadURL) {
+        const link = document.createElement("a");
+        link.href = row.uploadURL;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.click();
+      }
     });
-    setOpenCustomerViewModal(true);
   };
+
+
+
 
   const location = useLocation()
 
@@ -236,6 +247,57 @@ const CustomerFirmList = () => {
     return () => clearInterval(interval);
   }, []);
 
+  console.log(vehicleListData, '3sssssssssss');
+
+
+  const downloadAllInstitutePDFs = async () => {
+
+    debugger
+    try {
+      setLoader(true);
+
+      // 1️⃣ Collect valid URLs
+      const pdfUrls = vehicleListData
+        .map(item => item.uploadURL?.trim())
+        .filter(url => url && url.startsWith("http"));
+
+      if (pdfUrls.length === 0) {
+        alert("No PDF files available to download.");
+        setLoader(false);
+        return;
+      }
+
+      const zip = new JSZip();
+      const folder = zip.folder("Institute_PDFs");
+
+      // 2️⃣ Download each PDF as BLOB
+      for (let i = 0; i < pdfUrls.length; i++) {
+        const url = pdfUrls[i];
+
+        try {
+          const response = await axios.get(url, {
+            responseType: "blob", // 🔑 VERY IMPORTANT
+          });
+
+          if (response?.data) {
+            folder.file(`Institute_${i + 1}.pdf`, response.data);
+          }
+        } catch (err) {
+          console.error("Failed to download:", url);
+        }
+      }
+
+      // 3️⃣ Generate ZIP
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+
+      saveAs(zipBlob, "Institute_Documents.zip");
+
+      setLoader(false);
+    } catch (error) {
+      console.error(error);
+      setLoader(false);
+    }
+  };
 
 
   return (
@@ -316,6 +378,15 @@ const CustomerFirmList = () => {
                 <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
                   <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
                   <span className="d-none d-sm-inline">Add</span>
+                </button>
+              </Tooltip>
+              <Tooltip title="Add Institute" >
+                <button onClick={() => downloadAllPDFsFrontendSafe()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
+
+                  <span className="d-none d-sm-inline">
+                    <i className="bi bi-file-earmark-zip"></i>
+
+                    Download All Report</span>
                 </button>
               </Tooltip>
 
@@ -422,16 +493,18 @@ const CustomerFirmList = () => {
                           href={row.uploadURL}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
                           download
+                          className="btn btn-sm download-btn d-inline-flex align-items-center gap-2"
                         >
-                          <i className="bi bi-download"></i>
-                          Download
+                          <i className="fa-solid fa-file-arrow-down"></i>
+                          <span>Download</span>
                         </a>
                       ) : (
-                        '-'
+                        <span className="text-muted">-</span>
                       )}
                     </td>
+
+
 
                     <td className="text-center">
                       {row.status === 'Active' ? 'Active' : 'In-Active'}

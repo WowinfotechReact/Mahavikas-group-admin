@@ -7,6 +7,7 @@ import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
@@ -89,6 +90,7 @@ const icons = {
   BatteryCharging60Icon: BatteryCharging60Icon,
   ElectricalServicesIcon: ElectricalServicesIcon,
   EngineeringIcon: EngineeringIcon,
+  SupportAgentIcon: SupportAgentIcon,
   ScheduleSendIcon: ScheduleSendIcon,
   HomeOutlinedIcon: HomeOutlinedIcon,
   VerifiedIcon: VerifiedIcon,
@@ -211,7 +213,7 @@ export default {
           moduleName: 'Employee',
           title: 'Help & Support',
           type: 'item',
-          icon: icons['VerifiedIcon'],
+          icon: icons['SupportAgentIcon'],
           url: '/help-and-support'
         },
         // {

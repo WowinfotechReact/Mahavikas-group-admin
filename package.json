@@ -24,6 +24,7 @@
     "jodit": "^4.2.50",
     "jodit-react": "^5.0.10",
     "jspdf": "^3.0.2",
+    "jszip": "^3.10.1",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.543.0",
     "material-ui-popup-state": "^5.1.0",

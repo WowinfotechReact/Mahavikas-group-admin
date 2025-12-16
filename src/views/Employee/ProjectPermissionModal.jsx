@@ -7,6 +7,7 @@ import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { GetMappedProjectLookupList } from 'services/Project/ProjectApi';
 import { ConfigContext } from 'context/ConfigContext';
 import { UpdateUserProjectPermission } from 'services/Employee Staff/EmployeeApi';
+import { Tooltip } from '@mui/material';
 
 const ProjectPermissionModal = ({ show, onHide, modelRequestData, }) => {
       const { setLoader, user, companyID, permissions } = useContext(ConfigContext);
@@ -147,13 +148,19 @@ const ProjectPermissionModal = ({ show, onHide, modelRequestData, }) => {
                                                 >
                                                       {/* Project Name */}
                                                       <div className="fw-semibold" style={{ fontSize: "1rem" }}>
-                                                            {project.label}
+
+
+                                                            {project.label?.length > 30 ? (
+                                                                  <Tooltip title={project.label}>{`${project.label?.substring(0, 30)}...`}</Tooltip>
+                                                            ) : (
+                                                                  <>{project.label}</>
+                                                            )}
                                                       </div>
 
                                                       {/* Toggle Button */}
                                                       <div className="form-check form-switch m-0">
                                                             <input
-                                                                  className="form-check-input"
+                                                                  className="form-check-input project-toggle"
                                                                   type="checkbox"
                                                                   role="switch"
                                                                   checked={project.canUpdateAttendance}
@@ -162,6 +169,7 @@ const ProjectPermissionModal = ({ show, onHide, modelRequestData, }) => {
                                                                   }
                                                                   style={{ cursor: "pointer" }}
                                                             />
+
                                                       </div>
 
                                                       {/* Status Label */}
