@@ -165,7 +165,7 @@ const Default = () => {
           <div className="brand d-flex align-items-center gap-3">
             <div className="brand-logo">🏛️</div>
             <div>
-              <h4 className="mb-0">{ } Dashboard</h4>
+              <h4 className="tracking-in-contract">{ } Dashboard</h4>
               {/* <small className="text-muted">{user?.companyName} — Administrative Panel</small> */}
             </div>
           </div>

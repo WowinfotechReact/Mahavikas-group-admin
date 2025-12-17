@@ -215,7 +215,7 @@ const EmployeeList = () => {
     // debugger
     try {
       const { userKeyIDForUpdate } = value; // Destructure to access only what's needed
-      const response = await ChangeEmployeeStatus(userKeyIDForUpdate, user.userKeyID);
+      const response = await ChangeEmployeeStatus(userKeyIDForUpdate, companyID);
 
       if (response && response.data.statusCode === 200) {
         setLoader(false);

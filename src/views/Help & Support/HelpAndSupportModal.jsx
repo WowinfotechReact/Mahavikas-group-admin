@@ -39,7 +39,9 @@ const HelpAndSupportModal = ({ show, onHide, selectedQuery, setIsAddUpdateAction
                   supportKeyID: modelRequestData.supportKeyID,
                   answerByID: user.userID,
                   answer: helpSupportObj.answer,
-                  actionType: "ANSWER"
+                  actionType: "ANSWER",
+                  companyID: Number(companyID),
+
 
             };
 

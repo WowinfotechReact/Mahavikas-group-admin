@@ -18,10 +18,13 @@ import CustomerFirmViewModal from './CustomerFirmViewModal';
 import InstituteUserAddUpdateModal from 'views/Employee/InstituteUserAddUpdateModal';
 import { ChangeInstituteStatus, ExportInstituteAttendanceZip, GetInstituteList } from 'services/Institute/InstituteApi';
 import axios from 'axios';
+import { FaCity, FaMapMarkerAlt, FaRoute } from 'react-icons/fa';
+import ZipDownloadModal from './ZipDownloadModal';
 
 const CustomerFirmList = () => {
   const [stateChangeStatus, setStateChangeStatus] = useState('');
   const [openCustomerViewModal, setOpenCustomerViewModal] = useState(false);
+  const [showZipModal, setShowZipModal] = useState(false);
   const [showInstituteUserModal, setShowInstituteUserModal
   ] = useState(false);
   const [imgModalTitle, setImgModalTitle] = useState('');
@@ -180,7 +183,7 @@ const CustomerFirmList = () => {
     // debugger
     try {
       const { instituteKeyID } = row; // Destructure to access only what's needed
-      const response = await ChangeInstituteStatus(instituteKeyID);
+      const response = await ChangeInstituteStatus(instituteKeyID, companyID);
 
       if (response && response.data.statusCode === 200) {
         setLoader(false);
@@ -301,11 +304,18 @@ const CustomerFirmList = () => {
 
 
   const submitPDFZip = () => {
-    const paylaod = {
-      companyID: companyID,
+
+    setModelRequestData({
+      ...modelRequestData,
       projectID: location.state.projectID
-    }
-    ExportInstituteAttendanceZipData(paylaod)
+    })
+
+    setShowZipModal(true)
+    // const paylaod = {
+    //   companyID: companyID,
+    //   projectID: location.state.projectID
+    // }
+    // ExportInstituteAttendanceZipData(paylaod)
   }
   const ExportInstituteAttendanceZipData = async (apiParam) => {
     setLoader(true);
@@ -419,7 +429,7 @@ const CustomerFirmList = () => {
                   <span className="d-none d-sm-inline">Add</span>
                 </button>
               </Tooltip>
-              <Tooltip title="Add Institute" >
+              <Tooltip title=" Download All Report" >
                 <button onClick={() => submitPDFZip()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
 
                   <span className="d-none d-sm-inline">
@@ -450,10 +460,8 @@ const CustomerFirmList = () => {
                   <th className="text-center"> Institute Name</th>
 
                   <th className="text-center">Project Name</th>
-                  <th className="text-center">Zone</th>
-                  <th className="text-center">District</th>
-                  <th className="text-center">Taluka</th>
-                  <th className="text-center ">Download</th>
+                  <th className="text-center">Geo Info</th>
+                  <th className="text-center ">Last Month Attendance</th>
                   <th className="text-center ">Status</th>
                   <th className="text-center actionSticky">Action</th>
                 </tr>
@@ -503,26 +511,86 @@ const CustomerFirmList = () => {
                         </span>
                       </div>
                     </td>
-                    <td className="text-center" style={{ minWidth: "150px" }}>
-                      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", animation: "fadeSlide 0.7s ease" }}>
-                        <span style={{ fontSize: "18px" }}>🌐</span>
-                        <span>{row.zoneName}</span>
-                      </div>
-                    </td>
 
-                    {/* District Name */}
-                    <td className="text-center" style={{ minWidth: "150px" }}>
-                      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", animation: "fadeSlide 0.7s ease" }}>
-                        <span style={{ fontSize: "18px" }}>🗺️</span>
-                        <span>{row.districtName}</span>
-                      </div>
-                    </td>
 
-                    {/* Taluka Name */}
-                    <td className="text-center" style={{ minWidth: "150px" }}>
-                      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", animation: "fadeSlide 0.7s ease" }}>
-                        <span style={{ fontSize: "18px" }}>📍</span>
-                        <span>{row.talukaName}</span>
+
+
+
+
+                    <td style={{ minWidth: "180px" }}>
+                      <div className="d-flex flex-column gap-1">
+
+                        {/* Zone */}
+                        <div className="d-flex align-items-center fade-in">
+                          <FaMapMarkerAlt className="me-2 text-primary" />
+                          <div>
+                            <small className="text-muted d-block">Zone</small>
+                            <span>{row.zoneName || "-"}</span>
+                          </div>
+                        </div>
+
+                        {/* District */}
+                        <div className="d-flex align-items-center fade-in delay-1">
+                          <FaCity className="me-2 text-success" />
+                          <div>
+                            <small className="text-muted d-block">District</small>
+                            <span>
+
+                              {row.districtName
+                                ?.split(",")
+                                .map((proj, i) => {
+                                  const name = proj.trim();
+
+                                  return (
+                                    <div key={i} className="d-flex align-items-center project-row fade-in">
+                                      {/* <FaProjectDiagram className="me-2 text-primary icon-pop" /> */}
+
+                                      {name.length > 25 ? (
+                                        <Tooltip title={name}>
+                                          {name.substring(0, 25)}...
+                                        </Tooltip>
+                                      ) : (
+                                        name
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Taluka */}
+                        <div className="d-flex align-items-center fade-in delay-2">
+                          <FaRoute className="me-2 text-warning" />
+                          <div>
+                            <small className="text-muted d-block">Taluka</small>
+                            <span>
+
+                              {row.talukaName
+                                ?.split(",")
+                                .map((proj, i) => {
+                                  const name = proj.trim();
+
+                                  return (
+                                    <div key={i} className="d-flex align-items-center project-row fade-in">
+                                      {/* <FaProjectDiagram className="me-2 text-primary icon-pop" /> */}
+
+                                      {name.length > 25 ? (
+                                        <Tooltip title={name}>
+                                          {name.substring(0, 25)}...
+                                        </Tooltip>
+                                      ) : (
+                                        name
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                            </span>
+
+
+                          </div>
+                        </div>
+
                       </div>
                     </td>
 
@@ -654,6 +722,15 @@ const CustomerFirmList = () => {
           <InstituteUserAddUpdateModal
             show={showInstituteUserModal}
             onHide={() => setShowInstituteUserModal(false)}
+            modelRequestData={modelRequestData}
+          />
+        )
+      }
+      {
+        showZipModal && (
+          <ZipDownloadModal
+            show={showZipModal}
+            onHide={() => setShowZipModal(false)}
             modelRequestData={modelRequestData}
           />
         )

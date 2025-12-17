@@ -75,8 +75,8 @@ export const GetAppUserModel = async (id,UserDetailsKeyID) => {
 
 
 
-export const ChangeEmployeeStatus = async (id) => {
-  let url = `${EmployeeBaseUrl}/ChangeAppUserStatus?UserKeyIDForUpdate=${id}`;
+export const ChangeEmployeeStatus = async (id,companyID) => {
+  let url = `${EmployeeBaseUrl}/ChangeAppUserStatus?UserKeyIDForUpdate=${id}&companyID=${companyID}`;
   const res = await getListWithAuthenticated(url);
   return res;
 };
