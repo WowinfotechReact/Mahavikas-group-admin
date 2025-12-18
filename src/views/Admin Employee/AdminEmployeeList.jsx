@@ -347,8 +347,8 @@ const AdminEmployeeList = () => {
                                                                   </span>
                                                             </td>
 
-                                                            <td className="text-center">
-                                                                  <div className="d-flex flex-column align-items-center">
+                                                            <td className="text-center" >
+                                                                  <div className="d-flex flex-column align-items-start">
                                                                         <div className="d-flex align-items-center gap-2 mb-1">
                                                                               <BsPerson className="text-primary" />
                                                                               <span>{row.fullName || "N/A"}</span>
@@ -363,11 +363,11 @@ const AdminEmployeeList = () => {
                                                                               <span>{row.emailID || "N/A"}</span>
                                                                         </div>
                                                                         <div className="d-flex align-items-center gap-2 mb-1">
-                                                                              {row.address?.length > 30 ? (
+                                                                              {row.address?.length > 25 ? (
                                                                                     <Tooltip title={row.address}>
                                                                                           <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                                                                                                 <i className="fa-solid fa-location-dot" style={{ color: "#d94e4e" }}></i>
-                                                                                                {`${row.address?.substring(0, 30)}...`}
+                                                                                                {`${row.address?.substring(0, 25)}...`}
                                                                                           </span>
                                                                                     </Tooltip>
                                                                               ) : (

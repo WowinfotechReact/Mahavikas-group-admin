@@ -210,13 +210,15 @@ const MapCityList = () => {
 
                                                             <td className="text-center">
                                                                   <div className="d-flex justify-content-center">
-                                                                        <button
-                                                                              className="btn btn-outline-danger d-flex align-items-center gap-2 btn-sm"
-                                                                              onClick={() => handleDeleteClick(item)}
-                                                                        >
-                                                                              <i className="bi bi-trash-fill"></i>
-                                                                              Delete
-                                                                        </button>
+                                                                        <Tooltip title='Delete Assigned District'>
+
+                                                                              <button
+                                                                                    className="btn btn-outline-danger d-flex align-items-center gap-2 btn-sm"
+                                                                                    onClick={() => handleDeleteClick(item)}
+                                                                              ><i class="fa-solid fa-trash"></i>
+
+                                                                              </button>
+                                                                        </Tooltip>
                                                                   </div>
                                                             </td>
 

@@ -529,21 +529,6 @@ const SuperWiserList = () => {
                                                                         </span> */}
 
                                                                         {/* Institute Name */}
-                                                                        <span
-
-                                                                              placement="top"
-                                                                        >
-                                                                              <span className="d-flex align-items-center text-dark small">
-                                                                                    <FaSchool className="me-2 text-success" size={14} />
-
-
-                                                                                    {value.instituteName?.length > 30 ? (
-                                                                                          <Tooltip title={value.instituteName}>{`${value.instituteName?.substring(0, 30)}...`}</Tooltip>
-                                                                                    ) : (
-                                                                                          <>{value.instituteName}</>
-                                                                                    )}
-                                                                              </span>
-                                                                        </span>
 
                                                                         {/* Project Names */}
                                                                         <span

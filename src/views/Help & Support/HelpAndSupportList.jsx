@@ -205,7 +205,7 @@ const HelpAndSupportList = () => {
                                     <tbody>
                                           {vehicleListData?.map((item) => (
                                                 <tr key={item.id}>
-                                                      <td>#Ticket⁓{item.supportID || "-"}</td>
+                                                      <td>#{item.supportID || "-"}</td>
                                                       <td>{item?.empName || "-"}</td>
 
                                                       {/* QUERY + REPLY DISPLAY */}

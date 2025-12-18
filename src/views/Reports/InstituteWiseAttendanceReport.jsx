@@ -363,13 +363,13 @@ const InstituteWiseAttendanceReport = () => {
             <div className="container-fluid py-4">
                   {/* ---------- PAGE HEADER ---------- */}
                   <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h5 className="tracking-in-contract">Institute-wise Attendance Report</h5>
+                        <h5 className="tracking-in-contract">Institute wise Attendance Report</h5>
 
                   </div>
 
 
                   {/* ---------- FILTER SECTION ---------- */}
-                  <div className="border rounded p-2 bg-light mb-4">
+                  <div className="border rounded p-2 bg-light mb-1">
 
                         <Form>
                               <Row className="g-1 align-items-end">
@@ -453,10 +453,12 @@ const InstituteWiseAttendanceReport = () => {
                                           </Form.Group>
                                     </Col>
                                     <Col md={2}>
-                                          <Button onClick={() => exportAttendanceExcel(productListData, monthDateState)}
-                                                size="sm" variant="primary" className="w-100">
-                                                <i className="bi bi-download me-1"></i>Export
-                                          </Button>
+
+                                          <button onClick={() => exportAttendanceExcel(productListData, monthDateState)} style={{ background: '#ffaa33', color: 'white' }} className="btn  ">
+                                                <i className="bi bi-download me-1"></i>
+                                                <span >Export</span>
+                                          </button>
+
 
 
                                     </Col>

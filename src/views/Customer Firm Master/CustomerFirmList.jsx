@@ -20,6 +20,7 @@ import { ChangeInstituteStatus, ExportInstituteAttendanceZip, GetInstituteList }
 import axios from 'axios';
 import { FaCity, FaMapMarkerAlt, FaRoute } from 'react-icons/fa';
 import ZipDownloadModal from './ZipDownloadModal';
+import { Badge } from 'react-bootstrap';
 
 const CustomerFirmList = () => {
   const [stateChangeStatus, setStateChangeStatus] = useState('');
@@ -77,7 +78,7 @@ const CustomerFirmList = () => {
     setLoader(true);
     try {
       const data = await GetInstituteList({
-        pageSize,
+        pageSize: 40,
         // userKeyID: user.userKeyID,
         pageNo: pageNumber - 1, // Page numbers are typically 0-based in API calls
         searchKeyword: searchKeywordValue === undefined ? searchKeyword : searchKeywordValue,
@@ -109,21 +110,6 @@ const CustomerFirmList = () => {
       setLoader(false);
     }
   };
-
-
-
-  const downloadAllPDFsFrontendSafe = () => {
-    vehicleListData?.forEach((row) => {
-      if (row.uploadURL) {
-        const link = document.createElement("a");
-        link.href = row.uploadURL;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.click();
-      }
-    });
-  };
-
 
 
 
@@ -209,24 +195,7 @@ const CustomerFirmList = () => {
     }
   };
 
-  // Utility function to format the vehicle number
-  const formatVehicleNumber = (vehicleNumber) => {
-    if (!vehicleNumber) return ''; // Handle empty or undefined values
 
-    // Remove invalid characters and ensure uppercase
-    const sanitizedInput = vehicleNumber.toUpperCase().replace(/[^A-Z0-9]/g, '');
-
-    // Split into parts and format
-    const parts = [
-      sanitizedInput.slice(0, 2), // State code (2 letters)
-      sanitizedInput.slice(2, 4), // RTO code (2 digits)
-      sanitizedInput.slice(4, 6), // Series code (2 letters)
-      sanitizedInput.slice(6, 10) // Employee number (4 digits)
-    ];
-
-    // Join parts with spaces
-    return parts.filter((part) => part).join(' ');
-  };
   const handleStatusChange = (row) => {
     setStateChangeStatus(row);
     setShowStatusChangeModal(true);
@@ -253,55 +222,6 @@ const CustomerFirmList = () => {
   console.log(vehicleListData, '3sssssssssss');
 
 
-  const downloadAllInstitutePDFs = async () => {
-
-    debugger
-    try {
-      setLoader(true);
-
-      // 1️⃣ Collect valid URLs
-      const pdfUrls = vehicleListData
-        .map(item => item.uploadURL?.trim())
-        .filter(url => url && url.startsWith("http"));
-
-      if (pdfUrls.length === 0) {
-        alert("No PDF files available to download.");
-        setLoader(false);
-        return;
-      }
-
-      const zip = new JSZip();
-      const folder = zip.folder("Institute_PDFs");
-
-      // 2️⃣ Download each PDF as BLOB
-      for (let i = 0; i < pdfUrls.length; i++) {
-        const url = pdfUrls[i];
-
-        try {
-          const response = await axios.get(url, {
-            responseType: "blob", // 🔑 VERY IMPORTANT
-          });
-
-          if (response?.data) {
-            folder.file(`Institute_${i + 1}.pdf`, response.data);
-          }
-        } catch (err) {
-          console.error("Failed to download:", url);
-        }
-      }
-
-      // 3️⃣ Generate ZIP
-      const zipBlob = await zip.generateAsync({ type: "blob" });
-
-      saveAs(zipBlob, "Institute_Documents.zip");
-
-      setLoader(false);
-    } catch (error) {
-      console.error(error);
-      setLoader(false);
-    }
-  };
-
 
   const submitPDFZip = () => {
 
@@ -311,42 +231,16 @@ const CustomerFirmList = () => {
     })
 
     setShowZipModal(true)
-    // const paylaod = {
-    //   companyID: companyID,
-    //   projectID: location.state.projectID
-    // }
-    // ExportInstituteAttendanceZipData(paylaod)
+
   }
-  const ExportInstituteAttendanceZipData = async (apiParam) => {
-    setLoader(true);
+  console.log(vehicleListData, '333sssssssss');
+  const totalCount1 = vehicleListData.length;
 
-    try {
-      const response = await ExportInstituteAttendanceZip(
-        "/ExportInstituteAttendanceZip",
-        apiParam
-      );
+  const receivedCount = vehicleListData.filter(
+    item => item.uploadURL && item.uploadURL.trim() !== ""
+  ).length;
 
-      const blob = new Blob([response.data], {
-        type: "application/zip"
-      });
-
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "Institute_Attendance_Report.zip";
-      document.body.appendChild(a);
-      a.click();
-
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-
-      setLoader(false);
-    } catch (error) {
-      console.error(error);
-      setLoader(false);
-    }
-  };
+  const pendingCount = totalCount1 - receivedCount;
 
 
   return (
@@ -423,6 +317,21 @@ const CustomerFirmList = () => {
             </div> */}
 
             <div className="d-flex align-items-center ms-2 gap-2 mt-2 mt-sm-0">
+              <div className="d-flex gap-3">
+                <Badge bg="primary" className="px-3 py-2">
+                  Total: {totalCount}
+                </Badge>
+
+                <Badge bg="success" className="px-3 py-2">
+                  Received: {receivedCount}
+                </Badge>
+
+                <Badge bg="danger" className="px-3 py-2">
+                  Pending: {pendingCount}
+                </Badge>
+              </div>
+
+
               <Tooltip title="Add Institute" >
                 <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
                   <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>

@@ -271,9 +271,10 @@ const MvgEmployeeReportList = () => {
                         <div className="container-fluid py-4">
                               <div className="d-flex justify-content-between align-items-center mb-3">
                                     <h5 className="tracking-in-contract">Employee Attendance Report</h5>
-                                    <Button onClick={() => exportToExcel()} variant="success" size="sm">
+                                    <button onClick={() => exportToExcel()} style={{ background: '#ffaa33', color: 'white' }} className="btn  btn-sm d-none d-sm-inline">
                                           <i className="bi bi-file-earmark-excel me-1"></i>Export
-                                    </Button>
+                                    </button>
+
                               </div>
                               <div className="border rounded p-3 bg-light mb-4">
                                     <Form>
@@ -327,7 +328,10 @@ const MvgEmployeeReportList = () => {
                                                       </Form.Group>
                                                 </Col>
                                                 <Col md={2}>
-                                                      <Button onClick={() => { clearDate() }}>Clear </Button>
+                                                      <button onClick={() => clearDate()} style={{ background: '#ffaa33', color: 'white' }} className="btn   d-none d-sm-inline">
+                                                            Clear
+                                                      </button>
+
                                                 </Col>
                                           </Row>
                                     </Form>
