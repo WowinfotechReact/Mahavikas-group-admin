@@ -516,7 +516,7 @@ const SuperWiserList = () => {
                                                                   <div className="d-flex flex-column gap-1">
 
                                                                         {/* Company Name */}
-                                                                        <span
+                                                                        {/* <span
 
                                                                               placement="top"
                                                                         >
@@ -526,7 +526,7 @@ const SuperWiserList = () => {
                                                                                           ? value.companyName.substring(0, 35) + "..."
                                                                                           : value.companyName || "-"}
                                                                               </span>
-                                                                        </span>
+                                                                        </span> */}
 
                                                                         {/* Institute Name */}
                                                                         <span

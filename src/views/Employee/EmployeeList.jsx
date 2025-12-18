@@ -13,7 +13,7 @@ import NoResultFoundModel from 'component/NoResultFoundModal';
 import ImageModal from 'component/ImageModal';
 import Android12Switch from 'component/Android12Switch';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
+import { MdAssignment } from "react-icons/md";
 import StatusChangeModal from 'component/StatusChangeModal ';
 import SuccessPopupModal from 'component/SuccessPopupModal';
 import { Tooltip } from '@mui/material';
@@ -346,7 +346,7 @@ const EmployeeList = () => {
 
 
                     <td className="text-center">
-                      <div className="d-flex flex-column align-items-center">
+                      <div className="d-flex flex-column align-items-start">
                         <div className="d-flex align-items-center gap-2 mb-1">
                           <BsPerson className="text-primary" />
                           <span>{value.fullName || "N/A"}</span>
@@ -362,22 +362,32 @@ const EmployeeList = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="text-center">
-                      {value.address?.length > 30 ? (
-                        <Tooltip title={value.address}>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                            <i className="fa-solid fa-location-dot" style={{ color: "#d94e4e" }}></i>
-                            {`${value.address?.substring(0, 30)}...`}
-                          </span>
-                        </Tooltip>
-                      ) : (
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                          <i className="fa-solid fa-location-dot" style={{ color: "#d94e4e" }}></i>
-                          {value.address}
-                        </span>
-                      )}
+                    <td
+
+                      style={{
+                        whiteSpace: "normal",
+                        minWidth: "180px",
+                        wordBreak: "break-word",
+                        maxWidth: "250px" // adjust if required
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "flex-start",
+                          gap: "6px",
+                          textAlign: "left"
+                        }}
+                      >
+                        <i
+                          className="fa-solid fa-location-dot"
+                          style={{ color: "#d94e4e", marginTop: "3px" }}
+                        ></i>
+                        {value.address || "-"}
+                      </span>
                     </td>
-                    <td style={{ minWidth: "180px" }}>
+
+                    <td style={{ minWidth: "100px" }}>
                       <div className="d-flex flex-column gap-1">
 
                         {/* Zone */}
@@ -571,7 +581,8 @@ const EmployeeList = () => {
 
                             className="btn-sm btn me-2"
                           >
-                            Assign Project
+                            {/* Assign Project */}
+                            <MdAssignment />
                           </button>
                         </Tooltip>
                         <Tooltip title="Update Employee">
@@ -589,6 +600,8 @@ const EmployeeList = () => {
 
                             className="btn-sm btn me-2"
                           >
+
+
                             <i className="fa-solid fa-pen-to-square"></i>
                           </button>
                         </Tooltip>
@@ -597,10 +610,11 @@ const EmployeeList = () => {
                         <Tooltip title="View Employee Details">
                           <button
                             style={{
+                              fontWeight: 'bold',
                               padding: '4px 8px', // Adjust padding for smaller size
                               fontSize: '12px', // Optional: smaller font size
                               height: '28px', // Set height
-                              width: '48px', // Set width,
+                              width: '38px', // Set width,
                               background: '#ffaa33', color: 'white'
                             }}
                             onClick={() => viewEmpDetails(value)}
@@ -608,7 +622,9 @@ const EmployeeList = () => {
 
                             className="btn-sm btn me-2"
                           >
-                            View                            </button>
+
+                            <i className="fa-solid fa-eye"></i>
+                          </button>
                         </Tooltip>
 
 

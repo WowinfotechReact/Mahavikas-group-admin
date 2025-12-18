@@ -159,7 +159,7 @@ const AuthLogin = () => {
               value={LoginObj.mobileNo}
               inputProps={{ maxLength: 10 }}
               autoComplete="off"
-              placeholder="Enter 10-digit mobile number"
+              placeholder="Enter 10-digit mobile no."
               onChange={(e) => {
                 setRequireErrorMessage(false)
                 const inputValue = e.target.value;

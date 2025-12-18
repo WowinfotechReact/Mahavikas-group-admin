@@ -1,4 +1,5 @@
 
+import { ERROR_MESSAGES } from "component/GlobalMassage";
 import SuccessPopupModal from "component/SuccessPopupModal";
 import { ConfigContext } from "context/ConfigContext";
 import React, { useState, useEffect, useContext } from "react";
@@ -19,7 +20,7 @@ const HelpAndSupportModal = ({ show, onHide, selectedQuery, setIsAddUpdateAction
       const [showSuccessModal, setShowSuccessModal] = useState(false);
       const [modelAction, setModelAction] = useState('')
       const { setLoader, user, companyID, permissions } = useContext(ConfigContext);
-
+      const [error, setErrors] = useState(false)
       useEffect(() => {
             if (modelRequestData?.Action === 'Update') {
 
@@ -33,6 +34,22 @@ const HelpAndSupportModal = ({ show, onHide, selectedQuery, setIsAddUpdateAction
 
 
       const handleSubmit = () => {
+
+            let isValid = false;
+            if (
+                  helpSupportObj.answer === null ||
+                  helpSupportObj.answer === undefined ||
+                  helpSupportObj.answer === ''
+
+            ) {
+                  setErrors(true);
+                  isValid = true;
+            } else {
+                  setErrors(false);
+                  isValid = false;
+            }
+
+
             // onSubmit(replyText);
             const payload = {
                   userKeyID: user.userKeyID,
@@ -44,8 +61,10 @@ const HelpAndSupportModal = ({ show, onHide, selectedQuery, setIsAddUpdateAction
 
 
             };
+            if (!isValid) {
 
-            AddUpdateCustomerSupportData(payload)
+                  AddUpdateCustomerSupportData(payload)
+            }
       }
 
       const AddUpdateCustomerSupportData = async (apiParam) => {
@@ -151,7 +170,14 @@ const HelpAndSupportModal = ({ show, onHide, selectedQuery, setIsAddUpdateAction
                                     }))
                               }
                         />
-
+                        {error &&
+                              (helpSupportObj.answer === null ||
+                                    helpSupportObj.answer === undefined ||
+                                    helpSupportObj.answer === '') ? (
+                              <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>
+                        ) : (
+                              ''
+                        )}
                   </Modal.Body>
 
                   <Modal.Footer>

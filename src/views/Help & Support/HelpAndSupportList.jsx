@@ -191,8 +191,8 @@ const HelpAndSupportList = () => {
                         <div className="container mt-4">
                               <h5 className="tracking-in-contract">Help & Support</h5>
 
-                              <table className="table table-bordered table-hover">
-                                    <thead className="table-light">
+                              <table className="table table-bordered table-striped table-hover">
+                                    <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff' }}>
                                           <tr>
                                                 <th>Ticket No</th>
                                                 <th>Employee Name</th>
@@ -205,7 +205,7 @@ const HelpAndSupportList = () => {
                                     <tbody>
                                           {vehicleListData?.map((item) => (
                                                 <tr key={item.id}>
-                                                      <td>{item.supportID || "-"}</td>
+                                                      <td>#Ticket⁓{item.supportID || "-"}</td>
                                                       <td>{item?.empName || "-"}</td>
 
                                                       {/* QUERY + REPLY DISPLAY */}

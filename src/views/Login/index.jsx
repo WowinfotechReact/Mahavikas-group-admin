@@ -188,7 +188,7 @@ const Login = () => {
                 value={LoginObj.mobileNo}
                 maxLength={10}
                 autoComplete="off"
-                placeholder="Enter 10-digit mobile number"
+                placeholder="Enter 10-digit mobile no."
                 onChange={(e) => {
                   setErrorMessage(false)
 
