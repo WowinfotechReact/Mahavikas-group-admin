@@ -40,7 +40,7 @@ const MapCityList = () => {
                   setAnimatedPlaceholder(fullText.slice(0, index));
                   index++;
 
-                  if (index > fullText.length) {
+                  if (index > fullText?.length) {
                         index = 0;
                         setAnimatedPlaceholder(""); // Restart effect
                   }

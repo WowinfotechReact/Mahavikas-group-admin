@@ -233,12 +233,12 @@ const CustomerFirmList = () => {
     setShowZipModal(true)
 
   }
-  console.log(vehicleListData, '333sssssssss');
-  const totalCount1 = vehicleListData.length;
+  // console.log(vehicleListData, '333sssssssss');
+  const totalCount1 = vehicleListData?.length;
 
-  const receivedCount = vehicleListData.filter(
-    item => item.uploadURL && item.uploadURL.trim() !== ""
-  ).length;
+  const receivedCount = vehicleListData?.filter(
+    item => item?.uploadURL && item?.uploadURL?.trim() !== ""
+  )?.length;
 
   const pendingCount = totalCount1 - receivedCount;
 
