@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 import { ExportInstituteAttendanceZip } from 'services/Institute/InstituteApi';
 import { ConfigContext } from 'context/ConfigContext';
+import { toast } from 'react-toastify';
 
 const ZipDownloadModal = ({ show, onHide, modelRequestData, setIsAddUpdateActionDone }) => {
 
@@ -64,6 +65,8 @@ const ZipDownloadModal = ({ show, onHide, modelRequestData, setIsAddUpdateAction
                   setLoader(false);
             } catch (error) {
                   console.error(error);
+                  // alert()
+                  toast.error("No Attendance Uploaded")
                   setLoader(false);
             }
       };
