@@ -5,8 +5,11 @@ import SuccessPopupModal from 'component/SuccessPopupModal';
 import NoResultFoundModel from 'component/NoResultFoundModal';
 import PaginationComponent from 'component/Pagination';
 import { Tooltip } from '@mui/material';
+import { BiSolidImageAdd } from "react-icons/bi";
+
 import ProductAddUpdateModal from './ProductAddUpdateModal';
 import dayjs from 'dayjs';
+import { IoImagesOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router';
 import StatusChangeModal from 'component/StatusChangeModal ';
 import { hasPermission } from 'Middleware/permissionUtils';
@@ -155,6 +158,9 @@ const ProductList = () => {
   };
   const addInstitute = (row) => {
     navigate('/institute-master', { state: { projectID: row.projectID, projectName: row.projectName } })
+  }
+  const addImgBtnClick = (row) => {
+    navigate('/project-documents-upload', { state: { projectID: row.projectID, projectName: row.projectName } })
   }
 
   const confirmStatusChange = async () => {
@@ -358,6 +364,16 @@ const ProductList = () => {
                             className="btn-sm btn text-white text-nowrap"
                           >
                             Add Institute
+                          </button>
+                        </Tooltip>
+                        <Tooltip title="Add Img Upto 5">
+                          <button
+                            style={{ background: "#ffaa33" }}
+                            onClick={() => addImgBtnClick(row)}
+                            type="button"
+                            className="btn-sm btn text-white text-nowrap"
+                          >
+                            <BiSolidImageAdd />
                           </button>
                         </Tooltip>
 

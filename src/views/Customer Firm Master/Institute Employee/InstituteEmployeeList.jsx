@@ -165,7 +165,7 @@ const InstituteEmployeeList = () => {
             // debugger
             try {
                   const { userKeyIDForUpdate } = row; // Destructure to access only what's needed
-                  const response = await ChangeEmployeeStatus(userKeyIDForUpdate, user.userKeyID);
+                  const response = await ChangeEmployeeStatus(userKeyIDForUpdate, companyID);
 
                   if (response && response.data.statusCode === 200) {
                         setLoader(false);
@@ -256,7 +256,7 @@ const InstituteEmployeeList = () => {
 
                                     </button>
                                     <div className="flex-grow-1">
-                                          <h5 className="tracking-in-contract">Employee Institute : {location?.state?.instituteName} </h5>
+                                          <h5 className="tracking-in-contract">Institute Employee  : {location?.state?.instituteName} </h5>
                                     </div>
                                     <div className="position-absolute end-0 me-2">
                                           <button onClick={() => CustomerAddBtnClicked()} style={{ background: '#ffaa33', color: 'white' }} className="btn btn-sm d-inline d-sm-none">

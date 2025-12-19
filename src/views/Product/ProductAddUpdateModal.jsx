@@ -32,6 +32,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
   const [productObj, setProductObj] = useState({
     userKeyID: null,
+    manPower: null,
     projectKeyID: null,
     stateIDs: [],
     projectName: null,
@@ -88,6 +89,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
     if (
       productObj.projectName === null || productObj.projectName === undefined || productObj.projectName === '' ||
+      productObj.manPower === null || productObj.manPower === undefined || productObj.manPower === '' ||
       productObj.zoneIDs.length === 0 ||
       productObj.zoneIDs === null ||
       productObj.zoneIDs === undefined ||
@@ -206,6 +208,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
           userKeyID: ModelData.userKeyID,
           projectKeyID: modelRequestData.projectKeyID,
           projectName: ModelData.projectName,
+          manPower: ModelData.manPower,
           startDate: ModelData.startDate,
           endDate: ModelData.endDate,
           projectDescription: ModelData.projectDescription,
@@ -678,6 +681,43 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                   />
 
                   {error && !productObj.serviceID && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
+                  {errorMessage && <span style={{ color: 'red' }}>{errorMessage}</span>}
+                </div>
+
+                <div className=" col-md-6 mb-3">
+                  <label htmlFor="ProductName" className="form-label">
+                    Total Manpower <span style={{ color: 'red' }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="ProductName"
+                    maxLength={2}
+                    placeholder="Enter Manpower"
+                    aria-describedby="Product"
+                    value={productObj.manPower}
+                    onChange={(e) => {
+                      setErrorMessage(false);
+                      let inputValue = e.target.value;
+
+                      if (inputValue.length === 0 || (inputValue.length === 1 && inputValue === ' ')) {
+                        inputValue = '';
+                      }
+
+                      const cleanedValue = inputValue.replace(/[^0-9\s]/g, '');
+                      const trimmedValue = cleanedValue.trimStart();
+                      const updatedValue = trimmedValue
+                        .split(' ')
+                        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+
+                      setProductObj((prev) => ({
+                        ...prev,
+                        manPower: updatedValue
+                      }));
+                    }}
+                  />
+                  {error && !productObj.manPower && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
                   {errorMessage && <span style={{ color: 'red' }}>{errorMessage}</span>}
                 </div>
               </div>
