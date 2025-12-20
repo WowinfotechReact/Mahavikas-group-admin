@@ -32,7 +32,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
   const [productObj, setProductObj] = useState({
     userKeyID: null,
-    manPower: null,
+    totalManpower: null,
     projectKeyID: null,
     stateIDs: [],
     projectName: null,
@@ -89,7 +89,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
     if (
       productObj.projectName === null || productObj.projectName === undefined || productObj.projectName === '' ||
-      productObj.manPower === null || productObj.manPower === undefined || productObj.manPower === '' ||
+      productObj.totalManpower === null || productObj.totalManpower === undefined || productObj.totalManpower === '' ||
       productObj.zoneIDs.length === 0 ||
       productObj.zoneIDs === null ||
       productObj.zoneIDs === undefined ||
@@ -117,6 +117,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
       projectKeyID: modelRequestData?.projectKeyID,
       projectDescription: productObj?.projectDescription,
       serviceID: productObj?.serviceID,
+      totalManpower: productObj?.totalManpower,
       companyID: companyID,
       startDate: productObj?.startDate,
       endDate: productObj?.endDate,
@@ -208,11 +209,12 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
           userKeyID: ModelData.userKeyID,
           projectKeyID: modelRequestData.projectKeyID,
           projectName: ModelData.projectName,
-          manPower: ModelData.manPower,
+          totalManpower: ModelData.totalManpower,
           startDate: ModelData.startDate,
           endDate: ModelData.endDate,
           projectDescription: ModelData.projectDescription,
           serviceID: ModelData.serviceID,
+          totalManpower: ModelData.totalManpower,
           zoneIDs,
           districtIDs,
           talukaIDs,
@@ -685,17 +687,17 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                 </div>
 
                 <div className=" col-md-6 mb-3">
-                  <label htmlFor="ProductName" className="form-label">
+                  <label htmlFor="manpower" className="form-label">
                     Total Manpower <span style={{ color: 'red' }}>*</span>
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    id="ProductName"
+                    id="manpower"
                     maxLength={2}
                     placeholder="Enter Manpower"
                     aria-describedby="Product"
-                    value={productObj.manPower}
+                    value={productObj.totalManpower}
                     onChange={(e) => {
                       setErrorMessage(false);
                       let inputValue = e.target.value;
@@ -713,11 +715,11 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
 
                       setProductObj((prev) => ({
                         ...prev,
-                        manPower: updatedValue
+                        totalManpower: updatedValue
                       }));
                     }}
                   />
-                  {error && !productObj.manPower && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
+                  {error && !productObj.totalManpower && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
                   {errorMessage && <span style={{ color: 'red' }}>{errorMessage}</span>}
                 </div>
               </div>

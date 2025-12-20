@@ -22,6 +22,7 @@ import { GetDistrictLookupList } from 'services/Master Crud/MasterDistrictApi';
 import { GetZoneLookupList } from 'services/Master Crud/MasterZoneApi';
 import { GetStateLookupList } from 'services/Master Crud/MasterStateApi';
 import { uploadPdfWithNodeApi } from 'services/UploadImage/UploadImage';
+import { AddUpdateProjectDocument } from 'services/Project Document/ProjectDocumentApi';
 
 const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, modelRequestData }) => {
       const [modelAction, setModelAction] = useState('');
@@ -39,26 +40,10 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
 
 
       const [projectImgObj, setProjectImgObj] = useState({
-            uploadFile: null,
+            documentURL: null,
             previewURL: null,
       });
-      const handlePdfChange = (e) => {
-            const file = e.target.files[0];
 
-            if (!file) return;
-
-            if (file.type !== "application/pdf") {
-                  setErrorMessage("Only PDF files are allowed");
-                  return;
-            }
-
-            setErrorMessage("");
-
-            setProjectImgObj({
-                  uploadFile: file,
-                  previewURL: URL.createObjectURL(file),
-            });
-      };
 
 
       useEffect(() => {
@@ -93,6 +78,7 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
             }
       };
 
+      console.log(modelRequestData, '333333sssssssssss');
 
 
 
@@ -102,7 +88,7 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
             let isValid = false;
 
             if (
-                  projectImgObj.uploadFile === null || projectImgObj.uploadFile === undefined || projectImgObj.uploadFile === ''
+                  projectImgObj.documentURL === null || projectImgObj.documentURL === undefined || projectImgObj.documentURL === ''
             ) {
                   setErrors(true);
                   isValid = true;
@@ -113,26 +99,24 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
 
             const apiParam = {
                   userKeyID: user.userKeyID,
+                  projectDocumentMappingKeyID: modelRequestData.projectDocumentMappingKeyID,
+                  documentURL: projectImgObj.documentURL,
+                  projectKeyID: modelRequestData.projectKeyID
             };
 
             if (!isValid) {
                   AddUpdateProjectData(apiParam);
+
             }
       };
-      const handleServiceChange = (selectedOption) => {
-            setProjectImgObj((prev) => ({
-                  ...prev,
-                  serviceID: selectedOption ? selectedOption.value : null,
 
-            }));
-      };
       const AddUpdateProjectData = async (apiParam) => {
             setLoader(true);
             try {
-                  let url = '/AddUpdateProject';
+                  let url = '/AddUpdateProjectDocument';
 
 
-                  const response = await AddUpdateProject(url, apiParam);
+                  const response = await AddUpdateProjectDocument(url, apiParam);
                   if (response) {
                         if (response?.data?.statusCode === 200) {
                               setLoader(false);
@@ -232,7 +216,7 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
                         <Modal.Header closeButton>
                               <Modal.Title>
                                     <h3 className="text-center">
-                                          {modelRequestData?.Action !== null ? 'Update Project' : modelRequestData?.Action === null ? 'Add Project Document' : ' Update Project Document'}
+                                          {modelRequestData?.Action !== null ? ' Update Project Document' : ' Add Project Document'}
                                     </h3>
                               </Modal.Title>
                         </Modal.Header>
@@ -280,7 +264,7 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
                                                                         setLoader(false);
                                                                         setProjectImgObj((prev) => ({
                                                                               ...prev,
-                                                                              uploadFile: s3Url,
+                                                                              documentURL: s3Url,
                                                                               previewURL: fileURL
                                                                         }));
                                                                         setIsFileChanged(true); // 🔑 user uploaded new file
@@ -290,7 +274,7 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
                                                             }
                                                       }}
                                                 />
-                                                {error && !projectImgObj.uploadFile && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
+                                                {error && !projectImgObj.documentURL && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
                                                 {errorMessage && <span style={{ color: 'red' }}>{errorMessage}</span>}
                                           </div>
 
@@ -304,7 +288,7 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
                                                                   onClick={() => {
                                                                         setProjectImgObj((prev) => ({
                                                                               ...prev,
-                                                                              uploadFile: null,
+                                                                              documentURL: null,
                                                                               previewURL: null
                                                                         }));
                                                                   }}

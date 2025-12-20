@@ -7,18 +7,24 @@ import SuccessPopupModal from 'component/SuccessPopupModal';
 import NoResultFoundModel from 'component/NoResultFoundModal';
 import PaginationComponent from 'component/Pagination';
 import { Tooltip } from '@mui/material';
+import { FaFilePdf } from "react-icons/fa6";
+
 import { BiSolidImageAdd } from "react-icons/bi";
 import dayjs from 'dayjs';
 import { IoImagesOutline } from "react-icons/io5";
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import StatusChangeModal from 'component/StatusChangeModal ';
 import { hasPermission } from 'Middleware/permissionUtils';
 import { ChangeProjectStatus, GetProjectList } from 'services/Project/ProjectApi';
 import ImgUploadAddUpdateModal from './ImgUploadAddUpdateModal';
+import { DeleteProjectDocument, GetProjectDocumentList } from 'services/Project Document/ProjectDocumentApi';
+import DeleteModal from 'views/DeleteModal';
 
 const ImgUploadList = () => {
       const { setLoader, user, permissions, companyID } = useContext(ConfigContext);
       const navigate = useNavigate();
+      const [showDelete, setShowDelete] = useState(false);
+
       const [productListData, setProductListData] = useState([])
       const [stateChangeStatus, setStateChangeStatus] = useState('');
       const [modelAction, setModelAction] = useState();
@@ -30,7 +36,7 @@ const ImgUploadList = () => {
       const [isAddUpdateActionDone, setIsAddUpdateActionDone] = useState(false);
       const [lastActionType, setLastActionType] = useState(null);
       const [searchKeyword, setSearchKeyword] = useState('');
-
+      const [selectedMappingID, setSelectedMappingID] = useState(null);
       const [openProductModal, setOpenProductModal] = useState(false);
       const [sortingDirection, setSortingDirection] = useState(null);
       const [sortType, setSortType] = useState('');
@@ -47,18 +53,19 @@ const ImgUploadList = () => {
             setCurrentPage(pageNumber);
             GetProjectListData(pageNumber, null, null, null);
       };
-      const GetProjectListData = async (pageNumber, searchKeywordValue, toDateParam, fromDateParam, sortValue, ProductSortType) => {
+      const location = useLocation()
+      const GetProjectListData = async (pageNumber, searchKeywordValue) => {
             setLoader(true);
             try {
-                  const data = await GetProjectList({
+                  const data = await GetProjectDocumentList({
                         pageSize,
                         pageNo: pageNumber - 1,
                         searchKeyword: searchKeywordValue ?? searchKeyword,
-                        toDate: toDateParam ? dayjs(toDateParam).format('YYYY-MM-DD') : null,
-                        fromDate: fromDateParam ? dayjs(fromDateParam).format('YYYY-MM-DD') : null,
-                        sortingDirection: sortValue ?? sortingDirection,
-                        sortingColumnName: sortType || ProductSortType || null,
-                        // userKeyID: user.userKeyID,  told by shubha
+                        toDate: null,
+                        fromDate: null,
+
+                        userKeyID: user.userKeyID,
+                        projectID: location?.state?.projectID,
                         companyID: Number(companyID)
 
                   });
@@ -94,18 +101,19 @@ const ImgUploadList = () => {
                   setLoader(false);
             }
       };
-
+      const handleDeleteClick = (row) => {
+            setSelectedMappingID(row.projectDocumentMappingKeyID); // ✅ Store ID
+            setShowDelete(true); // ✅ Open modal
+      };
       // On Add/Update completion
       useEffect(() => {
             if (isAddUpdateActionDone) {
-                  if (lastActionType === 'Add') {
-                        GetProjectListData(1);
-                  } else {
-                        GetProjectListData(currentPage);
-                  }
-                  setIsAddUpdateActionDone(false);
-                  setLastActionType(null);
+
+                  GetProjectListData(1, null);
+
             }
+            setIsAddUpdateActionDone(false);
+
       }, [isAddUpdateActionDone]);
 
       // Initial fetch
@@ -142,27 +150,13 @@ const ImgUploadList = () => {
 
 
       const addProductBtnClick = () => {
-            setModelRequestData({ Action: null, projectKeyID: null });
-            setLastActionType('Add');
+
+            setModelRequestData({ Action: null, projectKeyID: location?.state?.projectKeyID });
+
             setOpenProductModal(true);
       };
 
-      const editProductBtnClick = (row) => {
-            setModelRequestData({ Action: 'Update', projectKeyID: row.projectKeyID });
-            setLastActionType('Update');
-            setOpenProductModal(true);
-      };
 
-      const handleStatusChange = (row) => {
-            setStateChangeStatus(row);
-            setShowStatusChangeModal(true);
-      };
-      const addInstitute = (row) => {
-            navigate('/institute-master', { state: { projectID: row.projectID, projectName: row.projectName } })
-      }
-      const addImgBtnClick = (row) => {
-            navigate('/project-documents-upload', { state: { projectID: row.projectID, projectName: row.projectName } })
-      }
 
       const confirmStatusChange = async () => {
             try {
@@ -185,16 +179,46 @@ const ImgUploadList = () => {
                   setModelAction('An error occurred while changing the product status.');
             }
       };
-      const instituteUserBtnClick = (row) => {
-            navigate('/Dashboard', { state: { userKeyIDForUpdate: row.userKeyIDForUpdate, instituteName: row.instituteName } })
-      }
+
 
 
       const closeAllModal = () => {
+            setOpenProductModal(false)
+            setShowDelete(false)
             setShowSuccessModal(false);
       };
 
+      const handleConfirmDelete = async () => {
+            debugger
+            try {
+                  if (!selectedMappingID) return;
 
+                  const res = await DeleteProjectDocument(selectedMappingID);
+
+
+                  // ✅ Check success
+                  if (
+                        res?.data?.statusCode === 200
+                  ) {
+                        console.log("✅ Deleted:", res?.responseData?.data);
+
+
+                        setModelAction('Document Deleted Successfully!')
+                        setShowSuccessModal(true)
+                        setIsAddUpdateActionDone(true)
+
+
+                  } else {
+                        console.error("❌ Delete failed:", res);
+                        // toast.error("Delete failed");
+                  }
+
+            } catch (error) {
+                  console.error("❌ Delete error:", error);
+                  setShowDelete(false);
+                  // toast.error("Something went wrong");
+            }
+      };
       return (
             <>
                   <div className="card w-full max-w-[50vh] mx-auto h-auto">
@@ -210,8 +234,29 @@ const ImgUploadList = () => {
                                           <i className="fa-solid fa-arrow-left"></i>
 
                                     </button>
-                                    <div className="flex-grow-1">
-                                          <h5 className="tracking-in-contract">Project Document</h5>
+                                    <div className="d-flex align-items-center flex-grow-1">
+                                          <div
+                                                className="me-2"
+                                                style={{
+                                                      width: "36px",
+                                                      height: "36px",
+                                                      borderRadius: "50%",
+                                                      // backgroundColor: "#0d6efd",
+                                                      display: "flex",
+                                                      justifyContent: "center",
+                                                      alignItems: "center",
+                                                      color: "white",
+                                                      fontSize: "20px",
+                                                      animation: "pulse 1.5s infinite"
+                                                }}
+                                          >📔
+                                          </div>
+                                          <h5 className="tracking-in-contract">
+                                                Project Document :
+                                                <span style={{ textDecoration: "underline", marginLeft: "6px" }}>
+                                                      {location?.state?.projectName}
+                                                </span>
+                                          </h5>
                                     </div>
                                     <button onClick={addProductBtnClick} className="btn btn-primary btn-sm d-inline d-sm-none">
                                           <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
@@ -243,7 +288,7 @@ const ImgUploadList = () => {
                                                 {/* <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1 }}> */}
                                                 <tr>
                                                       <th className="text-center">Sr No</th>
-                                                      <th className="text-center">Document</th>
+                                                      <th className="text-center">Document URL </th>
 
                                                       {/* <th className="text-center">Status</th> */}
                                                       <th className="text-center">Action</th>
@@ -259,24 +304,26 @@ const ImgUploadList = () => {
                                                             </td>
 
                                                             <td className="text-center">
-                                                                  <span
+                                                                  <a
+                                                                        href={row.documentURL}
+                                                                        download
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
                                                                         style={{
                                                                               display: "inline-flex",
                                                                               alignItems: "center",
-                                                                              gap: "6px",
-                                                                              animation: "fadeUp 0.4s ease-out"
+                                                                              gap: "8px",
+                                                                              textDecoration: "none",
+                                                                              color: "#ff7d34",
+                                                                              cursor: "pointer",
+                                                                              animation: "fadeUp 0.4s ease-out",
                                                                         }}
                                                                   >
-                                                                        <i
-                                                                              className="fa-solid fa-folder"
-                                                                              style={{
-                                                                                    color: "#ff7d34",
-                                                                                    animation: "floatIcon 1.5s ease-in-out infinite"
-                                                                              }}
-                                                                        ></i>
-                                                                        {row.projectName}
-                                                                  </span>
+                                                                        <FaFilePdf size={26} />   {/* Bigger icon */}
+                                                                        <span style={{ fontWeight: 500 }}>View  PDF</span>
+                                                                  </a>
                                                             </td>
+
 
 
 
@@ -287,17 +334,18 @@ const ImgUploadList = () => {
 
 
                                                             </td> */}
+
                                                             <td className="text-center relative  actionColSticky " style={{ zIndex: 4 }}>
 
                                                                   <div className="d-flex justify-content-center gap-2">
-                                                                        <Tooltip title="Update Document">
+
+                                                                        <Tooltip title='Delete Uploaded Documents'>
+
                                                                               <button
-                                                                                    style={{ padding: '4px 8px', fontSize: '12px', height: '28px', width: '28px', background: "#ffaa33" }}
-                                                                                    onClick={() => editProductBtnClick(row)}
-                                                                                    type="button"
-                                                                                    className="btn-sm btn text-white"
-                                                                              >
-                                                                                    <i className="fa-solid fa-pen-to-square"></i>
+                                                                                    className="btn btn-outline-danger d-flex align-items-center gap-2 btn-sm"
+                                                                                    onClick={() => handleDeleteClick(row)}
+                                                                              ><i class="fa-solid fa-trash"></i>
+
                                                                               </button>
                                                                         </Tooltip>
 
@@ -339,6 +387,13 @@ const ImgUploadList = () => {
                               modelAction={modelAction}
                         />
                   )}
+                  <DeleteModal
+                        show={showDelete}
+                        onClose={() => setShowDelete(false)}
+                        onConfirm={handleConfirmDelete}
+                        title="Delete Document "
+                        message="Do you really want to delete?"
+                  />
             </>
       );
 };

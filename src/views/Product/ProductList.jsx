@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router';
 import StatusChangeModal from 'component/StatusChangeModal ';
 import { hasPermission } from 'Middleware/permissionUtils';
 import { ChangeProjectStatus, GetProjectList } from 'services/Project/ProjectApi';
+import { FaUserCheck, FaUsers } from 'react-icons/fa';
 
 const ProductList = () => {
   const { setLoader, user, permissions, companyID } = useContext(ConfigContext);
@@ -160,7 +161,8 @@ const ProductList = () => {
     navigate('/institute-master', { state: { projectID: row.projectID, projectName: row.projectName } })
   }
   const addImgBtnClick = (row) => {
-    navigate('/project-documents-upload', { state: { projectID: row.projectID, projectName: row.projectName } })
+
+    navigate('/project-documents-upload', { state: { projectID: row.projectID, projectName: row.projectName, projectKeyID: row.projectKeyID } })
   }
 
   const confirmStatusChange = async () => {
@@ -245,6 +247,8 @@ const ProductList = () => {
                   <th className="text-center">Project Name</th>
                   <th className="text-center">Project Description </th>
                   <th className="text-center">Service Name</th>
+                  <th className="text-center">   Manpower
+                  </th>
                   <th className="text-center">Status</th>
                   <th className="text-center">Action</th>
                 </tr>
@@ -324,6 +328,71 @@ const ProductList = () => {
                         {row.serviceName}
                       </span>
                     </td>
+                    <td className="text-center">
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "16px",
+                          fontSize: "14px",
+                        }}
+                      >
+                        {/* Current Manpower */}
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            lineHeight: 1.2,
+                          }}
+                          title="Current Manpower"
+                        >
+                          <small style={{ fontSize: "11px", color: "#666" }}>Current</small>
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "5px",
+                              color: "#2e7d32",
+                              fontWeight: 600,
+                            }}
+                          >
+                            <FaUserCheck size={14} />
+                            {row.currentManpower}
+                          </span>
+                        </div>
+
+                        {/* Divider */}
+                        <span style={{ fontWeight: 600, color: "#999" }}>/</span>
+
+                        {/* Total Manpower */}
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            lineHeight: 1.2,
+                          }}
+                          title="Total Manpower"
+                        >
+                          <small style={{ fontSize: "11px", color: "#666" }}>Total</small>
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "5px",
+                              color: "#1565c0",
+                              fontWeight: 600,
+                            }}
+                          >
+                            <FaUsers size={14} />
+                            {row.totalManpower}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+
+
 
                     <td className="text-center">
                       {row.status === 'Active' ? 'Active' : 'In-Active'}
