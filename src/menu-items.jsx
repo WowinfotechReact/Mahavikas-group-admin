@@ -195,7 +195,7 @@ export default {
         {
           id: 'employee',
           moduleName: 'Employee',
-          title: 'Employee Master',
+          title: 'Employee Master 💻',
           type: 'item',
           icon: icons['SupervisedUserCircleIcon'],
           url: '/employee-list'
@@ -203,7 +203,7 @@ export default {
         {
           id: 'superW',
           moduleName: 'Employee',
-          title: 'Attendance Authority',
+          title: 'Attendance Authority 📱',
           type: 'item',
           icon: icons['VerifiedIcon'],
           url: '/super-wiser'
