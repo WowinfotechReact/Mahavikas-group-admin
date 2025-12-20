@@ -194,7 +194,7 @@ const MapCityList = () => {
                                           <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff' }}>
 
                                                 <tr>
-                                                      <th className="text-center">Sr No.</th>
+                                                      <th className="text-center">Sr No</th>
                                                       <th className="text-center">District Name</th>
                                                       <th className="text-center">State Name</th>
                                                       <th className="text-center">Action</th>

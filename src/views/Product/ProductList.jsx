@@ -435,7 +435,7 @@ const ProductList = () => {
                             Add Institute
                           </button>
                         </Tooltip>
-                        <Tooltip title="Add Img Upto 5">
+                        <Tooltip title="Upload Document">
                           <button
                             style={{ background: "#ffaa33" }}
                             onClick={() => addImgBtnClick(row)}

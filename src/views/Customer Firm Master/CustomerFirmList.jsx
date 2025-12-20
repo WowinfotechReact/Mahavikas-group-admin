@@ -365,7 +365,7 @@ const CustomerFirmList = () => {
 
                 {/* <thead style={{ position: 'sticky', top: -1, zIndex: 1 }}> */}
                 <tr className="text-nowrap">
-                  <th className="text-center">Sr No.</th>
+                  <th className="text-center">Sr No</th>
                   <th className="text-center"> Institute Name</th>
 
                   <th className="text-center">Project Name</th>

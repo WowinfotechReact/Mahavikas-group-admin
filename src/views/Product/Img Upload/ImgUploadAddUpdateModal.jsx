@@ -123,8 +123,8 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
                               setShowSuccessModal(true);
                               setModelAction(
                                     modelRequestData.Action === null
-                                          ? 'Project Added Successfully!'
-                                          : 'Project Updated Successfully!'
+                                          ? 'Project Document Added Successfully!'
+                                          : 'Project Document Updated Successfully!'
                               );
 
                               setIsAddUpdateActionDone(true);
@@ -230,6 +230,7 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
                                                 </label>
 
 
+
                                                 <input
                                                       type="file"
                                                       accept="application/pdf"
@@ -274,6 +275,7 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
                                                             }
                                                       }}
                                                 />
+                                                <small>Note: Only Pdf (Upto-:10MB)</small>
                                                 {error && !projectImgObj.documentURL && <span style={{ color: 'red' }}>{ERROR_MESSAGES}</span>}
                                                 {errorMessage && <span style={{ color: 'red' }}>{errorMessage}</span>}
                                           </div>

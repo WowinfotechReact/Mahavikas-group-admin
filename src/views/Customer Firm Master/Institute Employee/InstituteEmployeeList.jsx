@@ -309,7 +309,7 @@ const InstituteEmployeeList = () => {
                                           <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff', }}>
 
                                                 <tr className="text-nowrap">
-                                                      <th className="text-center">Sr No.</th>
+                                                      <th className="text-center">Sr No</th>
                                                       <th className="text-center"> Employee Name</th>
 
                                                       <th className="text-center">Address</th>

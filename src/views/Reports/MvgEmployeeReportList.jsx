@@ -19,6 +19,7 @@ import { ConfigContext } from "context/ConfigContext";
 import { useNavigate } from "react-router";
 import PaginationComponent from "component/Pagination";
 import NoResultFoundModel from "component/NoResultFoundModal";
+import { Tooltip } from "@mui/material";
 
 const MvgEmployeeReportList = () => {
       const [searchKeyword, setSearchKeyword] = useState('');
@@ -341,7 +342,7 @@ const MvgEmployeeReportList = () => {
                                           <table className="table table-bordered table-striped">
                                                 <thead className="table-gradient-orange" style={{ position: 'sticky', top: 0, zIndex: 10, color: '#fff', }}>
                                                       <tr className="text-center">
-                                                            <th>Sr No .</th>
+                                                            <th>Sr No</th>
                                                             <th>Employee Name</th>
                                                             <th>Mobile No</th>
                                                             <th>Punch In Date</th>
@@ -350,6 +351,7 @@ const MvgEmployeeReportList = () => {
                                                             <th>Punch Out Time</th>
                                                             <th>Punch In Location</th>
                                                             <th>Punch Out Location</th>
+                                                            <th>Work Summary</th>
                                                       </tr>
                                                 </thead>
                                                 <tbody>
@@ -377,6 +379,15 @@ const MvgEmployeeReportList = () => {
                                                                               <td>{checkInLocations[idx] || "Loading..."}</td>
 
                                                                               <td>{checkOutLocations[idx] || "Loading..."}</td>
+                                                                              <td>
+
+                                                                                    {row.workSummary?.length > 30 ? (
+                                                                                          <Tooltip title={row.workSummary}>{`${row.workSummary?.substring(0, 30)}...`}</Tooltip>
+                                                                                    ) : (
+                                                                                          <>{row.workSummary}</>
+                                                                                    )}
+
+                                                                              </td>
 
                                                                         </tr>
                                                                   );

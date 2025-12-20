@@ -118,7 +118,7 @@ const InstituteWiseAttendanceReport = () => {
 
             // ✅ Build Headers
             const headers = [
-                  "Sr No.",
+                  "Sr No",
                   "Employee Name",
                   "Designation",
                   "Download URL",
@@ -483,7 +483,7 @@ const InstituteWiseAttendanceReport = () => {
 
 
                                           <tr>
-                                                <th>Sr No.</th>
+                                                <th>Sr No</th>
                                                 <th>Employee Name</th>
                                                 <th>Designation</th>
 

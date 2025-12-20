@@ -167,7 +167,7 @@ const MisCrmVsOther = () => {
           <table className="table table-bordered table-striped">
             <thead className="table-light" style={{ position: 'sticky', top: -1, zIndex: 1 }}>
               <tr>
-                <th scope="col">Sr No.</th>
+                <th scope="col">Sr No</th>
                 <th scope="col">Vehicle Number</th>
                 <th scope="col">CRM IMEI</th>
                 <th scope="col">CGM </th>

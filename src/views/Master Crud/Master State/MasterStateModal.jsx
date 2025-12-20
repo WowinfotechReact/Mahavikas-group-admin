@@ -5,7 +5,7 @@ import { AddUpdateStateApi, GetStateModel } from 'services/Master Crud/MasterSta
 import { ConfigContext } from 'context/ConfigContext';
 import { ERROR_MESSAGES } from 'component/GlobalMassage';
 
-const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone,isAddUpdateActionDone, modelRequestData }) => {
+const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone, isAddUpdateActionDone, modelRequestData }) => {
 
   const [modelAction, setModelAction] = useState('');
   const [error, setErrors] = useState(null);
@@ -17,7 +17,7 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone,isAd
     stateKeyID: null,
     stateName: null
   });
-  
+
 
   useEffect(() => {
     if (modelRequestData?.Action === 'Update') {
@@ -35,7 +35,7 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone,isAd
     } else {
       setErrors(false);
       isValid = false;
-      
+
     }
 
     const apiParam = {
@@ -53,10 +53,10 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone,isAd
     try {
 
       const response = await AddUpdateStateApi(apiParam);
-      
-      
+
+
       if (response) {
-       
+
         console.log(response?.data?.statusCode)
         if (response?.data?.statusCode === 200) {
           setLoader(false);
@@ -70,7 +70,9 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone,isAd
           setIsAddUpdateActionDone(!isAddUpdateActionDone);
         } else {
           setLoader(false);
-          setErrorMessage(response?.data?.errorMessage);
+          console.log(response.response.data.errorMessage, '33333333sssssssssssss');
+
+          setErrorMessage(response?.response?.data?.errorMessage);
         }
       }
     } catch (error) {
@@ -119,7 +121,7 @@ const AddUpdateMasterStateModal = ({ show, onHide, setIsAddUpdateActionDone,isAd
         <Modal.Header closeButton>
           <Modal.Title>
             <h3 className="text-center">
-              {modelRequestData?.Action === "Update" ? 'Update State' :  "Add State" }
+              {modelRequestData?.Action === "Update" ? 'Update State' : "Add State"}
             </h3>
           </Modal.Title>
         </Modal.Header>

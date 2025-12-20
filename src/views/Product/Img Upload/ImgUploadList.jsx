@@ -258,6 +258,7 @@ const ImgUploadList = () => {
                                                 </span>
                                           </h5>
                                     </div>
+
                                     <button onClick={addProductBtnClick} className="btn btn-primary btn-sm d-inline d-sm-none">
                                           <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
                                           <span className="d-inline d-sm-none"> Add</span>
@@ -269,16 +270,19 @@ const ImgUploadList = () => {
                                           type="text"
                                           className="form-control"
                                           placeholder={animatedPlaceholder}
-                                          style={{ maxWidth: '350px' }}
+                                          style={{ maxWidth: '350px', visibility: 'hidden' }}
                                           value={searchKeyword}
+
                                           onChange={handleSearch}
                                     />
-                                    <Tooltip title="Upload Document">
-                                          <button onClick={addProductBtnClick} style={{ background: '#ffaa33' }} className="btn text-white  btn-sm d-none d-sm-inline">
-                                                <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
-                                                <span className="d-none d-sm-inline"> Add </span>
-                                          </button>
-                                    </Tooltip>
+                                    {productListData.length < 5 &&
+                                          <Tooltip title="Upload Document">
+                                                <button onClick={addProductBtnClick} style={{ background: '#ffaa33' }} className="btn text-white  btn-sm d-none d-sm-inline">
+                                                      <i className="fa-solid fa-plus" style={{ fontSize: '11px' }}></i>
+                                                      <span className="d-none d-sm-inline"> Add </span>
+                                                </button>
+                                          </Tooltip>
+                                    }
                               </div>
 
                               <div className="table-responsive" style={{ maxHeight: '65vh', overflowY: 'auto', position: 'relative' }}>
