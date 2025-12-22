@@ -878,7 +878,6 @@ const DispatchedLogisticsModal = ({ open, onClose, modelRequestData }) => {
                                                                   const uploadParams = {
                                                                         pdfFile: file,
                                                                         moduleName: "PO",
-                                                                        projectName: "MYOMNAMO",
                                                                         userId: user.userKeyID,
                                                                   };
 

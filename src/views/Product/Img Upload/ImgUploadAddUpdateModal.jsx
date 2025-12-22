@@ -254,8 +254,7 @@ const ImgUploadAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, model
 
                                                                   const uploadParams = {
                                                                         pdfFile: file,
-                                                                        moduleName: "PO",
-                                                                        projectName: "MYOMNAMO",
+                                                                        moduleName: "Project",
                                                                         userId: user.userKeyID,
                                                                   };
 
