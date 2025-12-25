@@ -511,7 +511,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                       value = value.replace(/^\s+/, "");
 
                       // Allow letters and spaces only
-                      value = value.replace(/[^a-zA-Z ]/g, "");
+                      value = value.replace(/[^a-zA-Z\u0900-\u097F\s]/g, '');
 
                       // Allow max 2 spaces (First, Middle, Last only)
                       const spaceCount = (value.match(/ /g) || []).length;
@@ -590,7 +590,7 @@ const AddUpdateEmployeeModal = ({ show, onHide, setIsAddUpdateActionDone, modelR
                       setErrorMessage(false);
                       let InputValue = e.target.value;
                       // Updated regex to allow common special characters for addresses
-                      const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s,.-/#&()]/g, '');
+                      const updatedValue = InputValue.replace(/[^a-zA-Z0-9\u0900-\u097F\s,./!@#$%^&*;'][{}|]]/g, '');
                       setEmployeeObj((prev) => ({
                         ...prev,
                         address: updatedValue

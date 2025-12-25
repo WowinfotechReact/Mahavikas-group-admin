@@ -304,7 +304,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                                   value = value.replace(/^\s+/, "");
 
                                                                   // Allow letters and spaces only
-                                                                  value = value.replace(/[^a-zA-Z ]/g, "");
+                                                                  value = value.replace();
 
                                                                   // Allow max 2 spaces (First, Middle, Last only)
                                                                   const spaceCount = (value.match(/ /g) || []).length;
@@ -440,7 +440,9 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                                   setErrorMessage(false);
                                                                   let InputValue = e.target.value;
                                                                   // Updated regex to allow common special characters for addresses
-                                                                  const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s,.-/#&()]/g, '');
+
+                                                                  const updatedValue = InputValue.replace(/[^a-zA-Z0-9\u0900-\u097F\s,./!@#$%^&*;'][{}|]]/g, '');
+                                                                  // const updatedValue = InputValue.replace(/[^a-zA-Z0-9\s,.-/#&()]/g, '');
                                                                   setAdminObj((prev) => ({
                                                                         ...prev,
                                                                         address: updatedValue

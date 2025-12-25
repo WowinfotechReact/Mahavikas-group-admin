@@ -349,7 +349,7 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                                                                   value = value.replace(/^\s+/, "");
 
                                                                   // Allow letters and spaces only
-                                                                  value = value.replace(/[^a-zA-Z ]/g, "");
+                                                                  value = value.replace(/[^a-zA-Z\u0900-\u097F\s]/g, '');
 
                                                                   // Allow max 2 spaces (First, Middle, Last only)
                                                                   const spaceCount = (value.match(/ /g) || []).length;

@@ -468,7 +468,7 @@ const AddUpdateProductModal = ({ show, onHide, setIsAddUpdateActionDone, modelRe
                       inputValue = '';
                     }
 
-                    const cleanedValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, '');
+                    const cleanedValue = inputValue.replace(/[^a-zA-Z\u0900-\u097F\s]/g, '');
                     const trimmedValue = cleanedValue.trimStart();
                     const updatedValue = trimmedValue
                       .split(' ')
