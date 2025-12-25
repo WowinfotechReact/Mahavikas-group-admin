@@ -12,6 +12,7 @@ import { Tooltip } from "@mui/material";
 import NoResultFoundModel from "component/NoResultFoundModal";
 import dayjs from "dayjs";
 import { Col, Form, Row } from "react-bootstrap";
+import { GetAppUserTypeLookupList } from "services/Employee Staff/EmployeeApi";
 
 const HelpAndSupportList = () => {
 
@@ -25,8 +26,11 @@ const HelpAndSupportList = () => {
       const [searchKeyword, setSearchKeyword] = useState('');
       const [fromDate, setFromDate] = useState(null); // Initialize as null
       const [toDate, setToDate] = useState(null);
+      const [userTypeOption, setUserTypeOption] = useState([]);
 
-
+      const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
+      const fullText = "Search By Name / Query  / Answerr";
+      let index = 0;
       const [modelRequestData, setModelRequestData] = useState({
             adminID: null,
             machineID: null,
@@ -65,6 +69,7 @@ const HelpAndSupportList = () => {
                   replyDate: "",
             },
       ]);
+      const [selectedUserType, setSelectedUserType] = useState(null);
       const [showQueryModal, setShowQueryModal] = useState(false);
       const [selectedQuery, setSelectedQuery] = useState(null);
 
@@ -124,6 +129,20 @@ const HelpAndSupportList = () => {
                   setToDate(null);
             }
       };
+
+      useEffect(() => {
+            const interval = setInterval(() => {
+                  setAnimatedPlaceholder(fullText.slice(0, index));
+                  index++;
+
+                  if (index > fullText.length) {
+                        index = 0;
+                        setAnimatedPlaceholder(""); // Restart effect
+                  }
+            }, 180);
+
+            return () => clearInterval(interval);
+      }, []);
       const handleFromDateChange = (newValue) => {
             debugger
             if (newValue && dayjs(newValue).isValid()) {
@@ -151,8 +170,6 @@ const HelpAndSupportList = () => {
             setIsAddUpdateActionDone(false);
       }, [isAddUpdateActionDone])
 
-      const [selectedOption, setSelectedOption] = useState("");
-
       const GetCustomerSupportListData = async (pageNumber, searchKeywordValue, toDate, fromDate) => {
             // debugger
             setLoader(true);
@@ -166,6 +183,8 @@ const HelpAndSupportList = () => {
                         fromDate: fromDate ? dayjs(fromDate)?.format('YYYY-MM-DD') : null,
                         instituteID: location?.state?.instituteKeyID,
                         companyID: Number(companyID),
+                        appUserTypeID: selectedUserType ? Number(selectedUserType) : null,
+
                         // user
 
                   });
@@ -192,6 +211,21 @@ const HelpAndSupportList = () => {
                   setLoader(false);
             }
       };
+
+
+      const handleSearch = (e) => {
+
+            let searchKeywordValue = e.target.value;
+            const trimmedValue = searchKeywordValue.replace(/^\s+/g, '');
+            const capitalizedValue = trimmedValue.charAt(0).toUpperCase() + trimmedValue.slice(1).toLowerCase();
+            if (searchKeywordValue.length === 1 && searchKeywordValue.startsWith(' ')) {
+                  searchKeywordValue = searchKeywordValue.trimStart();
+                  return;
+            }
+            setSearchKeyword(capitalizedValue);
+
+            GetCustomerSupportListData(1, capitalizedValue, toDate, fromDate);
+      };
       const updateBtnClick = (item) => {
             setModelRequestData({
                   ...modelRequestData,
@@ -210,6 +244,39 @@ const HelpAndSupportList = () => {
             GetCustomerSupportListData(1, null, null, null);
       }
 
+      useEffect(() => {
+            GetAppUserTypeLookupListData()
+      }, [])
+      const GetAppUserTypeLookupListData = async () => {
+            try {
+                  let response = await GetAppUserTypeLookupList();
+                  if (response?.data?.statusCode === 200) {
+                        const employeeList = response?.data?.responseData?.data || [];
+
+                        const filteredEmployees = [
+                              { value: null, label: "All" }, // Add ALL option at top
+                              ...employeeList.map((emp) => ({
+                                    value: emp.appUserTypeID,
+                                    label: emp.appUserType
+                              }))
+                        ];
+
+                        setUserTypeOption(filteredEmployees);
+                        setSelectedUserType(null); // Set default as ALL (null)
+                  } else {
+                        console.error("Bad request");
+                  }
+            } catch (error) {
+                  console.error("Error fetching employee list:", error);
+            }
+      };
+
+      useEffect(() => {
+            // Whenever selectedUserType changes, call API with updated value
+            GetCustomerSupportListData(1, searchKeyword, toDate, fromDate);
+      }, [selectedUserType]);
+
+
       return (
             <div className="card">
                   <div className="card-body">
@@ -223,15 +290,37 @@ const HelpAndSupportList = () => {
                                                 <Col md={3}>
                                                       <Form.Group>
                                                             <Form.Label className="fw-semibold small mb-1">Select User Role</Form.Label>
-
-                                                            <input type="text" className="form-control" placeholder="Search " />
+                                                            <input
+                                                                  type="text"
+                                                                  className="form-control"
+                                                                  placeholder={animatedPlaceholder}
+                                                                  value={searchKeyword}
+                                                                  onChange={(e) => {
+                                                                        handleSearch(e);
+                                                                  }}
+                                                            />
+                                                            {/* <input type="text" className="form-control" placeholder="Search " /> */}
                                                       </Form.Group>
                                                 </Col>
                                                 <Col md={3}>
                                                       <Form.Group>
                                                             <Form.Label className="fw-semibold small mb-1">Select User Role</Form.Label>
+                                                            <Select
+                                                                  placeholder="Select"
+                                                                  options={userTypeOption}
+                                                                  value={userTypeOption.find(o => o.value === selectedUserType) || null}
+                                                                  onChange={(e) => {
+                                                                        setSelectedUserType(e?.value ?? null);
+                                                                  }}
+                                                                  menuPosition="fixed"
+                                                                  menuPortalTarget={document.body}
+                                                                  styles={{
+                                                                        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                                                                        menu: (base) => ({ ...base, zIndex: 9999 }) // optional reinforcement
+                                                                  }}
+                                                            />
 
-                                                            <Select placeholder='Select ' />
+
                                                       </Form.Group>
                                                 </Col>
                                                 <Col md={2}>

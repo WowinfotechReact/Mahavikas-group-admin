@@ -579,11 +579,11 @@ const CustomerFirmList = () => {
           </div>
 
           {/* Pagination */}
-          <div className="d-flex justify-content-end ">
+          {/* <div className="d-flex justify-content-end ">
             {totalCount > pageSize && (
               <PaginationComponent totalPages={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />
             )}
-          </div>
+          </div> */}
         </div>
       </div >
 

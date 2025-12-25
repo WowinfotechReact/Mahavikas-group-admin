@@ -57,6 +57,11 @@ export const GetEmployeeLookupList = async (params) => {
   const res = await postApiWithAuthenticated(`${EmployeeBaseUrl}${'/GetEmployeeLookupList'}`, params);
   return res;
 };
+export const GetAppUserTypeLookupList = async (params) => {
+  
+  const res = await getListWithAuthenticated(`${EmployeeBaseUrl}${'/GetAppUserTypeLookupList'}`, params);
+  return res;
+};
 
 //not in use
 export const GetEmployeeModel = async (id,UserDetailsKeyID) => {
