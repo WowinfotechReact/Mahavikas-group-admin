@@ -38,7 +38,7 @@ export const AddUpdateAdminUser = async (url = '', params) => {
   return res;
 };
 export const GetAdminUserModel = async (id,UserDetailsKeyID) => {
-  let url = `${GetCompanyBaseURI}/GetAdminUserModel?UserKeyIDForUpdate=${id}&UserDetailsKeyID=${UserDetailsKeyID}`;
+  let url = `${GetCompanyBaseURI}/GetAdminUserModel?UserKeyIDForUpdate=${id}`;
 
   const res = await getListWithAuthenticated(url);
   return res;

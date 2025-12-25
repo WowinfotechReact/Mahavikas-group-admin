@@ -118,9 +118,9 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
       const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
       const Submit = async () => {
-            debugger
+
             let isValid = false;
-            const fullName = employeeObj.fullName ? employeeObj.fullName.trim() : "";
+            const fullName = employeeObj.fullName?.trim() || "";
 
             // Split the name
             const parts = fullName.split(" ").filter(Boolean);
@@ -129,9 +129,10 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
             if (
 
 
-                  fullName === "" ||          // nothing entered
-                  parts.length === 0 ||       // no valid word
-                  fullName.endsWith(" ") ||
+                  fullName === "" ||              // empty
+                  parts.length === 0 ||           // no valid text
+                  fullName.endsWith(" ") ||       // trailing space
+                  parts.length > 3 ||
                   employeeObj.password === null ||
                   employeeObj.password === undefined ||
                   employeeObj.password === '' ||
@@ -157,16 +158,21 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                   setErrors(false);
                   isValid = false;
             }
-            let firstName = null;
-            let lastName = null;
-
-            if (parts.length === 1) {
-                  firstName = parts[0];
-                  lastName = null;
-            } else if (parts.length === 2) {
-                  firstName = parts[0];
-                  lastName = parts[1];
+            if (
+                  fullName === "" ||              // empty
+                  parts.length === 0 ||           // no valid text
+                  fullName.endsWith(" ") ||       // trailing space
+                  parts.length > 3                // more than 3 words (First, Middle, Last)
+            ) {
+                  setErrors(true);
+                  isValid = true;
+            } else {
+                  setErrors(false);
+                  isValid = false;
             }
+            let firstName = parts[0] || "";
+            let lastName = parts.slice(1).join(" ") || ""; // join middle + last or keep empty string
+
             const apiParam = {
                   userKeyID: user.userKeyID,
                   userDetailsKeyID: modelRequestData?.userDetailsKeyID,
@@ -188,8 +194,8 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                   zoneIDs: [],
                   districtIDs: [],
                   talukaIDs: [],
-                  firstName,
-                  lastName
+                  firstName: firstName,           // never null, empty if not provided
+                  lastName: lastName || null
             };
             if (!isValid) {
                   AddUpdateAppUserData(apiParam);
@@ -342,14 +348,12 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                                                                   // Block leading spaces
                                                                   value = value.replace(/^\s+/, "");
 
-                                                                  // Allow only letters and space
+                                                                  // Allow letters and spaces only
                                                                   value = value.replace(/[^a-zA-Z ]/g, "");
 
-                                                                  // ❌ Prevent more than ONE space — second space will not be accepted
+                                                                  // Allow max 2 spaces (First, Middle, Last only)
                                                                   const spaceCount = (value.match(/ /g) || []).length;
-                                                                  if (spaceCount > 1) {
-                                                                        return; // stop typing here
-                                                                  }
+                                                                  if (spaceCount > 2) return; // stop typing after 2 spaces
 
                                                                   // Auto-capitalize each word
                                                                   value = value
@@ -367,20 +371,23 @@ const SuperWiserAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, mode
                                                                         fullName: value
                                                                   }));
 
-                                                                  // Split into first & last name
+                                                                  // Split into name parts
                                                                   const parts = value.trim().split(" ");
 
                                                                   if (parts.length === 1) {
+                                                                        // Only first name
                                                                         setEmployeeObj((prev) => ({
                                                                               ...prev,
                                                                               firstName: parts[0],
                                                                               lastName: null
                                                                         }));
-                                                                  } else if (parts.length === 2) {
+                                                                  } else if (parts.length >= 2) {
+                                                                        // First word = firstName
+                                                                        // Remaining words (middle + last) = lastName
                                                                         setEmployeeObj((prev) => ({
                                                                               ...prev,
                                                                               firstName: parts[0],
-                                                                              lastName: parts[1]
+                                                                              lastName: parts.slice(1).join(" ")
                                                                         }));
                                                                   }
                                                             }}

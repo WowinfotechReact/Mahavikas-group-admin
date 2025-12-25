@@ -159,8 +159,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
             debugger
             let isValid = false;
 
-
-            const fullName = adminObj.fullName ? adminObj.fullName.trim() : "";
+            const fullName = adminObj.fullName?.trim() || "";
 
             // Split the name
             const parts = fullName.split(" ").filter(Boolean);
@@ -169,9 +168,10 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
 
 
             if (
-                  fullName === "" ||          // nothing entered
-                  parts.length === 0 ||       // no valid word
-                  fullName.endsWith(" ") ||
+                  fullName === "" ||              // empty
+                  parts.length === 0 ||           // no valid text
+                  fullName.endsWith(" ") ||       // trailing space
+                  parts.length > 3 ||
 
 
                   adminObj.mobileNo === null ||
@@ -201,21 +201,24 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                   isValid = false;
             }
             // Set firstName & lastName properly
-            let firstName = null;
-            let lastName = null;
-
-            if (parts.length === 1) {
-                  firstName = parts[0];
-                  lastName = null;
-            } else if (parts.length === 2) {
-                  firstName = parts[0];
-                  lastName = parts[1];
+            if (
+                  fullName === "" ||              // empty
+                  parts.length === 0 ||           // no valid text
+                  fullName.endsWith(" ") ||       // trailing space
+                  parts.length > 3                // more than 3 words (First, Middle, Last)
+            ) {
+                  setErrors(true);
+                  isValid = true;
+            } else {
+                  setErrors(false);
+                  isValid = false;
             }
+            let firstName = parts[0] || "";
+            let lastName = parts.slice(1).join(" ") || ""; // join middle + last or keep empty string
+
             const apiParam = {
                   userKeyID: user.userKeyID,
                   userKeyIDForUpdate: modelRequestData?.userKeyIDForUpdate,
-                  firstName: adminObj.firstName,
-                  lastName: adminObj.lastName,
                   mobileNo: adminObj.mobileNo,
                   emailID: adminObj.emailID,
                   password: adminObj.password,
@@ -223,8 +226,8 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                   companyIDs: adminObj.companyIDs,
                   roleKeyID: adminObj.roleKeyID,
                   instituteKeyID: modelRequestData.instituteKeyID,
-                  firstName,
-                  lastName
+                  firstName: firstName,           // never null, empty if not provided
+                  lastName: lastName || null
             };
             if (!isValid) {
                   AddUpdateAppUserData(apiParam);
@@ -287,7 +290,7 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                             <span style={{ color: 'red' }}>*</span>
                                                       </label>
                                                       <input
-                                                            maxLength={50}
+                                                            maxLength={100}
                                                             type="text"
                                                             className="form-control"
                                                             id="fullName"
@@ -300,14 +303,12 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                                   // Block leading spaces
                                                                   value = value.replace(/^\s+/, "");
 
-                                                                  // Allow only letters and space
+                                                                  // Allow letters and spaces only
                                                                   value = value.replace(/[^a-zA-Z ]/g, "");
 
-                                                                  // ❌ Prevent more than ONE space — second space will not be accepted
+                                                                  // Allow max 2 spaces (First, Middle, Last only)
                                                                   const spaceCount = (value.match(/ /g) || []).length;
-                                                                  if (spaceCount > 1) {
-                                                                        return; // stop typing here
-                                                                  }
+                                                                  if (spaceCount > 2) return; // stop typing after 2 spaces
 
                                                                   // Auto-capitalize each word
                                                                   value = value
@@ -325,20 +326,23 @@ const AdminEmployeeAddUpdateModal = ({ show, onHide, setIsAddUpdateActionDone, m
                                                                         fullName: value
                                                                   }));
 
-                                                                  // Split into first & last name
+                                                                  // Split into name parts
                                                                   const parts = value.trim().split(" ");
 
                                                                   if (parts.length === 1) {
+                                                                        // Only first name
                                                                         setAdminObj((prev) => ({
                                                                               ...prev,
                                                                               firstName: parts[0],
                                                                               lastName: null
                                                                         }));
-                                                                  } else if (parts.length === 2) {
+                                                                  } else if (parts.length >= 2) {
+                                                                        // First word = firstName
+                                                                        // Remaining words (middle + last) = lastName
                                                                         setAdminObj((prev) => ({
                                                                               ...prev,
                                                                               firstName: parts[0],
-                                                                              lastName: parts[1]
+                                                                              lastName: parts.slice(1).join(" ")
                                                                         }));
                                                                   }
                                                             }}
